@@ -8,74 +8,72 @@ import '../../data/network/base_api_services.dart';
 import 'package:http/http.dart' as http;
 
 import '../app_exceptions.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class NetworkApiServices extends BaseApiServices {
 
-
   @override
-  Future<dynamic> getApi(String url)async{
-
+  Future<dynamic> getApi(String url) async {
     if (kDebugMode) {
       print(url);
     }
 
-    dynamic responseJson ;
+    dynamic responseJson;
     try {
+      final headers = {
+        'X-API-KEY': dotenv.env['API_KEY'] ?? '',  // Obtener la API_KEY del .env
+      };
 
-      final response = await http.get(Uri.parse(url)).timeout( const Duration(seconds: 10));
-      responseJson  = returnResponse(response) ;
-    }on SocketException {
+      final response = await http.get(Uri.parse(url), headers: headers).timeout(const Duration(seconds: 10));
+      responseJson = returnResponse(response);
+    } on SocketException {
       throw InternetException('');
-    }on RequestTimeOut {
+    } on RequestTimeOut {
       throw RequestTimeOut('');
-
     }
-    print(responseJson);
-    return responseJson ;
 
+    print(responseJson);
+    return responseJson;
   }
 
-
   @override
-  Future<dynamic> postApi(var data , String url)async{
-
+  Future<dynamic> postApi(var data, String url) async {
     if (kDebugMode) {
       print(url);
       print(data);
     }
 
-    dynamic responseJson ;
+    dynamic responseJson;
     try {
+      final headers = {
+        'X-API-KEY': dotenv.env['API_KEY'] ?? '',  // Obtener la API_KEY del .env
+      };
 
-      final response = await http.post(Uri.parse(url),
-        body: data
-      ).timeout( const Duration(seconds: 10));
-      responseJson  = returnResponse(response) ;
-    }on SocketException {
+      final response = await http.post(Uri.parse(url), headers: headers, body: data).timeout(const Duration(seconds: 10));
+      responseJson = returnResponse(response);
+    } on SocketException {
       throw InternetException('');
-    }on RequestTimeOut {
+    } on RequestTimeOut {
       throw RequestTimeOut('');
-
     }
+
     if (kDebugMode) {
       print(responseJson);
     }
-    return responseJson ;
-
+    return responseJson;
   }
 
-  dynamic returnResponse(http.Response response){
-    switch(response.statusCode){
+  dynamic returnResponse(http.Response response) {
+    switch (response.statusCode) {
       case 200:
         dynamic responseJson = jsonDecode(response.body);
-        return responseJson ;
+        return responseJson;
       case 400:
         dynamic responseJson = jsonDecode(response.body);
-        return responseJson ;
+        return responseJson;
 
-      default :
-        throw FetchDataException('Error accoured while communicating with server '+response.statusCode.toString()) ;
+      default:
+        throw FetchDataException('Error occurred while communicating with server ' + response.statusCode.toString());
     }
   }
-
 }
