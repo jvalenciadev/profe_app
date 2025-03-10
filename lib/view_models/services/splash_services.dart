@@ -7,11 +7,10 @@ import '../../res/routes/routes_name.dart';
 class SplashServices {
   final AppInfoController appInfoController = Get.find<AppInfoController>();
 
-  void isLogin(Function(Map<String, String>) onDataReceived) async {
+  void isLogin(Function(Map<String, String>) onDataReceived, {required Null Function() onError}) async {
     // Obtención de la información de la app
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
     
-    String appName = packageInfo.appName;
     String packageName = packageInfo.packageName;
     String appVersion = packageInfo.version;
     String buildNumber = packageInfo.buildNumber;
@@ -25,11 +24,12 @@ class SplashServices {
     print("------------------------------- ${appInfo.respuesta?.nombre}");
 
     Map<String, String> data = {
-      "appName": appName,
+      "appLogo": appInfo.respuesta?.logo ?? "Desconocido",
+      "appName": appInfo.respuesta?.nombre ?? "Desconocido",
       "packageName": packageName,
-      "appVersion": appVersion,
+      "appVersion":  appInfo.respuesta?.versionActual ?? "Desconocido",
       "buildNumber": buildNumber,
-      "apiVersion": appInfo.respuesta?.sitioWeb ?? "Desconocida",
+      "apiVersion": appInfo.respuesta?.versionActual ?? "Desconocida",
     };
 
     onDataReceived(data); // Pasamos la info al SplashScreen

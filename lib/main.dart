@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Flutter Demo',
+      title: 'App Flutter',
       translations: Languages(),
       locale: const Locale('en' ,'US'),
       fallbackLocale: const Locale('en' ,'US'),
