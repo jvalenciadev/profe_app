@@ -10,7 +10,7 @@ class AppTheme {
       hintColor: AppColor.accentColor,
       textTheme: AppTextTheme.lightTextTheme,
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      scaffoldBackgroundColor: AppColor.backgroundColor,
+      scaffoldBackgroundColor: AppColor.whiteColor,
       appBarTheme: AppBarTheme(
         color: AppColor.primaryColor,
       ),

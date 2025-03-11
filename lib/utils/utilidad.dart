@@ -1,5 +1,7 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
 String formatearFecha(DateTime fecha) {
   final DateFormat formatter = DateFormat('dd MMM yyyy');
@@ -21,7 +23,87 @@ DateTime obtenerFechaActual() {
   return DateTime.now();
 }
 
+String? formatFechaLarga(String? fecha) {
+  if (fecha == null || fecha.isEmpty) return null;
+  try {
+    final DateTime dateTime = DateTime.parse(fecha);
+    const List<String> meses = [
+      "Ene",
+      "Feb",
+      "Mar",
+      "Abr",
+      "May",
+      "Jun",
+      "Jul",
+      "Ago",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dic",
+    ];
+    return "${dateTime.day} de ${meses[dateTime.month - 1]} de ${dateTime.year}";
+  } catch (e) {
+    return null;
+  }
+}
+
+String? formatFechaCorta(String? fecha) {
+  if (fecha == null || fecha.isEmpty) return null;
+  try {
+    final DateTime dateTime = DateTime.parse(fecha);
+    const List<String> meses = [
+      "Ene",
+      "Feb",
+      "Mar",
+      "Abr",
+      "May",
+      "Jun",
+      "Jul",
+      "Ago",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dic",
+    ];
+    return "${dateTime.day} de ${meses[dateTime.month - 1]}/${dateTime.year}";
+  } catch (e) {
+    return null;
+  }
+}
+
+// Función auxiliar para convertir hora desde String
+String? parseHora(String? hora) {
+  if (hora == null || hora.isEmpty) return null;
+  try {
+    final DateTime dateTime = DateTime.parse("1970-01-01 $hora");
+    return "${dateTime.hour.toString().padLeft(2, '0')}:"
+        "${dateTime.minute.toString().padLeft(2, '0')}:"
+        "${dateTime.second.toString().padLeft(2, '0')}";
+  } catch (e) {
+    return null;
+  }
+}
+
+// Función auxiliar para convertir una cadena JSON en lista de strings
+List<String>? parseLista(String? jsonLista) {
+  if (jsonLista == null || jsonLista.isEmpty) return null;
+  try {
+    return List<String>.from(json.decode(jsonLista));
+  } catch (e) {
+    return null;
+  }
+}
 // 2. Gestión de Inscripciones y Validaciones
+Widget mostrarHtml(String html) {
+  return HtmlWidget(
+    html,
+    textStyle: TextStyle(fontSize: 16), // Puedes ajustar el estilo aquí
+  );
+}
+String convertirHtmlATexto(String html) {
+  RegExp exp = RegExp(r'<[^>]*>');
+  return html.replaceAll(exp, ''); // Elimina las etiquetas HTML
+}
 
 // Verificar si la inscripción está cerrada
 bool inscripcionCerrada(DateTime fechaFinInscripcion) {

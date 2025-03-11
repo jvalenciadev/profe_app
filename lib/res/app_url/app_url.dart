@@ -1,7 +1,8 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 class AppUrl {
 
-  static String get baseUrl => dotenv.env['BASEURL'] ?? 'https://default.url/api/v1';  // Valor por defecto si no se carga la variable
+  static String get baseUrl => dotenv.env['BASEURL'] ?? 'https://profe.minedu.gob.bo/api/v1';  // Valor por defecto si no se carga la variable
+  static String get baseImage => dotenv.env['IMAGEURL'] ?? 'https://profe.minedu.gob.bo';  // Valor por defecto si no se carga la variable
   static String get eventos => '$baseUrl/eventos';
   static String get eventosId => '$baseUrl/evento';
   static String get programas => '$baseUrl/programas';

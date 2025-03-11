@@ -10,14 +10,14 @@ class ProfeModel {
   DateTime? profeFechaCreacion;
   String? profeCorreo;
   String? profeCelular;
-  dynamic profeTelefono;
+  String? profeTelefono;
   String? profePagina;
   String? profeFacebook;
   String? profeTiktok;
   String? profeYoutube;
   String? profeUbicacion;
-  dynamic profeLatitud;
-  dynamic profeLongitud;
+  String? profeLatitud;
+  String? profeLongitud;
   String? profeBanner;
   String? profeAfiche;
   String? profeConvocatoria;

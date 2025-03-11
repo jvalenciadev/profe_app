@@ -16,16 +16,15 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'App Flutter',
+      title: 'App PROFE',
       translations: Languages(),
       locale: const Locale('en' ,'US'),
       fallbackLocale: const Locale('en' ,'US'),
-       theme: AppTheme.lightTheme,
+      theme: AppTheme.lightTheme,
       getPages: AppRoutes.appRoutes(),
     );
   }

@@ -1,5 +1,3 @@
-
-
 import 'dart:convert';
 import 'dart:io';
 
@@ -11,20 +9,21 @@ import '../app_exceptions.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class NetworkApiServices extends BaseApiServices {
-
   @override
   Future<dynamic> getApi(String url) async {
     if (kDebugMode) {
-      print(url);
+      // print(url);
     }
 
     dynamic responseJson;
     try {
       final headers = {
-        'X-API-KEY': dotenv.env['API_KEY'] ?? '',  // Obtener la API_KEY del .env
+        'X-API-KEY': dotenv.env['API_KEY'] ?? '', // Obtener la API_KEY del .env
       };
 
-      final response = await http.get(Uri.parse(url), headers: headers).timeout(const Duration(seconds: 10));
+      final response = await http
+          .get(Uri.parse(url), headers: headers)
+          .timeout(const Duration(seconds: 10));
       responseJson = returnResponse(response);
     } on SocketException {
       throw InternetException('');
@@ -32,7 +31,7 @@ class NetworkApiServices extends BaseApiServices {
       throw RequestTimeOut('');
     }
 
-    print(responseJson);
+    // print(responseJson);
     return responseJson;
   }
 
@@ -46,10 +45,12 @@ class NetworkApiServices extends BaseApiServices {
     dynamic responseJson;
     try {
       final headers = {
-        'X-API-KEY': dotenv.env['API_KEY'] ?? '',  // Obtener la API_KEY del .env
+        'X-API-KEY': dotenv.env['API_KEY'] ?? '', // Obtener la API_KEY del .env
       };
 
-      final response = await http.post(Uri.parse(url), headers: headers, body: data).timeout(const Duration(seconds: 10));
+      final response = await http
+          .post(Uri.parse(url), headers: headers, body: data)
+          .timeout(const Duration(seconds: 10));
       responseJson = returnResponse(response);
     } on SocketException {
       throw InternetException('');
@@ -73,7 +74,10 @@ class NetworkApiServices extends BaseApiServices {
         return responseJson;
 
       default:
-        throw FetchDataException('Error occurred while communicating with server ' + response.statusCode.toString());
+        throw FetchDataException(
+          'Error occurred while communicating with server ' +
+              response.statusCode.toString(),
+        );
     }
   }
 }
