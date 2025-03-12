@@ -197,6 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ],
                 ),
+                SizedBox(height: 10,),
                 _buildMissionText(),
               ],
             ),
@@ -240,9 +241,9 @@ class _HomeScreenState extends State<HomeScreen> {
         fontSize: 14,
         fontWeight: FontWeight.w500,
         color: AppColor.greyColor,
-        height: 1.5,
+        height: 1.2,
       ),
-      maxLines: 2,
+      maxLines: 3,
       overflow: TextOverflow.ellipsis,
       textAlign: TextAlign.justify,
     );
@@ -254,7 +255,7 @@ class _HomeScreenState extends State<HomeScreen> {
         CarouselSlider(
           items: eventos.map((evento) => _buildEventCard(evento)).toList(),
           options: CarouselOptions(
-            height: 200,
+            height: 220,
             autoPlay: true,
             enlargeCenterPage: true,
             viewportFraction: 0.85,
@@ -281,13 +282,13 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Image.network(
             "${AppUrl.baseImage}/storage/evento_afiches/${evento.eveAfiche}",
             width: double.infinity,
-            height: 200,
+            height: 220,
             fit: BoxFit.cover,
           ),
         ),
         _buildEventGradient(),
         Positioned(
-          bottom: 20,
+          bottom: 10,
           left: 20,
           right: 20,
           child: _buildEventDetails(evento),
@@ -304,7 +305,7 @@ class _HomeScreenState extends State<HomeScreen> {
           begin: Alignment.bottomCenter,
           end: Alignment.topCenter,
           colors: [
-            AppColor.blackColor.withValues(alpha: 0.6),
+            AppColor.blackColor.withValues(alpha: 0.7),
             AppColor.transparentColor,
           ],
         ),
