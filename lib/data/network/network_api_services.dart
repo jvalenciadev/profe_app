@@ -23,7 +23,7 @@ class NetworkApiServices extends BaseApiServices {
 
       final response = await http
           .get(Uri.parse(url), headers: headers)
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 5));
       responseJson = returnResponse(response);
     } on SocketException {
       throw InternetException('');

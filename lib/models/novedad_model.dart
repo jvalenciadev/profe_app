@@ -1,11 +1,13 @@
+import '../utils/utilidad.dart';
+
 class NovedadModel {
   int? blogId;
   String? blogImagen;
   String? blogTitulo;
   String? blogDescripcion;
   String? blogEstado;
-  DateTime? createdAt;
-  DateTime? updatedAt;
+  String? createdAt;
+  String? updatedAt;
 
   NovedadModel({
     this.blogId,
@@ -25,8 +27,8 @@ class NovedadModel {
       blogTitulo: json['blog_titulo'],
       blogDescripcion: json['blog_descripcion'],
       blogEstado: json['blog_estado'],
-      createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']) : null,
-      updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : null,
+      createdAt: formatFechaCorta(json['created_at']),
+      updatedAt: json['updated_at'],
     );
   }
 
@@ -38,8 +40,8 @@ class NovedadModel {
     data['blog_titulo'] = blogTitulo;
     data['blog_descripcion'] = blogDescripcion;
     data['blog_estado'] = blogEstado;
-    data['created_at'] = createdAt?.toIso8601String();
-    data['updated_at'] = updatedAt?.toIso8601String();
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     return data;
   }
 }

@@ -1,21 +1,14 @@
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import '../../data/response/status.dart';
-import '../../res/app_url/app_url.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:programa_profe/view/home/home_screen.dart';
 import '../../res/colors/app_color.dart';
-import '../../res/components/general_exception.dart';
-import '../../res/components/internet_exceptions_widget.dart';
-import '../../utils/utilidad.dart';
 import '../../view_models/controller/home/home_view_models.dart';
 import '../evento/evento_view.dart';
 import '../informacion/informacion_view.dart';
 import '../programa/programa_view.dart';
 import '../sede/sede_view.dart';
-import '../widgets/home_widgets.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -34,6 +27,13 @@ class _HomeViewState extends State<HomeView> {
   }
 
   int _currentIndex = 2;
+  final List<String> _titles = [
+    "Eventos",
+    "Ofertas académicas",
+    "Home",
+    "Sedes",
+    "Información",
+  ];
   final List<Widget> _screens = [
     EventScreen(),
     OffersScreen(),
@@ -45,371 +45,90 @@ class _HomeViewState extends State<HomeView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: CurvedNavigationBar(
-        backgroundColor: Colors.transparent,
-        animationCurve: Curves.easeOut,
-        color: AppColor.primaryColor,
-        buttonBackgroundColor: AppColor.primaryColor,
-        height: 75,
-        animationDuration: const Duration(milliseconds: 300),
-        index: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: const [
-          Icon(CupertinoIcons.calendar, size: 30, color: Colors.white),
-          Icon(FontAwesomeIcons.graduationCap, size: 30, color: Colors.white),
-          Icon(CupertinoIcons.house_fill, size: 30, color: Colors.white),
-          Icon(CupertinoIcons.location_fill, size: 30, color: Colors.white),
-          Icon(CupertinoIcons.info_circle, size: 30, color: Colors.white),
-        ],
+      appBar: AppBar(
+        automaticallyImplyLeading: false, // No muestra el ícono de "atrás"
+        elevation: 0,
+        centerTitle: true,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [AppColor.primaryColor, AppColor.secondaryColor],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Título de la sección
+            Text(
+              _titles[_currentIndex],
+              style: TextStyle(
+                fontFamily: 'Mina',
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: AppColor.whiteColor,
+                height: 1.2,
+              ),
+            ),
+            const SizedBox(height: 5),
+            // Logo de la empresa
+            Image.asset(
+              'assets/logos/logoprofe.png',
+              width: 120,
+              fit: BoxFit.contain,
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.fromLTRB(10, 0, 10, 3),
+        child: GNav(
+          rippleColor:
+              AppColor.secondaryColor, // tab button ripple color when pressed
+          hoverColor: AppColor.primaryColor,
+          backgroundColor: AppColor.whiteColor, // Fondo de la barra
+          color: AppColor.primaryColor, // Color de los íconos
+          activeColor: AppColor.whiteColor, // Color del ícono seleccionado
+          tabActiveBorder: Border.all(color: AppColor.whiteColor, width: 1),
+          tabBorder: Border.all(color: AppColor.whiteColor, width: 1),
+          tabShadow: [BoxShadow(color: AppColor.whiteColor, blurRadius: 8)],
+          curve: Curves.bounceIn,
+          duration: Duration(milliseconds: 400),
+          tabBackgroundColor: AppColor.secondaryColor,
+          gap: 8,
+          tabBorderRadius: 15,
+          haptic: true,
+          onTabChange: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+          selectedIndex: _currentIndex,
+          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+          tabs: [
+            GButton(
+              icon: FontAwesomeIcons.calendarDays,
+              iconSize: 20,
+              text: 'Eventos',
+            ),
+            GButton(
+              icon: FontAwesomeIcons.graduationCap,
+              iconSize: 20,
+              text: 'Ofertas',
+            ),
+            GButton(icon: FontAwesomeIcons.houseChimney, iconSize: 20, text: 'Home'),
+            GButton(
+              icon: FontAwesomeIcons.building,
+              iconSize: 20,
+              text: 'Sedes',
+            ),
+          ],
+        ),
       ),
       body: _screens[_currentIndex],
     );
   }
 }
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  final homeController = Get.find<HomeController>();
-
-  int _currentIndex = 0;
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 40),
-        child: Obx(() {
-          switch (homeController.rxRequestStatus.value) {
-            case Status.LOADING:
-              return const Center(child: CircularProgressIndicator());
-            case Status.ERROR:
-              return _buildErrorWidget();
-            case Status.COMPLETED:
-              return _buildCompletedState();
-          }
-        }),
-      ),
-    );
-  }
-
-  Widget _buildErrorWidget() {
-    if (homeController.error.value == 'No internet') {
-      return InterNetExceptionWidget(onPress: homeController.refreshApi);
-    } else {
-      return GeneralExceptionWidget(onPress: homeController.refreshApi);
-    }
-  }
-
-  Widget _buildCompletedState() {
-    if (homeController.eventoList.value.respuesta == null ||
-        homeController.eventoList.value.respuesta!.isEmpty) {
-      return Center(child: Text("No hay eventos disponibles"));
-    }
-
-    List eventos = homeController.eventoList.value.respuesta!.take(10).toList();
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildProfileHeader(),
-        buildEventSection(
-          "Eventos",
-          "Únete a nuestros eventos y mejora tu enseñanza. ¡Inscríbete ahora!",
-          FontAwesomeIcons.chalkboardUser,
-        ),
-        _buildEventCarousel(eventos),
-        const SizedBox(height: 10),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-          // decoration: BoxDecoration(
-          // color: Colors.white.withOpacity(0.9),
-          //   borderRadius: BorderRadius.circular(15),
-          //   boxShadow: [
-          //     BoxShadow(
-          //       color: Colors.black.withOpacity(0.1),
-          //       blurRadius: 10,
-          //       spreadRadius: 2,
-          //       offset: Offset(0, 5),
-          //     ),
-          //   ],
-          // ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Redes Sociales",
-                      style: TextStyle(
-                        fontFamily: 'Mina',
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: AppColor.primaryColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-        _buildSocialIcons(),
-        buildEventSection(
-          "Ofertas Académicas",
-          "Participa en los Ciclos Formativos, Diplomados y Especialidades.",
-          FontAwesomeIcons.graduationCap,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildProfileHeader() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    ClipRRect(
-                      child: Image.network(
-                        "${AppUrl.baseImage}/storage/profe/${homeController.profeId.value.respuesta!.profeImagen}",
-                        width: 150,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 10,),
-                _buildMissionText(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSocialIcons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _buildSocialIcon(FontAwesomeIcons.facebook, AppColor.facebookColor),
-        _buildSocialIcon(FontAwesomeIcons.tiktok, AppColor.tiktokColor),
-        _buildSocialIcon(FontAwesomeIcons.youtube, AppColor.youtubeColor),
-        _buildSocialIcon(FontAwesomeIcons.globe, AppColor.primaryColor),
-        _buildSocialIcon(FontAwesomeIcons.whatsapp, AppColor.whatsappColor),
-      ],
-    );
-  }
-
-  Widget _buildSocialIcon(IconData icon, Color color) {
-    return IconButton(
-      iconSize: 30,
-      icon: FaIcon(icon),
-      color: color,
-      onPressed: () {
-        // Acción para el ícono de red social
-      },
-    );
-  }
-
-  Widget _buildMissionText() {
-    return Text(
-      convertirHtmlATexto(
-        homeController.profeId.value.respuesta!.profeMision.toString(),
-      ),
-      style: TextStyle(
-        fontFamily: 'Mina',
-        fontSize: 14,
-        fontWeight: FontWeight.w500,
-        color: AppColor.greyColor,
-        height: 1.2,
-      ),
-      maxLines: 3,
-      overflow: TextOverflow.ellipsis,
-      textAlign: TextAlign.justify,
-    );
-  }
-
-  Widget _buildEventCarousel(List eventos) {
-    return Column(
-      children: [
-        CarouselSlider(
-          items: eventos.map((evento) => _buildEventCard(evento)).toList(),
-          options: CarouselOptions(
-            height: 220,
-            autoPlay: true,
-            enlargeCenterPage: true,
-            viewportFraction: 0.85,
-            aspectRatio: 16 / 9,
-            onPageChanged: (index, reason) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-            autoPlayInterval: const Duration(seconds: 7),
-          ),
-        ),
-        const SizedBox(height: 5),
-        _buildCarouselIndicator(eventos),
-      ],
-    );
-  }
-
-  Widget _buildEventCard(evento) {
-    return Stack(
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Image.network(
-            "${AppUrl.baseImage}/storage/evento_afiches/${evento.eveAfiche}",
-            width: double.infinity,
-            height: 220,
-            fit: BoxFit.cover,
-          ),
-        ),
-        _buildEventGradient(),
-        Positioned(
-          bottom: 10,
-          left: 20,
-          right: 20,
-          child: _buildEventDetails(evento),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildEventGradient() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        gradient: LinearGradient(
-          begin: Alignment.bottomCenter,
-          end: Alignment.topCenter,
-          colors: [
-            AppColor.blackColor.withValues(alpha: 0.7),
-            AppColor.transparentColor,
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildEventDetails(evento) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          evento.etNombre.toString(),
-          style: TextStyle(
-            fontFamily: 'Mina',
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: AppColor.whiteColor,
-          ),
-        ),
-        const SizedBox(height: 5),
-        Text(
-          evento.eveFecha.toString(),
-          style: TextStyle(
-            fontFamily: 'Mina',
-            fontSize: 16,
-            color: AppColor.grey2Color,
-          ),
-        ),
-        const SizedBox(height: 10),
-        _buildEventActions(evento),
-      ],
-    );
-  }
-
-  Widget _buildEventActions(evento) {
-    return Row(
-      children: [
-        if (evento.eveInscripcion == 1) _buildInscriptionButton(),
-        const SizedBox(width: 10),
-        if (evento.eveAsistencia == 1) _buildAttendanceButton(),
-      ],
-    );
-  }
-
-  Widget _buildInscriptionButton() {
-    return ElevatedButton(
-      onPressed: () {},
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppColor.secondaryColor,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-      child: Text(
-        "Inscribirse",
-        style: TextStyle(
-          fontFamily: 'Mina',
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: AppColor.whiteColor,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildAttendanceButton() {
-    return ElevatedButton(
-      onPressed: () {},
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppColor.secondaryColor,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      ),
-      child: Text(
-        "Asistencia",
-        style: TextStyle(
-          fontFamily: 'Mina',
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: AppColor.whiteColor,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCarouselIndicator(List eventos) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        eventos.length,
-        (index) => AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          margin: const EdgeInsets.symmetric(horizontal: 5),
-          width: _currentIndex == index ? 14 : 8,
-          height: 8,
-          decoration: BoxDecoration(
-            color:
-                _currentIndex == index
-                    ? AppColor.primaryColor
-                    : AppColor.grey2Color,
-            borderRadius: BorderRadius.circular(4),
-          ),
-        ),
-      ),
-    );
-  }
-}
