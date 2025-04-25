@@ -31,7 +31,7 @@ Widget buildEventSection(String? title, String? description, IconData? icon) {
               Text(
                 title!,
                 style: TextStyle(
-                  fontFamily: AppFonts.Mina,
+                  fontFamily: AppFonts.mina,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: AppColor.primaryColor,
@@ -41,7 +41,7 @@ Widget buildEventSection(String? title, String? description, IconData? icon) {
                   Text(
                     description,
                     style: TextStyle(
-                      fontFamily: AppFonts.Mina,
+                      fontFamily: AppFonts.mina,
                       fontSize: 14,
                       color: AppColor.greyColor,
                     ),

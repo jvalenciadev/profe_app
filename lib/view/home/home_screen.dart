@@ -9,9 +9,11 @@ import '../../res/app_url/app_url.dart';
 import '../../res/colors/app_color.dart';
 import '../../res/components/general_exception.dart';
 import '../../res/components/internet_exceptions_widget.dart';
+import '../../utils/utilidad.dart';
 import '../../view_models/controller/home/home_view_models.dart';
 import '../widgets/home_widgets.dart';
 import '../widgets/novedades_widget.dart';
+import 'package:just_audio/just_audio.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,9 +22,68 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
+class RadioPlayerService {
+  static final RadioPlayerService _instance = RadioPlayerService._internal();
+
+  factory RadioPlayerService() => _instance;
+
+  late final AudioPlayer player;
+
+  RadioPlayerService._internal() {
+    player = AudioPlayer();
+  }
+}
+
+final radioService = RadioPlayerService();
+
 class _HomeScreenState extends State<HomeScreen> {
   final homeController = Get.find<HomeController>();
+  late AudioPlayer _player;
+  bool _isPlaying = false;
+  bool _hasError = false;
+  bool _isLoading = true;
 
+  final String streamUrl = 'https://node-17.zeno.fm/7qzeshy6xf8uv.aac';
+
+  @override
+  void initState() {
+    super.initState();
+    _player = radioService.player;
+
+    if (!_player.playing) {
+      _initializePlayer();
+    } else {
+      setState(() {
+        _isLoading = false;
+        _isPlaying = true;
+      });
+    }
+  }
+
+  Future<void> _initializePlayer() async {
+    try {
+      await _player.setUrl(streamUrl);
+      setState(() {
+        _isLoading = false;
+        _hasError = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _hasError = true;
+      });
+    }
+  }
+
+  void _togglePlayPause() {
+    if (_player.playing) {
+      _player.pause();
+      setState(() => _isPlaying = false);
+    } else {
+      _player.play();
+      setState(() => _isPlaying = true);
+    }
+  }
   int _currentIndex = 0;
 
   @override
@@ -58,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
       return Center(
         child: Text(
           "No hay eventos disponibles",
-          style: TextStyle(fontFamily: AppFonts.Mina),
+          style: TextStyle(fontFamily: AppFonts.mina),
         ),
       );
     }
@@ -67,11 +128,10 @@ class _HomeScreenState extends State<HomeScreen> {
       return Center(
         child: Text(
           "No hay novedades disponibles",
-          style: TextStyle(fontFamily: AppFonts.Mina),
+          style: TextStyle(fontFamily: AppFonts.mina),
         ),
       );
     }
-    
 
     List eventos = homeController.eventoList.value.respuesta!.take(10).toList();
     List novedades = homeController.novedadList.value.respuesta!.toList();
@@ -108,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
         //             Text(
         //               "Redes Sociales",
         //               style: TextStyle(
-        //                 fontFamily: AppFonts.Mina,
+        //                 fontFamily: AppFonts.mina,
         //                 fontSize: 22,
         //                 fontWeight: FontWeight.bold,
         //                 color: AppColor.primaryColor,
@@ -130,6 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
         //     _buildSocialIcon(FontAwesomeIcons.whatsapp, AppColor.whatsappColor),
         //   ],
         // ),
+        SizedBox(height: 5),
         buildEventSection(
           "Menu",
           "Explora nuestras opciones disponibles",
@@ -167,58 +228,122 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
+        SizedBox(height: 5),
+        Card(
+          margin: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+          elevation: 6,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                // Logo de la radio
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColor.radioStream, width: 2),
+                  ),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'assets/logos/logo_radio.png',
+                      width: 60,
+                      height: 60,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(width: 16),
+
+                // Texto y estado
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Sintonía Educativo',
+                        style: TextStyle(
+                          fontFamily: AppFonts.montserrat,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: AppColor.radioStream,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Icon(
+                            _hasError
+                                ? Icons.error_outline
+                                : _isPlaying
+                                ? Icons.wifi_tethering
+                                : Icons.radio,
+                            size: 14,
+                            color:
+                                _hasError
+                                    ? AppColor.redColor
+                                    : AppColor.greyColor,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            _hasError
+                                ? 'Error de conexión'
+                                : _isPlaying
+                                ? 'Reproduciendo'
+                                : 'Disponible',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color:
+                                  _hasError
+                                      ? AppColor.redColor
+                                      : AppColor.greyColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Botón de reproducción
+                _isLoading
+                    ? const CircularProgressIndicator()
+                    : IconButton(
+                      iconSize: 40,
+                      splashRadius: 28,
+                      icon: Icon(
+                        _isPlaying ? Icons.pause_circle : Icons.play_circle,
+                        color: AppColor.radioStream,
+                      ),
+                      onPressed: _togglePlayPause,
+                    ),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(height: 5),
         buildEventSection(
           "Novedades",
           "Mantente informado con las últimas novedades y actualizaciones.",
           FontAwesomeIcons.newspaper,
         ),
         Column(
-           children: novedades.map<Widget>((novedad) {
-            return NewsCard(
-              imageUrl: "${AppUrl.baseImage}/storage/blog/${novedad.blogImagen}",
-              title: novedad.blogTitulo,
-              description: novedad.blogDescripcion,
-              date: novedad.createdAt,
-            );
-          }).toList(),
+          children:
+              novedades.map<Widget>((novedad) {
+                return NewsCard(
+                  imageUrl:
+                      "${AppUrl.baseImage}/storage/blog/${novedad.blogImagen}",
+                  title: novedad.blogTitulo,
+                  description: mostrarHtml(novedad.blogDescripcion),
+                  date: novedad.createdAt,
+                );
+              }).toList(),
         ),
       ],
     );
   }
-
-  // Widget _buildProfileHeader() {
-  //   return Container(
-  //     padding: const EdgeInsets.symmetric(horizontal: 20),
-  //     child: Row(
-  //       crossAxisAlignment: CrossAxisAlignment.start,
-  //       children: [
-  //         Expanded(
-  //           child: Column(
-  //             crossAxisAlignment: CrossAxisAlignment.start,
-  //             children: [
-  //               Row(
-  //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //                 crossAxisAlignment: CrossAxisAlignment.center,
-  //                 children: [
-  //                   ClipRRect(
-  //                     child: Image.network(
-  //                       "${AppUrl.baseImage}/storage/profe/${homeController.profeId.value.respuesta!.profeImagen}",
-  //                       width: 150,
-  //                       fit: BoxFit.cover,
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ),
-  //               SizedBox(height: 10),
-  //               _buildMissionText(),
-  //             ],
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _buildIcons(
     IconData icon,
     Color color,
@@ -255,7 +380,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 title,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontFamily: AppFonts.Mina,
+                  fontFamily: AppFonts.mina,
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
                   color: AppColor.whiteColor, // Color del texto
@@ -268,36 +393,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
-
-  // Widget _buildSocialIcon(IconData icon, Color color) {
-  //   return IconButton(
-  //     iconSize: 30,
-  //     icon: FaIcon(icon),
-  //     color: color,
-  //     onPressed: () {
-  //       // Acción para el ícono de red social
-  //     },
-  //   );
-  // }
-
-  // Widget _buildMissionText() {
-  //   return Text(
-  //     convertirHtmlATexto(
-  //       homeController.profeId.value.respuesta!.profeMision.toString(),
-  //     ),
-  //     style: TextStyle(
-  //       fontFamily: AppFonts.Mina,
-  //       fontSize: 14,
-  //       fontWeight: FontWeight.w500,
-  //       color: AppColor.greyColor,
-  //       height: 1.2,
-  //     ),
-  //     maxLines: 3,
-  //     overflow: TextOverflow.ellipsis,
-  //     textAlign: TextAlign.justify,
-  //   );
-  // }
-
   Widget _buildEventCarousel(List eventos) {
     return Column(
       children: [
@@ -307,7 +402,7 @@ class _HomeScreenState extends State<HomeScreen> {
             // height: 200,
             autoPlay: true,
             enlargeCenterPage: true,
-            viewportFraction: 0.85,
+            viewportFraction: 0.95,
             aspectRatio: 16 / 9,
             onPageChanged: (index, reason) {
               setState(() {
@@ -336,11 +431,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         _buildEventGradient(),
-        Positioned(
-          bottom: 0,
-          left: 20,
-          child: _buildEventDetails(evento),
-        ),
+        Positioned(bottom: 0, left: 20, child: _buildEventDetails(evento)),
       ],
     );
   }
@@ -368,7 +459,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Text(
           evento.etNombre.toString(),
           style: TextStyle(
-            fontFamily: AppFonts.Mina,
+            fontFamily: AppFonts.mina,
             fontSize: 16,
             fontWeight: FontWeight.bold,
             color: AppColor.whiteColor,
@@ -378,7 +469,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Text(
           evento.eveFecha.toString(),
           style: TextStyle(
-            fontFamily: AppFonts.Mina,
+            fontFamily: AppFonts.mina,
             fontSize: 16,
             color: AppColor.grey2Color,
           ),
@@ -410,7 +501,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Text(
         "Inscribirse",
         style: TextStyle(
-          fontFamily: AppFonts.Mina,
+          fontFamily: AppFonts.mina,
           fontSize: 16,
           fontWeight: FontWeight.bold,
           color: AppColor.whiteColor,
@@ -430,7 +521,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Text(
         "Asistencia",
         style: TextStyle(
-          fontFamily: AppFonts.Mina,
+          fontFamily: AppFonts.mina,
           fontSize: 16,
           fontWeight: FontWeight.bold,
           color: AppColor.whiteColor,

@@ -110,7 +110,7 @@ class _SplashScreenState extends State<SplashScreen> {
             label,
             style: const TextStyle(
               fontSize: 16,
-              fontFamily: AppFonts.Mina,
+              fontFamily: AppFonts.mina,
               fontWeight: FontWeight.w500,
               color: AppColor.primaryTextColor,
             ),
@@ -120,7 +120,7 @@ class _SplashScreenState extends State<SplashScreen> {
             value ?? "Cargando...",
             style: const TextStyle(
               fontSize: 16,
-              fontFamily: AppFonts.Mina,
+              fontFamily: AppFonts.mina,
               color: AppColor.primaryTextColor,
             ),
           ),
@@ -136,7 +136,7 @@ class _SplashScreenState extends State<SplashScreen> {
         SizedBox(height: 10),
         Text(
           "Cargando...",
-          style: TextStyle(color: AppColor.greyColor,fontFamily: AppFonts.Mina, fontSize: 14),
+          style: TextStyle(color: AppColor.greyColor,fontFamily: AppFonts.mina, fontSize: 14),
         ),
       ],
     );
@@ -153,7 +153,7 @@ class _SplashScreenState extends State<SplashScreen> {
       onPressed: _fetchAppInfo,
       icon: const Icon(Icons.refresh),
       label: const Text("Reintentar",style: TextStyle(
-        fontFamily: AppFonts.Mina,
+        fontFamily: AppFonts.mina,
       ),),
     );
   }

@@ -42,7 +42,7 @@ class UpdateAppView extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 22,
-                  fontFamily: AppFonts.Mina,
+                  fontFamily: AppFonts.mina,
                   fontWeight: FontWeight.bold,
                   color: AppColor.secondaryTextColor,
                 ),
@@ -53,7 +53,7 @@ class UpdateAppView extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
-                  fontFamily: AppFonts.Mina,
+                  fontFamily: AppFonts.mina,
                   color: AppColor.secondaryTextColor,
                 ),
               ),
@@ -78,7 +78,7 @@ class UpdateAppView extends StatelessWidget {
                 label: const Text(
                   'Actualizar ahora',
                   style: TextStyle(fontSize: 16,
-                  fontFamily: AppFonts.Mina,
+                  fontFamily: AppFonts.mina,
                   ),
                 ),
               ),
@@ -104,7 +104,7 @@ class UpdateAppView extends StatelessWidget {
                   backgroundColor: AppColor.whiteColor,
                   textStyle: const TextStyle(
                     fontSize: 18,
-                    fontFamily: AppFonts.Mina,
+                    fontFamily: AppFonts.mina,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

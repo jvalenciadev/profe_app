@@ -5,7 +5,7 @@ import 'package:programa_profe/res/fonts/app_fonts.dart';
 class NewsCard extends StatelessWidget {
   final String imageUrl;
   final String title;
-  final String description;
+  final Widget description;
   final String date;
 
   NewsCard({
@@ -63,7 +63,7 @@ class NewsCard extends StatelessWidget {
                     child: Text(
                       title,
                       style: TextStyle(
-                        fontFamily: AppFonts.Mina,
+                        fontFamily: AppFonts.mina,
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: AppColor.blackColor,
@@ -83,7 +83,7 @@ class NewsCard extends StatelessWidget {
                     child: Text(
                       date,
                       style: TextStyle(
-                        fontFamily: AppFonts.Mina,
+                        fontFamily: AppFonts.mina,
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
                         color: AppColor.blackColor,
@@ -97,14 +97,7 @@ class NewsCard extends StatelessWidget {
             // Descripción
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Text(
-                description,
-                style: TextStyle(
-                  fontFamily: AppFonts.Mina,
-                  fontSize: 14,
-                  color: AppColor.greyColor,
-                ),
-              ),
+              child: description
             ),
 
             // Agregar espacio extra en la parte inferior

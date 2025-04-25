@@ -14,8 +14,9 @@ class AppColor {
   static const Color accentColor =  Color(0xff01B1C9);
   static const Color greyColor =  Color.fromARGB(255, 95, 95, 95);
   static const Color grey2Color =  Color.fromARGB(255, 219, 219, 219);
+  static const Color grey3Color =  Color.fromARGB(255, 242, 247, 248);
 
-  static const Color primaryButtonColor =  Color(0xff01B1C9);
+  static const Color primaryButtonColor =  Color.fromARGB(255, 1, 177, 201);
   static const Color secondaryButtonColor =  Color(0xffFC3F5B);
 
   static const Color redColor =  Color(0xffFC3F5B);
@@ -26,5 +27,8 @@ class AppColor {
   static const Color tiktokColor = Color.fromARGB(255, 0, 0, 0);   // Verde de TikTok
   static const Color whatsappColor = Color(0xFF25D366);  // Verde de WhatsApp
   static const Color youtubeColor = Color(0xFFFF0000); 
+
+  static const Color radioStream = Color.fromARGB(255, 41, 35, 92); 
+
 
 }
