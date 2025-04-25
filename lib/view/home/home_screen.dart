@@ -9,6 +9,7 @@ import '../../res/app_url/app_url.dart';
 import '../../res/colors/app_color.dart';
 import '../../res/components/general_exception.dart';
 import '../../res/components/internet_exceptions_widget.dart';
+import '../../utils/preloader.dart';
 import '../../utils/utilidad.dart';
 import '../../view_models/controller/home/home_view_models.dart';
 import '../widgets/home_widgets.dart';
@@ -94,7 +95,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Obx(() {
           switch (homeController.rxRequestStatus.value) {
             case Status.LOADING:
-              return const Center(child: CircularProgressIndicator());
+              return LoadingContainer();
             case Status.ERROR:
               return _buildErrorWidget();
             case Status.COMPLETED:
