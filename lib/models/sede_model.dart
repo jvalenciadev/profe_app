@@ -10,8 +10,8 @@ class SedeModel {
   String? sedeImagenResponsable2;
   String? sedeNombreResponsable2;
   String? sedeCargoResponsable2;
-  String? sedeContacto1;
-  String? sedeContacto2;
+  int? sedeContacto1;
+  int? sedeContacto2;
   String? sedeFacebook;
   String? sedeTiktok;
   String? sedeGrupoWhatsapp;
@@ -22,8 +22,8 @@ class SedeModel {
   String? sedeLongitud;
   String? sedeEstado;
   int? depId;
-  DateTime? createdAt;
-  DateTime? updatedAt;
+  String? createdAt;
+  String? updatedAt;
   String? depNombre;
 
   // Constructor
@@ -69,8 +69,8 @@ class SedeModel {
     sedeImagenResponsable2 = json['sede_imagen_responsable2'] as String?;
     sedeNombreResponsable2 = json['sede_nombre_responsable2'] as String?;
     sedeCargoResponsable2 = json['sede_cargo_responsable2'] as String?;
-    sedeContacto1 = json['sede_contacto_1'] as String?;
-    sedeContacto2 = json['sede_contacto_2'] as String?;
+    sedeContacto1 = json['sede_contacto_1'] as int?;
+    sedeContacto2 = json['sede_contacto_2'] as int?;
     sedeFacebook = json['sede_facebook'] as String?;
     sedeTiktok = json['sede_tiktok'] as String?;
     sedeGrupoWhatsapp = json['sede_grupo_whatsapp'] as String?;
@@ -81,8 +81,8 @@ class SedeModel {
     sedeLongitud = json['sede_longitud'] as String?;
     sedeEstado = json['sede_estado'] as String?;
     depId = json['dep_id'] as int?;
-    createdAt = DateTime.tryParse(json['created_at'] as String? ?? '') ?? DateTime.now();
-    updatedAt = DateTime.tryParse(json['updated_at'] as String? ?? '') ?? DateTime.now();
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
     depNombre = json['dep_nombre'] as String?;
   }
 
@@ -112,8 +112,8 @@ class SedeModel {
     data['sede_longitud'] = sedeLongitud;
     data['sede_estado'] = sedeEstado;
     data['dep_id'] = depId;
-    data['created_at'] = createdAt?.toIso8601String();
-    data['updated_at'] = updatedAt?.toIso8601String();
+    data['created_at'] = createdAt;
+    data['updated_at'] = updatedAt;
     data['dep_nombre'] = depNombre;
     return data;
   }
