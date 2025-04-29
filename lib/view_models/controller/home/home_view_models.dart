@@ -10,6 +10,7 @@ import 'package:programa_profe/repository/novedad_repository/novedad_repository.
 import '../../../data/response/status.dart';
 import '../../../models/home/sede_list_mode.dart';
 import '../../../repository/home_repository/hone_repository.dart';
+import '../../../repository/programa_repository/programa_repository.dart';
 import '../../../repository/sede_repository/sede_repository.dart';
 
 class HomeController extends GetxController {
@@ -18,6 +19,7 @@ class HomeController extends GetxController {
   final _evento = EventoRepository();
   final _sede = SedeRepository();
   final _novedad = NovedadRepository();
+  final _programa = ProgramaRepository();
 
 
   final rxRequestStatus = Status.LOADING.obs;
@@ -64,6 +66,15 @@ class HomeController extends GetxController {
        print("Novedad recibidos: ${value.respuesta}");
       setRxRequestStatus(Status.COMPLETED);
       setNovedadList(value);
+    }).onError((error, stackTrace){
+      print("Error al obtener Novedades: $error");
+      setError(error.toString());
+      setRxRequestStatus(Status.ERROR);
+    });
+    _programa.programaListApi().then((value){
+       print("Novedad recibidos: ${value.respuesta}");
+      setRxRequestStatus(Status.COMPLETED);
+      setProgramaList(value);
     }).onError((error, stackTrace){
       print("Error al obtener Novedades: $error");
       setError(error.toString());

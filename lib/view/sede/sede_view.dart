@@ -10,6 +10,7 @@ import '../../res/components/internet_exceptions_widget.dart';
 import '../../res/fonts/app_fonts.dart';
 import '../../utils/preloader.dart';
 import '../../view_models/controller/home/home_view_models.dart';
+import 'detalle_view.dart';
 
 class SedesScreen extends StatefulWidget {
   const SedesScreen({super.key});
@@ -31,7 +32,6 @@ class _SedesScreenState extends State<SedesScreen> {
   @override
   void initState() {
     super.initState();
-    homeController.homeListApi();
     _loadCustomMarker();
     _getLocation();
   }
@@ -50,7 +50,9 @@ class _SedesScreenState extends State<SedesScreen> {
     PermissionStatus _permissionGranted;
 
     _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) _serviceEnabled = await location.requestService();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+    }
 
     _permissionGranted = await location.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
@@ -59,6 +61,9 @@ class _SedesScreenState extends State<SedesScreen> {
 
     if (_permissionGranted == PermissionStatus.granted) {
       LocationData _locationData = await location.getLocation();
+
+      if (!mounted) return; // 👈 evita el error si el widget fue destruido
+
       setState(() {
         _initialPosition = LatLng(
           _locationData.latitude!,
@@ -67,6 +72,7 @@ class _SedesScreenState extends State<SedesScreen> {
       });
     }
   }
+
 
   void _moverMapa(LatLng destino) {
     mapController?.animateCamera(
@@ -91,6 +97,7 @@ class _SedesScreenState extends State<SedesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body:
+          // ignore: unnecessary_null_comparison
           _initialPosition == null
               ? const Center(child: CircularProgressIndicator())
               : Obx(() {
@@ -101,7 +108,7 @@ class _SedesScreenState extends State<SedesScreen> {
                     return _buildErrorWidget();
                   case Status.COMPLETED:
                     print(
-                      "------------------------------${homeController.sedeList.value.respuesta}",
+                      "------------------------------${homeController.programaList.value.respuesta}",
                     );
                     return _buildCompletedState(_initialPosition);
                 }
@@ -178,8 +185,8 @@ class _SedesScreenState extends State<SedesScreen> {
                 final sede = sedesDatos[index];
                 return Card(
                   margin: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 12,
+                    horizontal: 5,
+                    vertical: 6,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
@@ -194,7 +201,7 @@ class _SedesScreenState extends State<SedesScreen> {
                         ),
                         child: Image.network(
                           "${AppUrl.baseImage}/storage/sede_imagen/${sede.sedeImagen}",
-                          width: 150,
+                          width: 120,
                           height: double.infinity,
                           fit: BoxFit.cover,
                         ),
@@ -203,32 +210,103 @@ class _SedesScreenState extends State<SedesScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                sede.sedeNombre,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      "${sede.depNombre} - ${sede.sedeNombre}",
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.info_outline,
+                                      size: 22,
+                                      color: Colors.blueGrey,
+                                    ),
+                                    tooltip: "Ver detalles",
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (_) => SedeDetallesScreen(
+                                                sede: sede,
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.phone,
+                                    size: 14,
+                                    color: Colors.grey,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Expanded(
+                                    child: Text(
+                                      sede.sedeContacto1.toString(),
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  const Icon(
+                                    Icons.access_time,
+                                    size: 14,
+                                    color: Colors.grey,
+                                  ),
+                                  const SizedBox(width: 4),
+                                  Expanded(
+                                    child: Text(
+                                      sede.sedeHorario,
+                                      style: const TextStyle(fontSize: 12),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color:
+                                      sede.sedeEstado == "activo"
+                                          ? Colors.green[50]
+                                          : Colors.red[50],
+                                  borderRadius: BorderRadius.circular(6),
+                                ),
+                                child: Text(
+                                  sede.sedeEstado == "activo"
+                                      ? "🟢 Abierto"
+                                      : "🔴 Cerrado",
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color:
+                                        sede.sedeEstado == "activo"
+                                            ? Colors.green
+                                            : Colors.red,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
-                              const SizedBox(height: 5),
-                              Text(
-                                sede.depNombre,
-                                style: const TextStyle(fontSize: 14),
-                              ),
-                              const SizedBox(height: 5),
-                              // Text(
-                              //   sede.sedeEstado ? "🟢 Abierto" : "🔴 Cerrado",
-                              //   style: TextStyle(
-                              //     fontSize: 14,
-                              //     color:
-                              //         sede.sedeEstado
-                              //             ? Colors.green
-                              //             : Colors.red,
-                              //   ),
-                              // ),
                             ],
                           ),
                         ),
@@ -243,4 +321,5 @@ class _SedesScreenState extends State<SedesScreen> {
       ],
     );
   }
+
 }

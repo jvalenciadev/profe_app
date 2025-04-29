@@ -18,14 +18,20 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  final homeController = Get.put(HomeController());
+  final homeController = Get.put(HomeController(), permanent: true);
 
   @override
   void initState() {
     super.initState();
-    homeController.homeListApi();
+    _loadHomeData();
   }
-
+   Future<void> _loadHomeData() async {
+    try {
+      homeController.homeListApi();
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to load home data');
+    }
+  }
   int _currentIndex = 2;
   final List<String> _titles = [
     "Eventos",
@@ -41,14 +47,18 @@ class _HomeViewState extends State<HomeView> {
     SedesScreen(),
     InformationScreen(),
   ];
-
+ 
+  
   @override
   Widget build(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
+    final isSmallScreen = screenHeight < 850;
     return Scaffold(
-      appBar: AppBar(
+      appBar: isSmallScreen
+        ? null // ❌ Oculta AppBar completamente si la pantalla es muy pequeña
+        :AppBar(
         automaticallyImplyLeading: false, // No muestra el ícono de "atrás"
         elevation: 0,
-        centerTitle: true,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -82,52 +92,54 @@ class _HomeViewState extends State<HomeView> {
           ],
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.fromLTRB(10, 0, 10, 3),
-        child: GNav(
-          rippleColor:
-              AppColor.secondaryColor, // tab button ripple color when pressed
-          hoverColor: AppColor.primaryColor,
-          backgroundColor: AppColor.whiteColor, // Fondo de la barra
-          color: AppColor.primaryColor, // Color de los íconos
-          activeColor: AppColor.whiteColor, // Color del ícono seleccionado
-          tabActiveBorder: Border.all(color: AppColor.whiteColor, width: 1),
-          tabBorder: Border.all(color: AppColor.whiteColor, width: 1),
-          tabShadow: [BoxShadow(color: AppColor.whiteColor, blurRadius: 8)],
-          curve: Curves.bounceIn,
-          duration: Duration(milliseconds: 400),
-          tabBackgroundColor: AppColor.secondaryColor,
-          gap: 8,
-          tabBorderRadius: 15,
-          haptic: true,
-          onTabChange: (index) {
-            setState(() {
-              _currentIndex = index;
-            });
-          },
-          selectedIndex: _currentIndex,
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-          tabs: [
-            GButton(
-              icon: FontAwesomeIcons.calendarDays,
-              iconSize: 20,
-              text: 'Eventos',
-            ),
-            GButton(
-              icon: FontAwesomeIcons.graduationCap,
-              iconSize: 20,
-              text: 'Ofertas',
-            ),
-            GButton(icon: FontAwesomeIcons.houseChimney, iconSize: 20, text: 'Home'),
-            GButton(
-              icon: FontAwesomeIcons.building,
-              iconSize: 20,
-              text: 'Sedes',
-            ),
-          ],
-        ),
-      ),
+      bottomNavigationBar: _buildBottomNavBar(),
       body: _screens[_currentIndex],
+    );
+  }
+  Widget _buildBottomNavBar() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(10, 0, 10, 3),
+      child: GNav(
+        rippleColor: AppColor.secondaryColor,
+        hoverColor: AppColor.primaryColor,
+        backgroundColor: AppColor.whiteColor,
+        color: AppColor.primaryColor,
+        activeColor: AppColor.whiteColor,
+        tabActiveBorder: Border.all(color: AppColor.whiteColor, width: 1),
+        tabBorder: Border.all(color: AppColor.whiteColor, width: 1),
+        tabShadow: const [BoxShadow(color: AppColor.whiteColor, blurRadius: 8)],
+        curve: Curves.bounceIn,
+        duration: const Duration(milliseconds: 400),
+        tabBackgroundColor: AppColor.secondaryColor,
+        gap: 8,
+        tabBorderRadius: 15,
+        haptic: true,
+        onTabChange: (index) => setState(() => _currentIndex = index),
+        selectedIndex: _currentIndex,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        tabs: const [
+          GButton(
+            icon: FontAwesomeIcons.calendarDays,
+            iconSize: 20,
+            text: 'Eventos',
+          ),
+          GButton(
+            icon: FontAwesomeIcons.graduationCap,
+            iconSize: 20,
+            text: 'Ofertas',
+          ),
+          GButton(
+            icon: FontAwesomeIcons.houseChimney, 
+            iconSize: 20, 
+            text: 'Home'
+          ),
+          GButton(
+            icon: FontAwesomeIcons.building,
+            iconSize: 20,
+            text: 'Sedes',
+          ),
+        ],
+      ),
     );
   }
 }
