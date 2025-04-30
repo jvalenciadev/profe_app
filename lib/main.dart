@@ -4,7 +4,6 @@ import 'res/getx_loclization/languages.dart';
 import 'res/routes/routes.dart';
 import 'res/themes/app_theme.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
 import 'view_models/controller/app_view_models.dart';
 
 

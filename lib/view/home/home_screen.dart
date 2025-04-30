@@ -64,11 +64,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _initializePlayer() async {
     try {
       await _player.setUrl(streamUrl);
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
         _hasError = false;
       });
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
         _hasError = true;
@@ -418,6 +420,27 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
+  Widget _buildCarouselIndicator(List eventos) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(
+        eventos.length,
+        (index) => AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          margin: const EdgeInsets.symmetric(horizontal: 5),
+          width: _currentIndex == index ? 14 : 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color:
+                _currentIndex == index
+                    ? AppColor.primaryColor
+                    : AppColor.grey2Color,
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ),
+      ),
+    );
+  }
 
   Widget _buildEventCard(evento) {
     return Stack(
@@ -531,25 +554,5 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildCarouselIndicator(List eventos) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        eventos.length,
-        (index) => AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          margin: const EdgeInsets.symmetric(horizontal: 5),
-          width: _currentIndex == index ? 14 : 8,
-          height: 8,
-          decoration: BoxDecoration(
-            color:
-                _currentIndex == index
-                    ? AppColor.primaryColor
-                    : AppColor.grey2Color,
-            borderRadius: BorderRadius.circular(4),
-          ),
-        ),
-      ),
-    );
-  }
+  
 }
