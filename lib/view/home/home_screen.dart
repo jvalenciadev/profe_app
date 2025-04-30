@@ -7,12 +7,11 @@ import 'package:programa_profe/res/fonts/app_fonts.dart';
 import '../../data/response/status.dart';
 import '../../res/app_url/app_url.dart';
 import '../../res/colors/app_color.dart';
-import '../../res/components/general_exception.dart';
-import '../../res/components/internet_exceptions_widget.dart';
-import '../../utils/preloader.dart';
 import '../../utils/utilidad.dart';
 import '../../view_models/controller/home/home_view_models.dart';
 import '../widgets/home_widgets.dart';
+import '../widgets/loading_carusel_widget.dart';
+import '../widgets/novedad_loading_widget.dart';
 import '../widgets/novedades_widget.dart';
 import 'package:just_audio/just_audio.dart';
 
@@ -87,6 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() => _isPlaying = true);
     }
   }
+
   int _currentIndex = 0;
 
   @override
@@ -94,50 +94,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-        child: Obx(() {
-          switch (homeController.rxRequestStatus.value) {
-            case Status.LOADING:
-              return LoadingContainer();
-            case Status.ERROR:
-              return _buildErrorWidget();
-            case Status.COMPLETED:
-              return _buildCompletedState();
-          }
-        }),
+        child: _buildCompletedState(),
       ),
     );
   }
 
-  Widget _buildErrorWidget() {
-    if (homeController.error.value == 'No internet') {
-      return InterNetExceptionWidget(onPress: homeController.refreshApi);
-    } else {
-      return GeneralExceptionWidget(onPress: homeController.refreshApi);
-    }
-  }
-
   Widget _buildCompletedState() {
-    if (homeController.eventoList.value.respuesta == null ||
-        homeController.eventoList.value.respuesta!.isEmpty) {
-      return Center(
-        child: Text(
-          "No hay eventos disponibles",
-          style: TextStyle(fontFamily: AppFonts.mina),
-        ),
-      );
-    }
-    if (homeController.novedadList.value.respuesta == null ||
-        homeController.novedadList.value.respuesta!.isEmpty) {
-      return Center(
-        child: Text(
-          "No hay novedades disponibles",
-          style: TextStyle(fontFamily: AppFonts.mina),
-        ),
-      );
-    }
-
-    List eventos = homeController.eventoList.value.respuesta!.take(10).toList();
-    List novedades = homeController.novedadList.value.respuesta!.toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -147,7 +109,21 @@ class _HomeScreenState extends State<HomeScreen> {
           "Únete a nuestros eventos y mejora tu enseñanza. ¡Inscríbete ahora!",
           FontAwesomeIcons.calendarDays,
         ),
-        _buildEventCarousel(eventos),
+        Obx(() {
+          switch (homeController.eventosStatus.value) {
+            case Status.LOADING:
+              return LoadingCarouselPlaceholder();
+            case Status.ERROR:
+              return TextButton(
+                onPressed: homeController.loadEventos,
+                child: Text("Reintentar cargar eventos"),
+              );
+            case Status.COMPLETED:
+              final eventos =
+                  homeController.eventoList.value.respuesta!.take(10).toList();
+              return _buildEventCarousel(eventos);
+          }
+        }),
         // Container(
         //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
         //   decoration: BoxDecoration(
@@ -332,21 +308,35 @@ class _HomeScreenState extends State<HomeScreen> {
           "Mantente informado con las últimas novedades y actualizaciones.",
           FontAwesomeIcons.newspaper,
         ),
-        Column(
-          children:
-              novedades.map<Widget>((novedad) {
-                return NewsCard(
-                  imageUrl:
-                      "${AppUrl.baseImage}/storage/blog/${novedad.blogImagen}",
-                  title: novedad.blogTitulo,
-                  description: mostrarHtml(novedad.blogDescripcion),
-                  date: novedad.createdAt,
-                );
-              }).toList(),
-        ),
+        Obx(() {
+          switch (homeController.novedadesStatus.value) {
+            case Status.LOADING:
+              return NewsCardLoading();
+            case Status.ERROR:
+              return TextButton(
+                onPressed: homeController.loadNovedades,
+                child: Text("Reintentar cargar novedades"),
+              );
+            case Status.COMPLETED:
+              final novedades = homeController.novedadList.value.respuesta!;
+              return Column(
+                children:
+                    novedades.map((novedad) {
+                      return NewsCard(
+                        imageUrl:
+                            "${AppUrl.baseImage}/storage/blog/${novedad.blogImagen}",
+                        title: novedad.blogTitulo!,
+                        description: mostrarHtml(novedad.blogDescripcion!),
+                        date: novedad.createdAt!,
+                      );
+                    }).toList(),
+              );
+          }
+        }),
       ],
     );
   }
+
   Widget _buildIcons(
     IconData icon,
     Color color,
@@ -396,6 +386,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
+
   Widget _buildEventCarousel(List eventos) {
     return Column(
       children: [
@@ -420,6 +411,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
   }
+
   Widget _buildCarouselIndicator(List eventos) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -553,6 +545,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  
 }

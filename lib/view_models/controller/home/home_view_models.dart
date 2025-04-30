@@ -1,4 +1,3 @@
-
 import 'package:get/get.dart';
 import 'package:programa_profe/models/home/evento_list_model.dart';
 import 'package:programa_profe/models/home/novedad_list_model.dart';
@@ -14,134 +13,134 @@ import '../../../repository/programa_repository/programa_repository.dart';
 import '../../../repository/sede_repository/sede_repository.dart';
 
 class HomeController extends GetxController {
-
+  // Repositorios
   final _home = HomeRepository();
   final _evento = EventoRepository();
   final _sede = SedeRepository();
   final _novedad = NovedadRepository();
   final _programa = ProgramaRepository();
 
-
-  final rxRequestStatus = Status.LOADING.obs;
-  final eventoList =EventoListModel().obs;
+  // Datos observables
+  final eventoList = EventoListModel().obs;
   final sedeList = SedeListModel().obs;
-  final novedadList =NovedadListModel().obs;
-  final videoList =VideoListModel().obs;
-  final profeId =ProfeIdModel().obs;
-  final programaList =ProgramaListModel().obs;
-  RxString error = ''.obs;
+  final novedadList = NovedadListModel().obs;
+  final programaList = ProgramaListModel().obs;
+  final profeId = ProfeIdModel().obs;
+  final videoList = VideoListModel().obs;
+  final error = ''.obs;
 
-  void setRxRequestStatus(Status _value) => rxRequestStatus.value = _value ;
-  void setEventoList(EventoListModel _value) => eventoList.value = _value ;
-  void setSedeList(SedeListModel _value) => sedeList.value = _value ;
-  void setNovedadList(NovedadListModel _value) => novedadList.value = _value ;
-  void setVideoList(VideoListModel _value) => videoList.value = _value ;
-  void setProfeId(ProfeIdModel _value) => profeId.value = _value ;
-  void setProgramaList(ProgramaListModel _value) => programaList.value = _value ;
-  void setError(String _value) => error.value = _value ;
+  // Estados de carga independientes por sección
+  final eventosStatus = Status.LOADING.obs;
+  final sedesStatus = Status.LOADING.obs;
+  final novedadesStatus = Status.LOADING.obs;
+  final programasStatus = Status.LOADING.obs;
+  final profeStatus = Status.LOADING.obs;
+  final videosStatus = Status.LOADING.obs;
 
-
-  void homeListApi(){
-    setRxRequestStatus(Status.LOADING);
-
-    _evento.eventoListApi().then((value){
-       print("Eventos recibidos: ${value.respuesta}");
-      setRxRequestStatus(Status.COMPLETED);
-      setEventoList(value);
-    }).onError((error, stackTrace){
-      print("Error al obtener eventos: $error");
-      setError(error.toString());
-      setRxRequestStatus(Status.ERROR);
-    });
-    _sede.sedeListApi().then((value){
-      print("Sedes recibidos: ${value.respuesta}");
-      setRxRequestStatus(Status.COMPLETED);
-      setSedeList(value);
-    }).onError((error, stackTrace){
-      print("Error al obtener sedes: $error");
-      setError(error.toString());
-      setRxRequestStatus(Status.ERROR);
-    });
-    _novedad.novedadListApi().then((value){
-       print("Novedad recibidos: ${value.respuesta}");
-      setRxRequestStatus(Status.COMPLETED);
-      setNovedadList(value);
-    }).onError((error, stackTrace){
-      print("Error al obtener Novedades: $error");
-      setError(error.toString());
-      setRxRequestStatus(Status.ERROR);
-    });
-    _programa.programaListApi().then((value){
-       print("Novedad recibidos: ${value.respuesta}");
-      setRxRequestStatus(Status.COMPLETED);
-      setProgramaList(value);
-    }).onError((error, stackTrace){
-      print("Error al obtener Novedades: $error");
-      setError(error.toString());
-      setRxRequestStatus(Status.ERROR);
-    });
-    _home.profeIdApi().then((value){
-       print("Profe recibidos: ${value.respuesta}");
-      setRxRequestStatus(Status.COMPLETED);
-      setProfeId(value);
-    }).onError((error, stackTrace){
-      print("Error al obtener profe: $error");
-      setError(error.toString());
-      setRxRequestStatus(Status.ERROR);
-    });
-    _home.videoListApi().then((value){
-      setRxRequestStatus(Status.COMPLETED);
-      setVideoList(value);
-    }).onError((error, stackTrace){
-      setError(error.toString());
-      setRxRequestStatus(Status.ERROR);
-    });
+  // Métodos de carga aislados
+  void loadEventos() {
+    eventosStatus.value = Status.LOADING;
+    _evento
+        .eventoListApi()
+        .then((res) {
+          eventoList.value = res;
+          eventosStatus.value = Status.COMPLETED;
+        })
+        .catchError((err) {
+          error.value = err.toString();
+          eventosStatus.value = Status.ERROR;
+        });
   }
 
-  void refreshApi(){
+  void loadSedes() {
+    sedesStatus.value = Status.LOADING;
+    _sede
+        .sedeListApi()
+        .then((res) {
+          sedeList.value = res;
+          sedesStatus.value = Status.COMPLETED;
+        })
+        .catchError((err) {
+          error.value = err.toString();
+          sedesStatus.value = Status.ERROR;
+        });
+  }
 
-    setRxRequestStatus(Status.LOADING);
+  void loadNovedades() {
+    novedadesStatus.value = Status.LOADING;
+    _novedad
+        .novedadListApi()
+        .then((res) {
+          novedadList.value = res;
+          novedadesStatus.value = Status.COMPLETED;
+        })
+        .catchError((err) {
+          error.value = err.toString();
+          novedadesStatus.value = Status.ERROR;
+        });
+  }
 
-    _evento.eventoListApi().then((value){
-      setRxRequestStatus(Status.COMPLETED);
-      setEventoList(value);
-    }).onError((error, stackTrace){
-      setError(error.toString());
-      setRxRequestStatus(Status.ERROR);
-    });
-    _sede.sedeListApi().then((value){
-      print("Sedes recibidos: ${value.respuesta}");
-      setRxRequestStatus(Status.COMPLETED);
-      setSedeList(value);
-    }).onError((error, stackTrace){
-      print("Error al obtener sedes: $error");
-      setError(error.toString());
-      setRxRequestStatus(Status.ERROR);
-    });
-    _novedad.novedadListApi().then((value){
-       print("Novedad recibidos: ${value.respuesta}");
-      setRxRequestStatus(Status.COMPLETED);
-      setNovedadList(value);
-    }).onError((error, stackTrace){
-      print("Error al obtener Novedades: $error");
-      setError(error.toString());
-      setRxRequestStatus(Status.ERROR);
-    });
-    _home.profeIdApi().then((value){
-       print("Profe recibidos: ${value.respuesta}");
-      setRxRequestStatus(Status.COMPLETED);
-      setProfeId(value);
-    }).onError((error, stackTrace){
-      print("Error al obtener profe: $error");
-      setError(error.toString());
-      setRxRequestStatus(Status.ERROR);
-    });
-    _home.videoListApi().then((value){
-      setRxRequestStatus(Status.COMPLETED);
-      setVideoList(value);
-    }).onError((error, stackTrace){
-      setError(error.toString());
-      setRxRequestStatus(Status.ERROR);
-    });
+  void loadProgramas() {
+    programasStatus.value = Status.LOADING;
+    _programa
+        .programaListApi()
+        .then((res) {
+          programaList.value = res;
+          programasStatus.value = Status.COMPLETED;
+        })
+        .catchError((err) {
+          error.value = err.toString();
+          programasStatus.value = Status.ERROR;
+        });
+  }
+
+  void loadProfeId() {
+    profeStatus.value = Status.LOADING;
+    _home
+        .profeIdApi()
+        .then((res) {
+          profeId.value = res;
+          profeStatus.value = Status.COMPLETED;
+        })
+        .catchError((err) {
+          error.value = err.toString();
+          profeStatus.value = Status.ERROR;
+        });
+  }
+
+  void loadVideos() {
+    videosStatus.value = Status.LOADING;
+    _home
+        .videoListApi()
+        .then((res) {
+          videoList.value = res;
+          videosStatus.value = Status.COMPLETED;
+        })
+        .catchError((err) {
+          error.value = err.toString();
+          videosStatus.value = Status.ERROR;
+        });
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    // Carga inicial de todas las secciones
+    loadEventos();
+    loadSedes();
+    loadNovedades();
+    loadProgramas();
+    loadProfeId();
+    loadVideos();
+  }
+
+  // Método general para recargar todo si es necesario
+  void refreshAll() {
+    loadEventos();
+    loadSedes();
+    loadNovedades();
+    loadProgramas();
+    loadProfeId();
+    loadVideos();
   }
 }

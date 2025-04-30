@@ -25,13 +25,15 @@ class _HomeViewState extends State<HomeView> {
     super.initState();
     _loadHomeData();
   }
-   Future<void> _loadHomeData() async {
+
+  Future<void> _loadHomeData() async {
     try {
-      homeController.homeListApi();
+      homeController.onInit();
     } catch (e) {
       Get.snackbar('Error', 'Failed to load home data');
     }
   }
+
   int _currentIndex = 2;
   final List<String> _titles = [
     "Eventos",
@@ -47,55 +49,57 @@ class _HomeViewState extends State<HomeView> {
     SedesScreen(),
     InformationScreen(),
   ];
- 
-  
+
   @override
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final isSmallScreen = screenHeight < 850;
     return Scaffold(
-      appBar: isSmallScreen
-        ? null // ❌ Oculta AppBar completamente si la pantalla es muy pequeña
-        :AppBar(
-        automaticallyImplyLeading: false, // No muestra el ícono de "atrás"
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [AppColor.primaryColor, AppColor.secondaryColor],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-        ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            // Título de la sección
-            Text(
-              _titles[_currentIndex],
-              style: TextStyle(
-                fontFamily: 'Mina',
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: AppColor.whiteColor,
-                height: 1.2,
+      appBar:
+          isSmallScreen
+              ? null // ❌ Oculta AppBar completamente si la pantalla es muy pequeña
+              : AppBar(
+                automaticallyImplyLeading:
+                    false, // No muestra el ícono de "atrás"
+                elevation: 0,
+                flexibleSpace: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [AppColor.primaryColor, AppColor.secondaryColor],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                  ),
+                ),
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // Título de la sección
+                    Text(
+                      _titles[_currentIndex],
+                      style: TextStyle(
+                        fontFamily: 'Mina',
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: AppColor.whiteColor,
+                        height: 1.2,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    // Logo de la empresa
+                    Image.asset(
+                      'assets/logos/logoprofe.png',
+                      width: 120,
+                      fit: BoxFit.contain,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 5),
-            // Logo de la empresa
-            Image.asset(
-              'assets/logos/logoprofe.png',
-              width: 120,
-              fit: BoxFit.contain,
-            ),
-          ],
-        ),
-      ),
       bottomNavigationBar: _buildBottomNavBar(),
       body: _screens[_currentIndex],
     );
   }
+
   Widget _buildBottomNavBar() {
     return Padding(
       padding: const EdgeInsets.fromLTRB(10, 0, 10, 3),
@@ -129,18 +133,13 @@ class _HomeViewState extends State<HomeView> {
             text: 'Ofertas',
           ),
           GButton(
-            icon: FontAwesomeIcons.houseChimney, 
-            iconSize: 20, 
-            text: 'Home'
-          ),
-          GButton(
-            icon: FontAwesomeIcons.building,
+            icon: FontAwesomeIcons.houseChimney,
             iconSize: 20,
-            text: 'Sedes',
+            text: 'Home',
           ),
+          GButton(icon: FontAwesomeIcons.building, iconSize: 20, text: 'Sedes'),
         ],
       ),
     );
   }
 }
-

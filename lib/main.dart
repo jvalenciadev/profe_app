@@ -6,7 +6,6 @@ import 'res/themes/app_theme.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'view_models/controller/app_view_models.dart';
 
-
 void main() async {
   await dotenv.load(fileName: "assets/.env");
   Get.put(AppInfoController());
@@ -19,13 +18,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'App PROFE',
       translations: Languages(),
-      locale: const Locale('en' ,'US'),
-      fallbackLocale: const Locale('en' ,'US'),
+      locale: const Locale('en', 'US'),
+      fallbackLocale: const Locale('en', 'US'),
       theme: AppTheme.lightTheme,
       getPages: AppRoutes.appRoutes(),
     );
   }
 }
-
