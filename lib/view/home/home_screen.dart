@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -7,6 +8,7 @@ import 'package:programa_profe/res/fonts/app_fonts.dart';
 import '../../data/response/status.dart';
 import '../../res/app_url/app_url.dart';
 import '../../res/colors/app_color.dart';
+import '../../res/routes/routes_name.dart';
 import '../../utils/utilidad.dart';
 import '../../view_models/controller/home/home_view_models.dart';
 import '../widgets/home_widgets.dart';
@@ -49,7 +51,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _player = radioService.player;
-
     if (!_player.playing) {
       _initializePlayer();
     } else {
@@ -183,27 +184,37 @@ class _HomeScreenState extends State<HomeScreen> {
               FontAwesomeIcons.calendarDays,
               AppColor.secondaryColor,
               "Eventos",
-              () {},
+              () {
+                setState(() {
+                  Get.toNamed(RouteName.eventoView);
+                });
+              },
             ),
             _buildIcons(
               FontAwesomeIcons.graduationCap,
               AppColor.secondaryColor,
               "Ofertas\nAcadémicas",
               () {
-                setState(() {});
+                setState(() {
+                  Get.toNamed(RouteName.programaView);
+                });
               },
             ),
             _buildIcons(
               FontAwesomeIcons.building,
               AppColor.secondaryColor,
               "Sedes",
-              () {},
+              () {
+                Get.toNamed(RouteName.sedeView);
+              },
             ),
             _buildIcons(
               FontAwesomeIcons.circleInfo,
               AppColor.secondaryColor,
               "Información",
-              () {},
+              () {
+                Get.toNamed(RouteName.informacionView);
+              },
             ),
           ],
         ),
@@ -255,10 +266,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         children: [
                           Icon(
                             _hasError
-                                ? Icons.error_outline
+                                ? FontAwesomeIcons
+                                    .triangleExclamation // Icono de advertencia o error
                                 : _isPlaying
-                                ? Icons.wifi_tethering
-                                : Icons.radio,
+                                ? FontAwesomeIcons
+                                    .wifi // Icono de wifi, si estás "jugando"
+                                : FontAwesomeIcons.radio,
                             size: 14,
                             color:
                                 _hasError
@@ -270,7 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             _hasError
                                 ? 'Error de conexión'
                                 : _isPlaying
-                                ? 'Reproduciendo'
+                                ? 'Reproduciendo...'
                                 : 'Disponible',
                             style: TextStyle(
                               fontSize: 13,
@@ -287,14 +300,39 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
 
                 // Botón de reproducción
-                _isLoading
-                    ? const CircularProgressIndicator()
+                // Botón de reproducción
+                _hasError
+                    ? Opacity(
+                      opacity: 0.4, // visualmente desactivado
+                      child: IgnorePointer(
+                        child: IconButton(
+                          iconSize: 25,
+                          splashRadius: 28,
+                          icon: Icon(
+                            FontAwesomeIcons.play,
+                            color:
+                                AppColor
+                                    .greyColor, // color gris para indicar deshabilitado
+                          ),
+                          onPressed: () {}, // no hace nada
+                        ),
+                      ),
+                    )
+                    : _isLoading
+                    ? const CircularProgressIndicator(
+                      color: AppColor.grey2Color,
+                    )
                     : IconButton(
                       iconSize: 40,
                       splashRadius: 28,
                       icon: Icon(
-                        _isPlaying ? Icons.pause_circle : Icons.play_circle,
-                        color: AppColor.radioStream,
+                        _isPlaying
+                            ? FontAwesomeIcons.pause
+                            : FontAwesomeIcons.play,
+                        color:
+                            AppColor
+                                .radioStream, // O cualquier color que prefieras
+                        size: 25, // Ajusta el tamaño del icono
                       ),
                       onPressed: _togglePlayPause,
                     ),
@@ -439,11 +477,23 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(10),
-          child: Image.network(
-            "${AppUrl.baseImage}/storage/evento_afiches/${evento.eveAfiche}",
+          child: CachedNetworkImage(
+            imageUrl:
+                "${AppUrl.baseImage}/storage/evento_afiches/${evento.eveAfiche}",
             width: double.infinity,
-            //height: 220,
             fit: BoxFit.cover,
+            placeholder:
+                (context, url) => Center(
+                  child: CircularProgressIndicator(color: AppColor.grey2Color),
+                ),
+            errorWidget:
+                (context, url, error) => Center(
+                  child: Icon(
+                    FontAwesomeIcons.image,
+                    size: 50,
+                    color: AppColor.grey2Color,
+                  ),
+                ),
           ),
         ),
         _buildEventGradient(),

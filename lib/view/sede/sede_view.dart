@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -26,6 +28,7 @@ class _SedesScreenState extends State<SedesScreen> {
   // Ahora nullable para distinguir entre sin obtener y obtenido
   LatLng? _initialPosition;
   BitmapDescriptor? customIcon;
+  BitmapDescriptor? customUserIcon;
 
   @override
   void initState() {
@@ -75,7 +78,7 @@ class _SedesScreenState extends State<SedesScreen> {
     if (_initialPosition != null) {
       mapController!.moveCamera(
         CameraUpdate.newCameraPosition(
-          CameraPosition(target: _initialPosition!, zoom: 16.5),
+          CameraPosition(target: _initialPosition!, zoom: 18),
         ),
       );
     }
@@ -84,7 +87,7 @@ class _SedesScreenState extends State<SedesScreen> {
   void _moverMapa(LatLng destino) {
     mapController?.animateCamera(
       CameraUpdate.newCameraPosition(
-        CameraPosition(target: destino, zoom: 16.5),
+        CameraPosition(target: destino, zoom: 15),
       ),
     );
   }
@@ -125,7 +128,7 @@ class _SedesScreenState extends State<SedesScreen> {
       return Scaffold(
         body: Center(
           child: Container(
-            color: Colors.black45,
+            color: AppColor.grey3Color,
             child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -135,7 +138,8 @@ class _SedesScreenState extends State<SedesScreen> {
                     height: 80,
                     child: CircularProgressIndicator(
                       strokeWidth: 8,
-                      valueColor: AlwaysStoppedAnimation(Colors.white),
+                      color: AppColor.grey2Color,
+                      valueColor: AlwaysStoppedAnimation(AppColor.grey2Color),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -143,7 +147,7 @@ class _SedesScreenState extends State<SedesScreen> {
                     'Obteniendo tu ubicación…',
                     style: TextStyle(
                       fontFamily: AppFonts.mina,
-                      color: AppColor.whiteColor,
+                      color: AppColor.greyColor,
                       fontSize: 16,
                     ),
                   ),
@@ -171,6 +175,7 @@ class _SedesScreenState extends State<SedesScreen> {
                     target: _initialPosition!,
                     zoom: 16.5,
                   ),
+                  mapType: MapType.normal,
                   myLocationEnabled: true,
                   myLocationButtonEnabled: true,
                   compassEnabled: true,
@@ -200,7 +205,7 @@ class _SedesScreenState extends State<SedesScreen> {
                                   customIcon ?? BitmapDescriptor.defaultMarker,
                             ),
                           )
-                          .toSet(),
+                          .toSet()
                 ),
 
                 Align(
@@ -236,11 +241,26 @@ class _SedesScreenState extends State<SedesScreen> {
                                   topLeft: Radius.circular(15),
                                   bottomLeft: Radius.circular(15),
                                 ),
-                                child: Image.network(
-                                  "${AppUrl.baseImage}/storage/sede_imagen/${sede.sedeImagen}",
+                                child: CachedNetworkImage(
+                                  imageUrl:
+                                      "${AppUrl.baseImage}/storage/sede_imagen/${sede.sedeImagen}",
                                   width: 120,
                                   height: double.infinity,
                                   fit: BoxFit.cover,
+                                  placeholder:
+                                      (context, url) => Center(
+                                        child: CircularProgressIndicator(
+                                          color: AppColor.grey2Color,
+                                        ),
+                                      ),
+                                  errorWidget:
+                                      (context, url, error) => Center(
+                                        child: Icon(
+                                          FontAwesomeIcons.image,
+                                          size: 50,
+                                          color: AppColor.grey2Color,
+                                        ),
+                                      ),
                                 ),
                               ),
                               Expanded(
@@ -260,6 +280,7 @@ class _SedesScreenState extends State<SedesScreen> {
                                               "${sede.depNombre} - ${sede.sedeNombre}",
                                               style: const TextStyle(
                                                 fontSize: 14,
+                                                color: AppColor.blackColor,
                                                 fontFamily: AppFonts.mina,
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -267,9 +288,9 @@ class _SedesScreenState extends State<SedesScreen> {
                                           ),
                                           IconButton(
                                             icon: const Icon(
-                                              Icons.info_outline,
+                                              FontAwesomeIcons.eye,
                                               size: 22,
-                                              color: Colors.blueGrey,
+                                              color: AppColor.primaryColor,
                                             ),
                                             tooltip: "Ver detalles",
                                             onPressed: () {
@@ -289,16 +310,17 @@ class _SedesScreenState extends State<SedesScreen> {
                                       Row(
                                         children: [
                                           const Icon(
-                                            Icons.phone,
-                                            size: 14,
-                                            color: Colors.grey,
+                                            FontAwesomeIcons.phone,
+                                            size: 15,
+                                            color: AppColor.greyColor,
                                           ),
                                           const SizedBox(width: 4),
                                           Expanded(
                                             child: Text(
                                               sede.sedeContacto1.toString(),
                                               style: const TextStyle(
-                                                fontSize: 13,
+                                                fontSize: 15,
+                                                color: AppColor.greyColor,
                                                 fontFamily: AppFonts.mina,
                                                 fontWeight: FontWeight.w500,
                                               ),
@@ -309,9 +331,9 @@ class _SedesScreenState extends State<SedesScreen> {
                                       Row(
                                         children: [
                                           const Icon(
-                                            Icons.access_time,
-                                            size: 14,
-                                            color: Colors.grey,
+                                            FontAwesomeIcons.clock,
+                                            size: 15,
+                                            color: AppColor.greyColor,
                                           ),
                                           const SizedBox(width: 4),
                                           Expanded(
@@ -319,6 +341,7 @@ class _SedesScreenState extends State<SedesScreen> {
                                               sede.sedeHorario!,
                                               style: const TextStyle(
                                                 fontSize: 12,
+                                                color: AppColor.greyColor,
                                                 fontFamily: AppFonts.mina,
                                               ),
                                             ),

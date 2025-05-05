@@ -34,7 +34,7 @@ class RoundButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(50)
         ),
         child: loading ?
-        Center(child: CircularProgressIndicator()) :
+        Center(child: CircularProgressIndicator(color: AppColor.grey2Color,)) :
         Center(
           child: Text(title , style:  Theme.of(context).textTheme.titleMedium!.copyWith(color: Colors.white),),
         ),

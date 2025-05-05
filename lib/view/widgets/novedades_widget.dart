@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:programa_profe/res/colors/app_color.dart';
 import 'package:programa_profe/res/fonts/app_fonts.dart';
 
@@ -44,11 +46,33 @@ class NewsCard extends StatelessWidget {
           children: [
             // Imagen con bordes redondeados
             ClipRRect(
-              borderRadius: BorderRadius.vertical(top: Radius.circular(5)),
-              child: Image.network(
-                imageUrl,
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(5),
+              ),
+              child: CachedNetworkImage(
+                imageUrl: imageUrl,
                 width: double.infinity,
                 fit: BoxFit.cover,
+                placeholder:
+                    (context, url) => Container(
+                      height: 250,
+                      color: AppColor.grey3Color,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: AppColor.grey2Color,
+                        ),
+                      ),
+                    ),
+                errorWidget:
+                    (context, url, error) => Container(
+                      height: 250,
+                      color: AppColor.grey3Color,
+                      child: Icon(
+                        FontAwesomeIcons.image,
+                        size: 50,
+                        color: AppColor.grey2Color,
+                      ),
+                    ),
               ),
             ),
 
@@ -97,7 +121,7 @@ class NewsCard extends StatelessWidget {
             // Descripción
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: description
+              child: description,
             ),
 
             // Agregar espacio extra en la parte inferior
