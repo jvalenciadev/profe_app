@@ -5,16 +5,16 @@ import 'res/routes/routes.dart';
 import 'res/themes/app_theme.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'view_models/controller/app_view_models.dart';
-// import 'package:firebase_core/firebase_core.dart';
-// import 'firebase_options.dart';
+import 'firebase/firebase_config.dart';
+import 'firebase/firebase_messaging_service.dart';
+import 'notifications/local_notifications.dart';
 
-// // ...
-
-// await Firebase.initializeApp(
-//     options: DefaultFirebaseOptions.currentPlatform,
-// );
 void main() async {
   await dotenv.load(fileName: "assets/.env");
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeFirebase(); // Inicializa Firebase
+  await LocalNotifications.initialize(); // Inicializa las notificaciones locales
+  await FirebaseMessagingService.initializeFirebaseMessaging(); // Inicializa Firebase Messaging
   Get.put(AppInfoController());
   runApp(const MyApp());
 }
@@ -22,6 +22,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
