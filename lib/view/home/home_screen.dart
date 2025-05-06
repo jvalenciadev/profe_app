@@ -431,7 +431,7 @@ class _HomeScreenState extends State<HomeScreen> {
         CarouselSlider(
           items: eventos.map((evento) => _buildEventCard(evento)).toList(),
           options: CarouselOptions(
-            // height: 200,
+            height: 250,
             autoPlay: true,
             enlargeCenterPage: true,
             viewportFraction: 0.95,
@@ -458,8 +458,8 @@ class _HomeScreenState extends State<HomeScreen> {
         (index) => AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           margin: const EdgeInsets.symmetric(horizontal: 5),
-          width: _currentIndex == index ? 14 : 8,
-          height: 8,
+          width: _currentIndex == index ? 18 : 8,
+          height: 5,
           decoration: BoxDecoration(
             color:
                 _currentIndex == index
@@ -497,7 +497,12 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         _buildEventGradient(),
-        Positioned(bottom: 0, left: 20, child: _buildEventDetails(evento)),
+        Positioned(
+          bottom: 10,
+          left: 15,
+          right: 15,
+          child: _buildEventDetails(evento),
+        ),
       ],
     );
   }
@@ -519,28 +524,32 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildEventDetails(evento) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          evento.etNombre.toString(),
-          style: TextStyle(
-            fontFamily: AppFonts.mina,
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: AppColor.whiteColor,
-          ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              evento.etNombre.toString(),
+              style: const TextStyle(
+                fontFamily: AppFonts.mina,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColor.whiteColor,
+              ),
+            ),
+            const SizedBox(height: 5),
+            Text(
+              evento.eveFecha.toString(),
+              style: const TextStyle(
+                fontFamily: AppFonts.mina,
+                fontSize: 14,
+                color: AppColor.grey2Color,
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 5),
-        Text(
-          evento.eveFecha.toString(),
-          style: TextStyle(
-            fontFamily: AppFonts.mina,
-            fontSize: 16,
-            color: AppColor.grey2Color,
-          ),
-        ),
-        const SizedBox(height: 10),
         _buildEventActions(evento),
       ],
     );
@@ -551,7 +560,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         if (evento.eveInscripcion == 1) _buildInscriptionButton(),
         const SizedBox(width: 10),
-        if (evento.eveAsistencia == 1) _buildAttendanceButton(),
+        if (evento.eveAsistencia == true) _buildAttendanceButton(),
       ],
     );
   }
@@ -561,15 +570,14 @@ class _HomeScreenState extends State<HomeScreen> {
       onPressed: () {},
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColor.secondaryColor,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: Text(
-        "Inscribirse",
+        "Inscríbete",
         style: TextStyle(
           fontFamily: AppFonts.mina,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
+          fontSize: 14,
           color: AppColor.whiteColor,
         ),
       ),
@@ -581,15 +589,14 @@ class _HomeScreenState extends State<HomeScreen> {
       onPressed: () {},
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColor.secondaryColor,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: Text(
         "Asistencia",
         style: TextStyle(
           fontFamily: AppFonts.mina,
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
+          fontSize: 14,
           color: AppColor.whiteColor,
         ),
       ),

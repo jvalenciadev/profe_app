@@ -1,4 +1,4 @@
-package com.example.programa_profe
+package com.profe.jpvc
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -65,7 +65,7 @@ class _SplashScreenState extends State<SplashScreen> {
               children: [
                 _buildLogo(),
                 const SizedBox(height: 80),
-                _buildAppInfo(),
+                hasError ? _buildErrorMessage() : _buildAppInfo(),
                 const SizedBox(height: 20),
                 hasError ? _buildRetryButton() : _buildLoadingIndicator(),
               ],
@@ -79,20 +79,17 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget _buildLogo() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(10), // Suaviza los bordes
-      child:
-          appInfo['appLogo']!.isNotEmpty
-              ? Image.network(
-                appInfo['appLogo']!,
-                width: 260,
-                fit: BoxFit.cover,
-                errorBuilder:
-                    (context, error, stackTrace) => const Icon(
-                      Icons.image_not_supported,
-                      size: 100,
-                      color: AppColor.greyColor,
-                    ),
-              )
-              : const Icon(Icons.image, size: 80, color: AppColor.greyColor),
+      child: Image.asset(
+        'assets/logos/logoprofe.png',
+        width: 260,
+        fit: BoxFit.cover,
+        errorBuilder:
+            (context, error, stackTrace) => const Icon(
+              Icons.image_not_supported,
+              size: 100,
+              color: AppColor.greyColor,
+            ),
+      ),
     );
   }
 
@@ -136,7 +133,11 @@ class _SplashScreenState extends State<SplashScreen> {
         SizedBox(height: 10),
         Text(
           "Cargando...",
-          style: TextStyle(color: AppColor.greyColor,fontFamily: AppFonts.mina, fontSize: 14),
+          style: TextStyle(
+            color: AppColor.greyColor,
+            fontFamily: AppFonts.mina,
+            fontSize: 14,
+          ),
         ),
       ],
     );
@@ -152,9 +153,38 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
       onPressed: _fetchAppInfo,
       icon: const Icon(Icons.refresh),
-      label: const Text("Reintentar",style: TextStyle(
-        fontFamily: AppFonts.mina,
-      ),),
+      label: const Text(
+        "Reintentar",
+        style: TextStyle(fontFamily: AppFonts.mina),
+      ),
+    );
+  }
+
+  Widget _buildErrorMessage() {
+    return Column(
+      children: const [
+        Icon(Icons.wifi_off, size: 60, color: Colors.redAccent),
+        SizedBox(height: 10),
+        Text(
+          "No se pudo conectar con el servidor",
+          style: TextStyle(
+            color: Colors.redAccent,
+            fontSize: 16,
+            fontFamily: AppFonts.mina,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(height: 5),
+        Text(
+          "Por favor verifica tu conexión\no inténtalo más tarde.",
+          style: TextStyle(
+            color: AppColor.greyColor,
+            fontSize: 14,
+            fontFamily: AppFonts.mina,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ],
     );
   }
 }

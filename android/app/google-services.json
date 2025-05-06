@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "968183926365",
+    "project_id": "profe-7f791",
+    "storage_bucket": "profe-7f791.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:968183926365:android:82fa12264706c9132c47b4",
+        "android_client_info": {
+          "package_name": "com.profe.jpvc"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnstFaiVNTnJyQEj0g8a0PJNL40eMuFKs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

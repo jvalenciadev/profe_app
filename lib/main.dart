@@ -5,7 +5,14 @@ import 'res/routes/routes.dart';
 import 'res/themes/app_theme.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'view_models/controller/app_view_models.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import 'firebase_options.dart';
 
+// // ...
+
+// await Firebase.initializeApp(
+//     options: DefaultFirebaseOptions.currentPlatform,
+// );
 void main() async {
   await dotenv.load(fileName: "assets/.env");
   Get.put(AppInfoController());
