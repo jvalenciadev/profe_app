@@ -5,6 +5,7 @@ class AppUrl {
   static String get baseImage => dotenv.env['IMAGEURL'] ?? 'https://profe.minedu.gob.bo';  // Valor por defecto si no se carga la variable
   static String get eventos => '$baseUrl/eventos';
   static String get eventosId => '$baseUrl/evento';
+  static String get agregarToken => '$baseUrl/agregarToken';
   static String get programas => '$baseUrl/programas';
   static String get programaId => '$baseUrl/programa';
   static String get novedades => '$baseUrl/novedades';

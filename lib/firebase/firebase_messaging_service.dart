@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import '../notifications/local_notifications.dart';
+import '../repository/estado/estado_repository.dart';
 
 class FirebaseMessagingService {
   static Future<void> backgroundHandler(RemoteMessage message) async {
@@ -21,9 +22,22 @@ class FirebaseMessagingService {
       print('Permiso de notificaciones no concedido');
       return;
     }
-
+    
     String? token = await messaging.getToken();
     print("Device FCM Token: $token");
+    if (token != null) {
+      try {
+        final estadoRepo = EstadoRepository();
+        final respuesta = await estadoRepo.enviarTokenApi(token);
+         if (respuesta.status == "success") {
+            print('Token enviado exitosamente.');
+          } else {
+            print('Respuesta inesperada: ${respuesta.status}');
+          }
+      } catch (e) {
+        print('Error al enviar el token al backend: $e');
+      }
+    }
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('Message received: ${message.notification?.title}');
