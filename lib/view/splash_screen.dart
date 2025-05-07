@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart'; // Para animaciones
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:programa_profe/res/colors/app_color.dart';
 import '../../view_models/services/splash_services.dart';
 import '../res/fonts/app_fonts.dart';
@@ -152,7 +153,7 @@ class _SplashScreenState extends State<SplashScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       ),
       onPressed: _fetchAppInfo,
-      icon: const Icon(Icons.refresh),
+      icon: const Icon(FontAwesomeIcons.arrowsRotate,color: AppColor.whiteColor,),
       label: const Text(
         "Reintentar",
         style: TextStyle(fontFamily: AppFonts.mina),

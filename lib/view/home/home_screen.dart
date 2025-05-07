@@ -92,10 +92,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-        child: _buildCompletedState(),
+    return RefreshIndicator(
+      onRefresh:homeController.refreshAll,
+      color:AppColor.primaryColor,
+      child: SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+          child: _buildCompletedState(),
+        ),
       ),
     );
   }
@@ -116,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
               return LoadingCarouselPlaceholder();
             case Status.ERROR:
               return TextButton(
-                onPressed: homeController.loadEventos,
+                onPressed: homeController.refreshAll,
                 child: Text("Reintentar cargar eventos"),
               );
             case Status.COMPLETED:
@@ -125,51 +130,6 @@ class _HomeScreenState extends State<HomeScreen> {
               return _buildEventCarousel(eventos);
           }
         }),
-        // Container(
-        //   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-        //   decoration: BoxDecoration(
-        //   color: AppColor.whiteColor.withOpacity(0.9),
-        //     borderRadius: BorderRadius.circular(15),
-        //     boxShadow: [
-        //       BoxShadow(
-        //         color: Colors.black.withOpacity(0.1),
-        //         blurRadius: 10,
-        //         spreadRadius: 2,
-        //         offset: Offset(0, 5),
-        //       ),
-        //     ],
-        //   ),
-        //   child: Row(
-        //     children: [
-        //       Expanded(
-        //         child: Column(
-        //           crossAxisAlignment: CrossAxisAlignment.start,
-        //           children: [
-        //             Text(
-        //               "Redes Sociales",
-        //               style: TextStyle(
-        //                 fontFamily: AppFonts.mina,
-        //                 fontSize: 22,
-        //                 fontWeight: FontWeight.bold,
-        //                 color: AppColor.primaryColor,
-        //               ),
-        //             ),
-        //           ],
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        // ),
-        // Row(
-        //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        //   children: [
-        //     _buildSocialIcon(FontAwesomeIcons.facebook, AppColor.facebookColor),
-        //     _buildSocialIcon(FontAwesomeIcons.tiktok, AppColor.tiktokColor),
-        //     _buildSocialIcon(FontAwesomeIcons.youtube, AppColor.youtubeColor),
-        //     _buildSocialIcon(FontAwesomeIcons.globe, AppColor.primaryColor),
-        //     _buildSocialIcon(FontAwesomeIcons.whatsapp, AppColor.whatsappColor),
-        //   ],
-        // ),
         SizedBox(height: 5),
         buildEventSection(
           "Menu",
@@ -352,7 +312,7 @@ class _HomeScreenState extends State<HomeScreen> {
               return NewsCardLoading();
             case Status.ERROR:
               return TextButton(
-                onPressed: homeController.loadNovedades,
+                onPressed: homeController.refreshAll,
                 child: Text("Reintentar cargar novedades"),
               );
             case Status.COMPLETED:
@@ -498,6 +458,34 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         _buildEventGradient(),
         Positioned(
+        top: 10,
+        right: 10,
+        child: GestureDetector(
+          onTap: () {
+            Get.toNamed(RouteName.eventoDetalleView, arguments: evento);
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              color: AppColor.secondaryColor.withValues(alpha: 0.5),
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26,
+                  blurRadius: 4,
+                  offset: Offset(2, 2),
+                ),
+              ],
+            ),
+            padding: EdgeInsets.all(10),
+            child: Icon(
+              FontAwesomeIcons.chevronRight,
+              color: AppColor.whiteColor,
+              size: 18,
+            ),
+          ),
+        ),
+      ),
+        Positioned(
           bottom: 10,
           left: 15,
           right: 15,
@@ -570,14 +558,14 @@ class _HomeScreenState extends State<HomeScreen> {
       onPressed: () {},
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColor.secondaryColor,
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: Text(
         "Inscríbete",
         style: TextStyle(
           fontFamily: AppFonts.mina,
-          fontSize: 14,
+          fontSize: 15,
           color: AppColor.whiteColor,
         ),
       ),
@@ -589,14 +577,14 @@ class _HomeScreenState extends State<HomeScreen> {
       onPressed: () {},
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColor.secondaryColor,
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
       child: Text(
         "Asistencia",
         style: TextStyle(
           fontFamily: AppFonts.mina,
-          fontSize: 14,
+          fontSize: 15,
           color: AppColor.whiteColor,
         ),
       ),

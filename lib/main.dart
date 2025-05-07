@@ -14,9 +14,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase(); // Inicializa Firebase
   await LocalNotifications.initialize(); // Inicializa las notificaciones locales
-  await FirebaseMessagingService.initializeFirebaseMessaging(); // Inicializa Firebase Messaging
   Get.put(AppInfoController());
   runApp(const MyApp());
+  // Esperar a que la UI esté montada
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    FirebaseMessagingService.initializeFirebaseMessaging();
+  });
 }
 
 class MyApp extends StatelessWidget {

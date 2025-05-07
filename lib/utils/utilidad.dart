@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
+import '../res/fonts/app_fonts.dart';
+
 String formatearFecha(DateTime fecha) {
   final DateFormat formatter = DateFormat('dd MMM yyyy');
   return formatter.format(fecha); // Por ejemplo: '12 Mar 1998'
@@ -97,12 +99,13 @@ List<String>? parseLista(String? jsonLista) {
 Widget mostrarHtml(String html) {
   return HtmlWidget(
     html,
-    textStyle: TextStyle(fontSize: 16), // Puedes ajustar el estilo aquí
+    textStyle: TextStyle(fontSize: 16,fontFamily: AppFonts.mina,), // Puedes ajustar el estilo aquí
   );
 }
 String convertirHtmlATexto(String html) {
   RegExp exp = RegExp(r'<[^>]*>');
   return html.replaceAll(exp, ''); // Elimina las etiquetas HTML
+
 }
 
 // Verificar si la inscripción está cerrada
