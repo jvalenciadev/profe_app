@@ -77,16 +77,14 @@ class UpdateAppView extends StatelessWidget {
                 icon: const Icon(Icons.download, color: AppColor.whiteColor),
                 label: const Text(
                   'Actualizar ahora',
-                  style: TextStyle(fontSize: 16,
-                  fontFamily: AppFonts.mina,
-                  ),
+                  style: TextStyle(fontSize: 16, fontFamily: AppFonts.mina),
                 ),
               ),
               const SizedBox(height: 20),
               TextButton(
                 onPressed: () {
                   // Redirigir al HomeView
-                  Get.toNamed(RouteName.homeView);
+                  Get.offNamed(RouteName.homeView);
                 },
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(

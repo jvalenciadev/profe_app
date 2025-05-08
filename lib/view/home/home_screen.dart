@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:programa_profe/res/assets/image_assets.dart';
 import 'package:programa_profe/res/fonts/app_fonts.dart';
 
 import '../../data/response/status.dart';
@@ -93,8 +94,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh:homeController.refreshAll,
-      color:AppColor.primaryColor,
+      onRefresh: homeController.refreshAll,
+      color: AppColor.primaryColor,
       child: SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
         child: Padding(
@@ -165,7 +166,9 @@ class _HomeScreenState extends State<HomeScreen> {
               AppColor.secondaryColor,
               "Sedes",
               () {
-                Get.toNamed(RouteName.sedeView);
+                setState(() {
+                  Get.toNamed(RouteName.sedeView);
+                });
               },
             ),
             _buildIcons(
@@ -173,7 +176,9 @@ class _HomeScreenState extends State<HomeScreen> {
               AppColor.secondaryColor,
               "Información",
               () {
-                Get.toNamed(RouteName.informacionView);
+                setState(() {
+                  Get.toNamed(RouteName.informacionView);
+                });
               },
             ),
           ],
@@ -197,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: ClipOval(
                     child: Image.asset(
-                      'assets/logos/logo_radio.png',
+                      ImageAssets.logoradio,
                       width: 60,
                       height: 60,
                       fit: BoxFit.cover,
@@ -458,33 +463,35 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         _buildEventGradient(),
         Positioned(
-        top: 10,
-        right: 10,
-        child: GestureDetector(
-          onTap: () {
-            Get.toNamed(RouteName.eventoDetalleView, arguments: evento);
-          },
-          child: Container(
-            decoration: BoxDecoration(
-              color: AppColor.secondaryColor.withValues(alpha: 0.5),
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 4,
-                  offset: Offset(2, 2),
-                ),
-              ],
-            ),
-            padding: EdgeInsets.all(10),
-            child: Icon(
-              FontAwesomeIcons.chevronRight,
-              color: AppColor.whiteColor,
-              size: 18,
+          top: 10,
+          right: 10,
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                Get.toNamed(RouteName.eventoDetalleView, arguments: evento);
+              });
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColor.secondaryColor.withValues(alpha: 0.5),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 4,
+                    offset: Offset(2, 2),
+                  ),
+                ],
+              ),
+              padding: EdgeInsets.all(10),
+              child: Icon(
+                FontAwesomeIcons.chevronRight,
+                color: AppColor.whiteColor,
+                size: 18,
+              ),
             ),
           ),
         ),
-      ),
         Positioned(
           bottom: 10,
           left: 15,

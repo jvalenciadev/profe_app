@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:programa_profe/res/colors/app_color.dart';
 
 import '../res/fonts/app_fonts.dart';
 
@@ -46,6 +47,15 @@ String? formatFechaLarga(String? fecha) {
     return "${dateTime.day} de ${meses[dateTime.month - 1]} de ${dateTime.year}";
   } catch (e) {
     return null;
+  }
+}
+
+String formatoHoraAmPm(String hora24) {
+  try {
+    final hora = DateFormat("HH:mm:ss").parse(hora24);
+    return DateFormat("hh:mm a").format(hora).toLowerCase(); // ej: 03:00 pm
+  } catch (e) {
+    return hora24; // En caso de error, devuelve el valor original
   }
 }
 
@@ -95,17 +105,22 @@ List<String>? parseLista(String? jsonLista) {
     return null;
   }
 }
+
 // 2. Gestión de Inscripciones y Validaciones
 Widget mostrarHtml(String html) {
   return HtmlWidget(
     html,
-    textStyle: TextStyle(fontSize: 16,fontFamily: AppFonts.mina,), // Puedes ajustar el estilo aquí
+    textStyle: TextStyle(
+      fontSize: 16,
+      fontFamily: AppFonts.mina,
+      color: AppColor.greyColor,
+    ), // Puedes ajustar el estilo aquí
   );
 }
+
 String convertirHtmlATexto(String html) {
   RegExp exp = RegExp(r'<[^>]*>');
   return html.replaceAll(exp, ''); // Elimina las etiquetas HTML
-
 }
 
 // Verificar si la inscripción está cerrada

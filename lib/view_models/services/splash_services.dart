@@ -60,9 +60,9 @@ class SplashServices {
     String versionActual = appInfo.respuesta?.versionActual ?? '';
 
     if (appVersion != versionActual) {
-      Get.toNamed(RouteName.updateAppView);
+      Get.offAllNamed(RouteName.updateAppView);
     } else {
-      Get.toNamed(RouteName.homeView);
+      Get.offAllNamed(RouteName.homeView);
     }
   }
 }

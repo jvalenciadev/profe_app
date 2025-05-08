@@ -1,5 +1,3 @@
-
-
 import 'package:get/get.dart';
 import '../../res/routes/routes_name.dart';
 import '../../view/evento/evento_detalle.dart';
@@ -12,57 +10,55 @@ import '../../view/splash_screen.dart';
 import '../../view/widgets/update_app_view.dart';
 
 class AppRoutes {
-
   static appRoutes() => [
     GetPage(
       name: RouteName.splashScreen,
-      page: () => SplashScreen() ,
+      page: () => SplashScreen(),
       transitionDuration: Duration(milliseconds: 250),
       transition: Transition.fadeIn,
-    ) ,
+    ),
     GetPage(
       name: RouteName.homeView,
-      page: () => HomeView() ,
+      page: () => HomeView(),
       transitionDuration: Duration(milliseconds: 250),
       transition: Transition.noTransition,
     ),
     GetPage(
       name: RouteName.updateAppView,
-      page: () => UpdateAppView() ,
+      page: () => UpdateAppView(),
       transitionDuration: Duration(milliseconds: 250),
       transition: Transition.fadeIn,
     ),
     GetPage(
       name: RouteName.programaView,
-      page: () => OffersScreen() ,
+      page: () => OffersScreen(),
       transitionDuration: Duration(milliseconds: 250),
       transition: Transition.cupertino,
     ),
     GetPage(
       name: RouteName.sedeView,
-      page: () => SedesScreen() ,
+      page: () => SedesScreen(),
       transitionDuration: Duration(milliseconds: 250),
       transition: Transition.cupertino,
     ),
     GetPage(
       name: RouteName.informacionView,
-      page: () => InformationScreen() ,
+      page: () => InformationScreen(),
       transitionDuration: Duration(milliseconds: 250),
       transition: Transition.rightToLeftWithFade,
     ),
 
     GetPage(
       name: RouteName.eventoView,
-      page: () => EventScreen() ,
+      page: () => EventScreen(),
       transitionDuration: Duration(milliseconds: 250),
       transition: Transition.rightToLeftWithFade,
     ),
     GetPage(
       name: RouteName.eventoDetalleView,
-      page: () => EventDetalleScreen() ,
+      page: () => EventDetalleScreen(),
       transitionDuration: Duration(milliseconds: 250),
       transition: Transition.size,
     ),
   ];
-
 }

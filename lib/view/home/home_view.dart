@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:programa_profe/view/home/home_screen.dart';
+import '../../res/assets/image_assets.dart';
 import '../../res/colors/app_color.dart';
 import '../../view_models/controller/home/home_view_models.dart';
 import '../evento/evento_view.dart';
@@ -88,7 +89,7 @@ class _HomeViewState extends State<HomeView> {
                     const SizedBox(height: 5),
                     // Logo de la empresa
                     Image.asset(
-                      'assets/logos/logoprofe.png',
+                      ImageAssets.logoProfe,
                       width: 120,
                       fit: BoxFit.contain,
                     ),
