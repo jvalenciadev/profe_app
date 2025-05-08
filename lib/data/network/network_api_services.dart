@@ -45,11 +45,12 @@ class NetworkApiServices extends BaseApiServices {
     dynamic responseJson;
     try {
       final headers = {
+        'Content-Type': 'application/json',
         'X-API-KEY': dotenv.env['API_KEY'] ?? '', // Obtener la API_KEY del .env
       };
 
       final response = await http
-          .post(Uri.parse(url), headers: headers, body: data)
+          .post(Uri.parse(url), headers: headers, body: jsonEncode(data))
           .timeout(const Duration(seconds: 10));
       responseJson = returnResponse(response);
     } on SocketException {

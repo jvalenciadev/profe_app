@@ -127,8 +127,10 @@ class _HomeScreenState extends State<HomeScreen> {
               );
             case Status.COMPLETED:
               final eventos =
-                  homeController.eventoList.value.respuesta!.take(10).toList();
+                  homeController.eventoList.value.respuesta!.take(5).toList();
               return _buildEventCarousel(eventos);
+            case Status.IDLE:
+              throw UnimplementedError();
           }
         }),
         SizedBox(height: 5),
@@ -334,6 +336,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       );
                     }).toList(),
               );
+            case Status.IDLE:
+              throw UnimplementedError();
           }
         }),
       ],
@@ -423,8 +427,8 @@ class _HomeScreenState extends State<HomeScreen> {
         (index) => AnimatedContainer(
           duration: const Duration(milliseconds: 300),
           margin: const EdgeInsets.symmetric(horizontal: 5),
-          width: _currentIndex == index ? 18 : 8,
-          height: 5,
+          width: _currentIndex == index ? 18 : 10,
+          height: 6,
           decoration: BoxDecoration(
             color:
                 _currentIndex == index
@@ -553,20 +557,24 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildEventActions(evento) {
     return Row(
       children: [
-        if (evento.eveInscripcion == 1) _buildInscriptionButton(),
+        if (evento.eveInscripcion == 1) _buildInscriptionButton(evento),
         const SizedBox(width: 10),
-        if (evento.eveAsistencia == true) _buildAttendanceButton(),
+        if (evento.eveAsistencia == true) _buildAttendanceButton(evento),
       ],
     );
   }
 
-  Widget _buildInscriptionButton() {
+  Widget _buildInscriptionButton(dynamic evento) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        setState(() {
+                Get.toNamed(RouteName.eventoInscripcionView, arguments: evento);
+              });
+      },
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColor.secondaryColor,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
       child: Text(
         "Inscríbete",
@@ -574,18 +582,24 @@ class _HomeScreenState extends State<HomeScreen> {
           fontFamily: AppFonts.mina,
           fontSize: 15,
           color: AppColor.whiteColor,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.5
         ),
       ),
     );
   }
 
-  Widget _buildAttendanceButton() {
+  Widget _buildAttendanceButton(dynamic evento) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        setState(() {
+                Get.toNamed(RouteName.eventoInscripcionView, arguments: evento);
+              });
+      },
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColor.secondaryColor,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
       child: Text(
         "Asistencia",
@@ -593,6 +607,8 @@ class _HomeScreenState extends State<HomeScreen> {
           fontFamily: AppFonts.mina,
           fontSize: 15,
           color: AppColor.whiteColor,
+          fontWeight: FontWeight.w500,
+          letterSpacing: 0.5
         ),
       ),
     );

@@ -390,6 +390,9 @@ class _SedesScreenState extends State<SedesScreen> {
                 ),
               ],
             );
+          case Status.IDLE:
+            // TODO: Handle this case.
+            throw UnimplementedError();
         }
       }),
     );

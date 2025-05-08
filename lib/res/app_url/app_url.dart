@@ -3,8 +3,7 @@ class AppUrl {
 
   static String get baseUrl => dotenv.env['BASEURL'] ?? 'https://profe.minedu.gob.bo/api/v1';  // Valor por defecto si no se carga la variable
   static String get baseImage => dotenv.env['IMAGEURL'] ?? 'https://profe.minedu.gob.bo';  // Valor por defecto si no se carga la variable
-  static String get eventos => '$baseUrl/eventos';
-  static String get eventosId => '$baseUrl/evento';
+
   static String get agregarToken => '$baseUrl/agregarToken';
   static String get programas => '$baseUrl/programas';
   static String get programaId => '$baseUrl/programa';
@@ -16,4 +15,9 @@ class AppUrl {
   static String get videos => '$baseUrl/videos';
   static String get appInfo => '$baseUrl/appInfo';
   static String get profe => '$baseUrl/profe';
+
+
+  static String get eventos => '$baseUrl/eventos';
+  static String get eventosId => '$baseUrl/evento';
+  static String get eventoInscripcion => '$baseUrl/evento-inscripcion-participante';
 }

@@ -15,6 +15,7 @@ class AppColor {
   static const Color greyColor =  Color.fromARGB(255, 95, 95, 95);
   static const Color grey2Color =  Color.fromARGB(255, 219, 219, 219);
   static const Color grey3Color =  Color.fromARGB(255, 242, 247, 248);
+  static const Color grey4Color =  Color.fromARGB(255, 238, 246, 248);
 
   static const Color primaryButtonColor =  Color.fromARGB(255, 1, 177, 201);
   static const Color secondaryButtonColor =  Color(0xffFC3F5B);

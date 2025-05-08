@@ -1,4 +1,7 @@
 import 'package:get/get.dart';
+import 'package:programa_profe/view/evento/evento_asistencia.dart';
+import 'package:programa_profe/view/evento/evento_formulario.dart';
+import 'package:programa_profe/view/evento/evento_inscripcion.dart';
 import '../../res/routes/routes_name.dart';
 import '../../view/evento/evento_detalle.dart';
 import '../../view/evento/evento_view.dart';
@@ -59,6 +62,24 @@ class AppRoutes {
       page: () => EventDetalleScreen(),
       transitionDuration: Duration(milliseconds: 250),
       transition: Transition.size,
+    ),
+    GetPage(
+      name: RouteName.eventoAsistenciaView,
+      page: () => EventoAsistenciaScreen(),
+      transitionDuration: Duration(milliseconds: 250),
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: RouteName.eventoInscripcionView,
+      page: () => EventoInscripcionScreen(),
+      transitionDuration: Duration(milliseconds: 250),
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: RouteName.eventoFormularioView,
+      page: () => EventoFormularioScreen(),
+      transitionDuration: Duration(milliseconds: 250),
+      transition: Transition.rightToLeftWithFade,
     ),
   ];
 }

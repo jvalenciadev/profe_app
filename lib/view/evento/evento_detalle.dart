@@ -82,9 +82,9 @@ class EventDetalleScreen extends StatelessWidget {
                   ),
 
                 DraggableScrollableSheet(
-                  initialChildSize: isPortrait ? 0.65 : 0.50,
-                  minChildSize: isPortrait ? 0.58 : 0.50,
-                  maxChildSize: isPortrait ? 0.95 : 0.90,
+                  initialChildSize: isPortrait ? 0.59 : 0.50,
+                  minChildSize: isPortrait ? 0.59 : 0.50,
+                  maxChildSize: isPortrait ? 0.90 : 0.90,
                   builder: (context, scrollController) {
                     return Container(
                       padding: const EdgeInsets.symmetric(
@@ -168,6 +168,32 @@ class EventDetalleScreen extends StatelessWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
+                                      
+                               if (evento.eveInsHoraAsisHabilitado != null)
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: AppColor.primaryColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                FontAwesomeIcons.clock,
+                                color: AppColor.primaryColor,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                'Hora: ${formatoHoraAmPm(evento.eveInsHoraAsisHabilitado)} - ${formatoHoraAmPm(evento.eveInsHoraAsisDeshabilitado)}',
+                                style: const TextStyle(
+                                  fontFamily: AppFonts.mina,
+                                  fontSize: 16
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 10),
                                       Row(
                                         children: const [
                                           Icon(
@@ -187,143 +213,58 @@ class EventDetalleScreen extends StatelessWidget {
                                           ),
                                         ],
                                       ),
-                                      const SizedBox(height: 12),
+                                      const SizedBox(height: 10),
                                       Wrap(
                                         spacing: 8,
                                         runSpacing: 8,
                                         children:
-                                            (evento.modalidades as List<String>)
-                                                .map((modalidad) {
-                                                  return Chip(
-                                                    label: Text(
-                                                      modalidad,
-                                                      style: const TextStyle(
-                                                        color:
-                                                            AppColor.whiteColor,
-                                                        fontFamily:
-                                                            AppFonts.mina,
-                                                      ),
-                                                    ),
-                                                    backgroundColor:
-                                                        AppColor.secondaryColor,
-                                                  );
-                                                })
-                                                .toList(),
+                                            (evento.modalidades as List<String>).map((
+                                              modalidad,
+                                            ) {
+                                              return Chip(
+                                                label: Text(
+                                                  modalidad,
+                                                  style: const TextStyle(
+                                                    color: AppColor.whiteColor,
+                                                    fontFamily: AppFonts.mina,
+                                                    fontWeight: FontWeight.w500,
+                                                    letterSpacing: 0.5,
+                                                  ),
+                                                ),
+                                                backgroundColor:
+                                                    AppColor.secondaryColor,
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 6,
+                                                    ), // Espaciado interno
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                        20,
+                                                      ), // Bordes más suaves
+                                                  side: BorderSide(
+                                                    color: AppColor
+                                                        .secondaryColor
+                                                        .withOpacity(
+                                                          0.6,
+                                                        ), // Sutil borde
+                                                    width: 1,
+                                                  ),
+                                                ),
+                                                elevation: 4,
+                                                shadowColor: AppColor
+                                                    .secondaryColor
+                                                    .withOpacity(0.9),
+                                              );
+                                            }).toList(),
                                       ),
                                     ],
                                   ),
 
-                                const SizedBox(height: 20),
-
-                                if (evento.eveInsHoraAsisHabilitado != null ||
-                                    evento.eveInsHoraAsisDeshabilitado != null)
-                                  Container(
-                                    margin: const EdgeInsets.only(bottom: 16),
-                                    padding: const EdgeInsets.all(16),
-                                    decoration: BoxDecoration(
-                                      color: AppColor.primaryColor.withOpacity(
-                                        0.05,
-                                      ),
-                                      borderRadius: BorderRadius.circular(16),
-                                      border: Border.all(
-                                        color: AppColor.primaryColor
-                                            .withOpacity(0.15),
-                                      ),
-                                    ),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          margin: const EdgeInsets.only(top: 4),
-                                          child: const Icon(
-                                            FontAwesomeIcons.clock,
-                                            size: 20,
-                                            color: AppColor.primaryColor,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 12),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const Text(
-                                                'Hora:',
-                                                style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w700,
-                                                  fontFamily: AppFonts.mina,
-                                                  color: AppColor.primaryColor,
-                                                ),
-                                              ),
-                                              const SizedBox(height: 10),
-                                              Wrap(
-                                                spacing: 20,
-                                                runSpacing: 8,
-                                                children: [
-                                                  Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      const Icon(
-                                                        FontAwesomeIcons
-                                                            .arrowRightFromBracket,
-                                                        size: 14,
-                                                        color:
-                                                            AppColor
-                                                                .whatsappColor,
-                                                      ),
-                                                      const SizedBox(width: 6),
-                                                      Text(
-                                                        "Desde: ${formatoHoraAmPm(evento.eveInsHoraAsisHabilitado)}",
-                                                        style: const TextStyle(
-                                                          fontSize: 14,
-                                                          fontFamily:
-                                                              AppFonts.mina,
-                                                          color:
-                                                              AppColor
-                                                                  .blackColor,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Row(
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      const Icon(
-                                                        FontAwesomeIcons
-                                                            .arrowRightToBracket,
-                                                        size: 14,
-                                                        color:
-                                                            AppColor.redColor,
-                                                      ),
-                                                      const SizedBox(width: 6),
-                                                      Text(
-                                                        "Hasta: ${formatoHoraAmPm(evento.eveInsHoraAsisDeshabilitado)}",
-                                                        style: const TextStyle(
-                                                          fontSize: 14,
-                                                          fontFamily:
-                                                              AppFonts.mina,
-                                                          color:
-                                                              AppColor
-                                                                  .blackColor,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                              ],
+                                const SizedBox(height: 10),
+],
                             ),
-                            const SizedBox(height: 15),
                             // Descripción
                             if (evento.eveDescripcion != null)
                               Column(

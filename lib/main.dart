@@ -8,6 +8,7 @@ import 'view_models/controller/app_view_models.dart';
 import 'firebase/firebase_config.dart';
 import 'firebase/firebase_messaging_service.dart';
 import 'notifications/local_notifications.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   await dotenv.load(fileName: "assets/.env");
@@ -32,10 +33,21 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'App PROFE',
       translations: Languages(),
-      locale: const Locale('en', 'US'),
-      fallbackLocale: const Locale('en', 'US'),
+      locale: const Locale('es', 'BO'),
+      fallbackLocale: const Locale('es', 'BO'),
       theme: AppTheme.lightTheme,
       getPages: AppRoutes.appRoutes(),
+      //  ↓↓↓ AGREGA ESTO ↓↓↓
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('es', 'ES'),  // Español
+        Locale('es', 'BO'),  // Español (Bolivia), si prefieres
+        Locale('en', 'US'),  // Inglés como fallback
+      ],
     );
   }
 }

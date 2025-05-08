@@ -15,4 +15,7 @@ class RouteName {
 
   static const String eventoView = '/evento_view' ;
   static const String eventoDetalleView = '/evento_detalle_view' ;
+  static const String eventoInscripcionView = '/evento_inscripcion_view' ;
+  static const String eventoAsistenciaView = '/evento_asistencia_view' ;
+  static const String eventoFormularioView = '/evento_formulario_view' ;
 }

@@ -4,6 +4,7 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   flutter_barcode_sdk
+  flutter_localization
   url_launcher_linux
 )
 
