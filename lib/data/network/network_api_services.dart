@@ -73,6 +73,12 @@ class NetworkApiServices extends BaseApiServices {
       case 400:
         dynamic responseJson = jsonDecode(response.body);
         return responseJson;
+      case 404:
+        dynamic responseJson = jsonDecode(response.body);
+        return responseJson;
+      case 500:
+        dynamic responseJson = jsonDecode(response.body);
+        return responseJson;
 
       default:
         throw FetchDataException(

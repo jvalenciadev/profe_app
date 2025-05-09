@@ -4,7 +4,6 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   firebase_core
-  flutter_barcode_sdk
   flutter_localization
   permission_handler_windows
   url_launcher_windows

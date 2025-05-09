@@ -8,22 +8,43 @@ class EventoController extends GetxController {
   final _evento = EventoRepository();
 
   /// Observable que contendrá status, data y mensaje de error
-  final inscripcionResponse = 
+  final inscripcionResponse =
       ApiResponse<PersonaEstadoModel>(Status.IDLE, null, null).obs;
 
   /// POST: inscribir participante
   void eventoInscripcionPost(Map<String, dynamic> data) {
-    // 1) Pasamos a LOADING
+    // Cambiar estado a "cargando" mientras se realiza la petición
     inscripcionResponse.value = ApiResponse.loading();
 
-    _evento.eventoInscripcionApi(data).then((personaModel) {
-      // 2) Si todo OK, marcamos COMPLETED con los datos
-      inscripcionResponse.value = ApiResponse.completed(personaModel);
-      print("Inscripción exitosa: ${personaModel.respuesta?.persona?.nombre1}");
-    }).catchError((err) {
-      // 3) En error, guardamos el mensaje
-      inscripcionResponse.value = ApiResponse.error(err.toString());
-      print("Error en inscripción: $err");
-    });
+    // Llamar al método de inscripción que retorna un Future
+    _evento
+        .eventoInscripcionApi(data)
+        .then((personaModel) {
+          // Si la respuesta es exitosa, actualizar el estado a "completado"
+          inscripcionResponse.value = ApiResponse.completed(personaModel);
+
+          // Mostrar en consola información del participante inscrito
+          print(
+            "✅ Inscripción exitosa: ${personaModel.respuesta?.persona?.nombre1}",
+          );
+        })
+        .catchError((err, stackTrace) {
+          // Si ocurre un error, actualizar el estado a "error"
+          inscripcionResponse.value = ApiResponse.error(err.toString());
+
+          // Mostrar el error básico
+          print("❌ Error en inscripción: ${err.toString()}");
+
+          // Mostrar el stack trace para mayor contexto (ayuda a depurar)
+          print("📌 StackTrace:");
+          print(stackTrace);
+
+          // Si el error tiene más detalles, intenta mostrarlos
+          if (err is Exception) {
+            print("⚠️ Error tipo Exception: ${err.runtimeType}");
+          } else {
+            print("⚠️ Error desconocido: ${err}");
+          }
+        });
   }
 }

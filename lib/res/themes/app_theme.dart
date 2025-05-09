@@ -11,8 +11,13 @@ class AppTheme {
       textTheme: AppTextTheme.lightTextTheme,
       visualDensity: VisualDensity.adaptivePlatformDensity,
       scaffoldBackgroundColor: AppColor.whiteColor,
-      appBarTheme: AppBarTheme(
-        color: AppColor.primaryColor,
+      appBarTheme: AppBarTheme(color: AppColor.primaryColor),
+      textSelectionTheme: TextSelectionThemeData(
+        cursorColor: AppColor.primaryColor, // cursor
+        selectionColor: AppColor.primaryColor.withOpacity(
+          0.3,
+        ), // fondo del texto seleccionado
+        selectionHandleColor: AppColor.primaryColor, // color de las "gotitas"
       ),
     );
   }
