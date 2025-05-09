@@ -469,30 +469,30 @@ class _HomeScreenState extends State<HomeScreen> {
         Positioned(
           top: 10,
           right: 10,
-          child: GestureDetector(
-            onTap: () {
-              setState(() {
+          child: Material(
+            // Fondo y sombra del botón
+            color: AppColor.secondaryColor.withOpacity(0.5),
+            shape: const CircleBorder(),
+            elevation: 4,
+            child: IconButton(
+              // Acción al pulsar
+              onPressed: () {
                 Get.toNamed(RouteName.eventoDetalleView, arguments: evento);
-              });
-            },
-            child: Container(
-              decoration: BoxDecoration(
-                color: AppColor.secondaryColor.withValues(alpha: 0.5),
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 4,
-                    offset: Offset(2, 2),
-                  ),
-                ],
-              ),
-              padding: EdgeInsets.all(10),
-              child: Icon(
+              },
+              icon: const Icon(
                 FontAwesomeIcons.chevronRight,
-                color: AppColor.whiteColor,
                 size: 18,
+                color: AppColor.whiteColor,
               ),
+              // Espacio alrededor del icono
+              padding: const EdgeInsets.all(10),
+              // Define la forma para el splash
+              splashRadius: 24,
+              // Color de la onda al tocar
+              splashColor: AppColor.whiteColor.withOpacity(0.3),
+              highlightColor: AppColor.whiteColor.withOpacity(0.1),
+              // Constraint vacías para no agregar espacios extra
+              constraints: const BoxConstraints(),
             ),
           ),
         ),
@@ -568,13 +568,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return ElevatedButton(
       onPressed: () {
         setState(() {
-                Get.toNamed(RouteName.eventoInscripcionView, arguments: evento);
-              });
+          Get.toNamed(RouteName.eventoInscripcionView, arguments: evento);
+        });
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColor.secondaryColor,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        foregroundColor: Colors.white, // Esto mejora el efecto en presión
+        shadowColor: Colors.black.withOpacity(0.4),
       ),
       child: Text(
         "Inscríbete",
@@ -583,7 +585,7 @@ class _HomeScreenState extends State<HomeScreen> {
           fontSize: 15,
           color: AppColor.whiteColor,
           fontWeight: FontWeight.w500,
-          letterSpacing: 0.5
+          letterSpacing: 0.5,
         ),
       ),
     );
@@ -593,14 +595,17 @@ class _HomeScreenState extends State<HomeScreen> {
     return ElevatedButton(
       onPressed: () {
         setState(() {
-                Get.toNamed(RouteName.eventoInscripcionView, arguments: evento);
-              });
+          Get.toNamed(RouteName.eventoInscripcionView, arguments: evento);
+        });
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: AppColor.secondaryColor,
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        foregroundColor: Colors.white, // Esto mejora el efecto en presión
+        shadowColor: Colors.black.withOpacity(0.4),
       ),
+
       child: Text(
         "Asistencia",
         style: TextStyle(
@@ -608,7 +613,7 @@ class _HomeScreenState extends State<HomeScreen> {
           fontSize: 15,
           color: AppColor.whiteColor,
           fontWeight: FontWeight.w500,
-          letterSpacing: 0.5
+          letterSpacing: 0.5,
         ),
       ),
     );

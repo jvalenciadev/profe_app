@@ -20,13 +20,9 @@ class EventoController extends GetxController {
     _evento
         .eventoInscripcionApi(data)
         .then((personaModel) {
-          // Si la respuesta es exitosa, actualizar el estado a "completado"
           inscripcionResponse.value = ApiResponse.completed(personaModel);
+          print("📦 Contenido completo: ${personaModel.toJson()}");
 
-          // Mostrar en consola información del participante inscrito
-          print(
-            "✅ Inscripción exitosa: ${personaModel.respuesta?.persona?.nombre1}",
-          );
         })
         .catchError((err, stackTrace) {
           // Si ocurre un error, actualizar el estado a "error"

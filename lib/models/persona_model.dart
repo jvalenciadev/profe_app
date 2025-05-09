@@ -24,7 +24,7 @@ class PersonaEstadoModel {
   Map<String, dynamic> toJson() => {
     'status': status,
     'codigo_http': codigoHttp,
-    'respuesta': respuesta?.toJson(),
+    'respuesta': respuesta != null ? respuesta!.toJson() : null,
     'error': error,
   };
 }
