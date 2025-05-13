@@ -38,6 +38,7 @@ class Utils {
     Get.snackbar(title, message);
   }
 }
+
 void showCustomSnackbar({
   required String title,
   required String message,
@@ -56,11 +57,7 @@ void showCustomSnackbar({
     borderRadius: 12,
     // Sombra para dar profundidad
     boxShadows: [
-      BoxShadow(
-        color: Colors.black26,
-        blurRadius: 10,
-        offset: Offset(0, 4),
-      ),
+      BoxShadow(color: Colors.black26, blurRadius: 10, offset: Offset(0, 4)),
     ],
     // Icono a la izquierda
     icon: Icon(
@@ -68,8 +65,9 @@ void showCustomSnackbar({
       color: Colors.white,
     ),
     // Color de fondo según tipo
-    backgroundColor:
-        (isError ? Colors.redAccent : Colors.green).withOpacity(0.9),
+    backgroundColor: (isError ? Colors.redAccent : Colors.green).withOpacity(
+      0.9,
+    ),
     // Color del texto
     colorText: Colors.white,
     // Animaciones de entrada/salida
@@ -86,7 +84,11 @@ class Department {
   final String name;
   final String abbreviation;
 
-  const Department({required this.id, required this.name, required this.abbreviation});
+  const Department({
+    required this.id,
+    required this.name,
+    required this.abbreviation,
+  });
 }
 
 /// Lista de departamentos de Bolivia con ID, nombre y abreviación.

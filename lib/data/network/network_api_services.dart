@@ -23,7 +23,7 @@ class NetworkApiServices extends BaseApiServices {
 
       final response = await http
           .get(Uri.parse(url), headers: headers)
-          .timeout(const Duration(seconds: 5));
+          .timeout(const Duration(seconds: 30));
       responseJson = returnResponse(response);
     } on SocketException {
       throw InternetException('');
@@ -51,7 +51,7 @@ class NetworkApiServices extends BaseApiServices {
 
       final response = await http
           .post(Uri.parse(url), headers: headers, body: jsonEncode(data))
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 30));
       responseJson = returnResponse(response);
     } on SocketException {
       throw InternetException('');
@@ -70,12 +70,23 @@ class NetworkApiServices extends BaseApiServices {
       case 200:
         dynamic responseJson = jsonDecode(response.body);
         return responseJson;
+      case 403:
+        dynamic responseJson = jsonDecode(response.body);
+        return responseJson;
       case 400:
         dynamic responseJson = jsonDecode(response.body);
         return responseJson;
       case 404:
         dynamic responseJson = jsonDecode(response.body);
         return responseJson;
+      case 429:
+        return {
+          "status": "error",
+          "codigo_http": 429,
+          "respuesta": null,
+          "error":
+              "Has realizado demasiadas solicitudes. Por favor, espera un momento antes de volver a intentar.",
+        };
       case 500:
         dynamic responseJson = jsonDecode(response.body);
         return responseJson;

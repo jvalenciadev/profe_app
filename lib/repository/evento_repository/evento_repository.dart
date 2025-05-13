@@ -26,4 +26,21 @@ class EventoRepository {
     );
     return PersonaEstadoModel.fromJson(response);
   }
+
+  Future<PersonaEstadoModel> eventoInscripcionParApi(
+    Map<String, dynamic> data,
+  ) async {
+    dynamic response = await _apiService.postApi(
+      data,
+      AppUrl.eventoInscripcion,
+    );
+    return PersonaEstadoModel.fromJson(response);
+  }
+
+  Future<PersonaEstadoModel> eventoAsistenciaApi(
+    Map<String, dynamic> data,
+  ) async {
+    dynamic response = await _apiService.postApi(data, AppUrl.eventoAsistencia);
+    return PersonaEstadoModel.fromJson(response);
+  }
 }

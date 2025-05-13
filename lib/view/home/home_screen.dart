@@ -96,10 +96,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return RefreshIndicator(
       onRefresh: homeController.refreshAll,
       color: AppColor.primaryColor,
-      child: SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+      child: SafeArea(
+        child: SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
           child: _buildCompletedState(),
         ),
       ),
@@ -595,7 +594,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return ElevatedButton(
       onPressed: () {
         setState(() {
-          Get.toNamed(RouteName.eventoInscripcionView, arguments: evento);
+          Get.toNamed(RouteName.eventoAsistenciaView, arguments: evento);
         });
       },
       style: ElevatedButton.styleFrom(

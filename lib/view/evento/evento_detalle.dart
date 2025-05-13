@@ -168,32 +168,35 @@ class EventDetalleScreen extends StatelessWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      
-                               if (evento.eveInsHoraAsisHabilitado != null)
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: AppColor.primaryColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Row(
-                            children: [
-                              const Icon(
-                                FontAwesomeIcons.clock,
-                                color: AppColor.primaryColor,
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                'Hora: ${formatoHoraAmPm(evento.eveInsHoraAsisHabilitado)} - ${formatoHoraAmPm(evento.eveInsHoraAsisDeshabilitado)}',
-                                style: const TextStyle(
-                                  fontFamily: AppFonts.mina,
-                                  fontSize: 16
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 10),
+                                      if (evento.eveInsHoraAsisHabilitado !=
+                                          null)
+                                        Container(
+                                          padding: const EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
+                                            color: AppColor.primaryColor
+                                                .withOpacity(0.1),
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              const Icon(
+                                                FontAwesomeIcons.clock,
+                                                color: AppColor.primaryColor,
+                                              ),
+                                              const SizedBox(width: 10),
+                                              Text(
+                                                'Hora: ${formatoHoraAmPm(evento.eveInsHoraAsisHabilitado)} - ${formatoHoraAmPm(evento.eveInsHoraAsisDeshabilitado)}',
+                                                style: const TextStyle(
+                                                  fontFamily: AppFonts.mina,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      const SizedBox(height: 10),
                                       Row(
                                         children: const [
                                           Icon(
@@ -263,7 +266,7 @@ class EventDetalleScreen extends StatelessWidget {
                                   ),
 
                                 const SizedBox(height: 10),
-],
+                              ],
                             ),
                             // Descripción
                             if (evento.eveDescripcion != null)

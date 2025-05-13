@@ -22,7 +22,68 @@ class EventoController extends GetxController {
         .then((personaModel) {
           inscripcionResponse.value = ApiResponse.completed(personaModel);
           print("📦 Contenido completo: ${personaModel.toJson()}");
+        })
+        .catchError((err, stackTrace) {
+          // Si ocurre un error, actualizar el estado a "error"
+          inscripcionResponse.value = ApiResponse.error(err.toString());
 
+          // Mostrar el error básico
+          print("❌ Error en inscripción: ${err.toString()}");
+
+          // Mostrar el stack trace para mayor contexto (ayuda a depurar)
+          print("📌 StackTrace:");
+          print(stackTrace);
+
+          // Si el error tiene más detalles, intenta mostrarlos
+          if (err is Exception) {
+            print("⚠️ Error tipo Exception: ${err.runtimeType}");
+          } else {
+            print("⚠️ Error desconocido: ${err}");
+          }
+        });
+  }
+
+  void eventoInscripcionParPost(Map<String, dynamic> data) {
+    // Cambiar estado a "cargando" mientras se realiza la petición
+    inscripcionResponse.value = ApiResponse.loading();
+
+    // Llamar al método de inscripción que retorna un Future
+    _evento
+        .eventoInscripcionParApi(data)
+        .then((personaModel) {
+          inscripcionResponse.value = ApiResponse.completed(personaModel);
+          print("📦 Contenido completo: ${personaModel.toJson()}");
+        })
+        .catchError((err, stackTrace) {
+          // Si ocurre un error, actualizar el estado a "error"
+          inscripcionResponse.value = ApiResponse.error(err.toString());
+
+          // Mostrar el error básico
+          print("❌ Error en inscripción: ${err.toString()}");
+
+          // Mostrar el stack trace para mayor contexto (ayuda a depurar)
+          print("📌 StackTrace:");
+          print(stackTrace);
+
+          // Si el error tiene más detalles, intenta mostrarlos
+          if (err is Exception) {
+            print("⚠️ Error tipo Exception: ${err.runtimeType}");
+          } else {
+            print("⚠️ Error desconocido: ${err}");
+          }
+        });
+  }
+
+  void eventoAsistenciaPost(Map<String, dynamic> data) {
+    // Cambiar estado a "cargando" mientras se realiza la petición
+    inscripcionResponse.value = ApiResponse.loading();
+
+    // Llamar al método de inscripción que retorna un Future
+    _evento
+        .eventoAsistenciaApi(data)
+        .then((personaModel) {
+          inscripcionResponse.value = ApiResponse.completed(personaModel);
+          print("📦 Contenido completo: ${personaModel.toJson()}");
         })
         .catchError((err, stackTrace) {
           // Si ocurre un error, actualizar el estado a "error"

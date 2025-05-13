@@ -44,9 +44,9 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: const [
-        Locale('es', 'ES'),  // Español
-        Locale('es', 'BO'),  // Español (Bolivia), si prefieres
-        Locale('en', 'US'),  // Inglés como fallback
+        Locale('es', 'ES'), // Español
+        Locale('es', 'BO'), // Español (Bolivia), si prefieres
+        Locale('en', 'US'), // Inglés como fallback
       ],
     );
   }

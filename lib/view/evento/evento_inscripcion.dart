@@ -21,6 +21,8 @@ import '../../view_models/controller/home/evento_view_models.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:saver_gallery/saver_gallery.dart';
 
+import 'widget/widget.dart';
+
 class EventoInscripcionScreen extends StatefulWidget {
   const EventoInscripcionScreen({super.key});
 
@@ -117,7 +119,7 @@ class _EventoInscripcionScreenState extends State<EventoInscripcionScreen> {
                               ),
                               padding: const EdgeInsets.fromLTRB(
                                 16,
-                                45,
+                                20,
                                 16,
                                 20,
                               ),
@@ -147,50 +149,44 @@ class _EventoInscripcionScreenState extends State<EventoInscripcionScreen> {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(height: 16),
+                                  const SizedBox(height: 10),
                                   const Divider(
                                     height: 1,
                                     thickness: 1,
                                     color: AppColor.greyColor,
                                   ),
-                                  const SizedBox(height: 16),
-                                  _buildCertRow('C.I.:', persona.ci.toString()),
-                                  const SizedBox(height: 8),
-                                  _buildCertRow(
-                                    'Participante:',
-                                    nombreCompleto,
-                                  ),
-                                  const SizedBox(height: 8),
-                                  _buildCertRow(
+                                  const SizedBox(height: 10),
+                                  buildCertRow('C.I.:', persona.ci.toString()),
+                                  const SizedBox(height: 6),
+                                  buildCertRow('Participante:', nombreCompleto),
+                                  const SizedBox(height: 6),
+                                  buildCertRow(
                                     'Fecha Nac.:',
                                     persona.fechaNacimiento ?? '',
                                   ),
-                                  const SizedBox(height: 8),
-                                  _buildCertRow(
+                                  const SizedBox(height: 6),
+                                  buildCertRow(
                                     'Modalidad:',
                                     persona.pmNombre?.toUpperCase() ?? '',
                                   ),
-                                  const SizedBox(height: 8),
-                                  _buildCertRow(
+                                  const SizedBox(height: 6),
+                                  buildCertRow(
                                     'Celular:',
                                     persona.celular?.toUpperCase() ?? '',
                                   ),
-                                  const SizedBox(height: 8),
-                                  _buildCertRow(
-                                    'Correo:',
-                                    persona.correo ?? '',
-                                  ),
-                                  const SizedBox(height: 8),
-                                  _buildCertRow(
+                                  const SizedBox(height: 6),
+                                  buildCertRow('Correo:', persona.correo ?? ''),
+                                  const SizedBox(height: 6),
+                                  buildCertRow(
                                     'Tipo de Evento:',
                                     persona.etNombre?.toUpperCase() ?? '',
                                   ),
-                                  const SizedBox(height: 8),
-                                  _buildCertRow(
+                                  const SizedBox(height: 6),
+                                  buildCertRow(
                                     'Departamento:',
                                     persona.depNombre ?? '',
                                   ),
-                                  const SizedBox(height: 20),
+                                  const SizedBox(height: 10),
                                   // Código de barras + texto
                                   Center(
                                     child: Column(
@@ -225,7 +221,7 @@ class _EventoInscripcionScreenState extends State<EventoInscripcionScreen> {
                                       ],
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
+                                  const SizedBox(height: 5),
                                   // Estado con chip
                                   Chip(
                                     label: Text(
@@ -278,7 +274,7 @@ class _EventoInscripcionScreenState extends State<EventoInscripcionScreen> {
                                     child: const Text(
                                       'Aceptar',
                                       style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.w500,
                                         color: AppColor.whiteColor,
                                         fontFamily: AppFonts.mina,
@@ -313,7 +309,7 @@ class _EventoInscripcionScreenState extends State<EventoInscripcionScreen> {
                                     label: Text(
                                       _isSaving ? 'Guardando...' : 'Guardar',
                                       style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 14,
                                         fontWeight: FontWeight.w500,
                                         color: AppColor.whiteColor,
                                         fontFamily: AppFonts.mina,
@@ -341,21 +337,37 @@ class _EventoInscripcionScreenState extends State<EventoInscripcionScreen> {
                           ),
                           // Encabezado flotante con título "COMPROBANTE"
                           Positioned(
-                            top: -48,
+                            top: -20, // ajusta según nuevo alto
                             left: 0,
                             right: 0,
-                            child: CircleAvatar(
-                              radius: 48,
-                              backgroundColor: AppColor.secondaryColor,
-                              child: Text(
-                                'COMPROBANTE',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: 0.5,
+                            child: Center(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 12,
                                 ),
-                                textAlign: TextAlign.center,
+                                decoration: BoxDecoration(
+                                  color: AppColor.secondaryColor,
+                                  borderRadius: BorderRadius.circular(
+                                    24,
+                                  ), // píldora
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black26,
+                                      blurRadius: 6,
+                                      offset: Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Text(
+                                  'COMPROBANTE',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -445,7 +457,7 @@ class _EventoInscripcionScreenState extends State<EventoInscripcionScreen> {
         pngBytes,
         quality: 80,
         fileName: imageName,
-        androidRelativePath: "Download/Eventos", // ✅ Carpeta deseada
+        androidRelativePath: "Pictures/Eventos", // ✅ Carpeta deseada
         skipIfExists: false,
       );
       // Mostrar nuevamente los botones
@@ -621,7 +633,7 @@ class _EventoInscripcionScreenState extends State<EventoInscripcionScreen> {
                               ),
                             ),
                             const SizedBox(height: 10),
-                            _buildField(
+                            buildField(
                               controller: _ciController,
                               hint: 'Ej. 12345678',
                               label: 'Cédula de Identidad',
@@ -672,7 +684,7 @@ class _EventoInscripcionScreenState extends State<EventoInscripcionScreen> {
                                 }
                               },
                               child: AbsorbPointer(
-                                child: _buildField(
+                                child: buildField(
                                   controller: _dateController,
                                   hint: 'Seleccione su fecha',
                                   label: 'Fecha de Nacimiento',
@@ -742,38 +754,6 @@ class _EventoInscripcionScreenState extends State<EventoInscripcionScreen> {
     );
   }
 
-  // Widget auxiliar para filas de etiqueta+valor en el certificado
-  Widget _buildCertRow(String label, String value) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Expanded(
-          flex: 3,
-          child: Text(
-            label,
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-              fontFamily: AppFonts.mina,
-              color: AppColor.blackColor,
-            ),
-          ),
-        ),
-        Expanded(
-          flex: 5,
-          child: Text(
-            value,
-            style: TextStyle(
-              fontSize: 14,
-              fontFamily: AppFonts.mina,
-              color: AppColor.blackColor,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
   void _onSubmit() {
     if (_formKey.currentState!.validate()) {
       final evento = Get.arguments;
@@ -785,55 +765,5 @@ class _EventoInscripcionScreenState extends State<EventoInscripcionScreen> {
         "per_fecha_nacimiento": _dateController.text,
       });
     }
-  }
-
-  Widget _buildField({
-    required TextEditingController controller,
-    required String hint,
-    required String label,
-    required IconData icon,
-    TextInputType keyboardType = TextInputType.text,
-    Color labelColor = AppColor.primaryColor,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontFamily: AppFonts.mina,
-            fontWeight: FontWeight.w500,
-            color: labelColor,
-            fontSize: 15,
-          ),
-        ),
-        const SizedBox(height: 6),
-        TextFormField(
-          controller: controller,
-          keyboardType: keyboardType,
-          style: const TextStyle(fontFamily: AppFonts.mina, fontSize: 15),
-          cursorColor: AppColor.primaryColor,
-          decoration: InputDecoration(
-            hintText: hint,
-            prefixIcon: Icon(icon, color: AppColor.greyColor),
-            filled: true,
-            fillColor: AppColor.whiteColor,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide.none,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: AppColor.grey2Color, // borde al enfocarse
-                width: 1.5,
-              ),
-            ),
-          ),
-
-          validator: (v) => v == null || v.isEmpty ? 'Campo obligatorio' : null,
-        ),
-      ],
-    );
   }
 }
