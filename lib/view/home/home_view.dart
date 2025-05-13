@@ -5,6 +5,7 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:programa_profe/view/home/home_screen.dart';
 import '../../res/assets/image_assets.dart';
 import '../../res/colors/app_color.dart';
+import '../../utils/utils.dart';
 import '../../view_models/controller/home/home_view_models.dart';
 import '../evento/evento_view.dart';
 import '../informacion/informacion_view.dart';
@@ -24,14 +25,21 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
-    _loadHomeData();
+     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadHomeData();
+    });
   }
 
   Future<void> _loadHomeData() async {
     try {
       homeController.onInit();
     } catch (e) {
-      Get.snackbar('Error', 'Failed to load home data');
+      showCustomSnackbar(
+              title: 'Error',
+              message: 'Failed to load home data ${e.toString()}',
+              isError: true,
+            );
+      
     }
   }
 

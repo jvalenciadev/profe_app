@@ -2,11 +2,13 @@ import 'package:get/get.dart';
 import 'package:programa_profe/view/evento/evento_asistencia.dart';
 import 'package:programa_profe/view/evento/evento_formulario.dart';
 import 'package:programa_profe/view/evento/evento_inscripcion.dart';
+import 'package:programa_profe/view/home/home_screen.dart';
 import '../../res/routes/routes_name.dart';
 import '../../view/evento/evento_detalle.dart';
 import '../../view/evento/evento_view.dart';
 import '../../view/home/home_view.dart';
 import '../../view/informacion/informacion_view.dart';
+import '../../view/programa/programa_detalle_view.dart';
 import '../../view/programa/programa_view.dart';
 import '../../view/sede/sede_view.dart';
 import '../../view/splash_screen.dart';
@@ -27,6 +29,12 @@ class AppRoutes {
       transition: Transition.noTransition,
     ),
     GetPage(
+      name: RouteName.homeScreen,
+      page: () => HomeScreen(),
+      transitionDuration: Duration(milliseconds: 250),
+      transition: Transition.noTransition,
+    ),
+    GetPage(
       name: RouteName.updateAppView,
       page: () => UpdateAppView(),
       transitionDuration: Duration(milliseconds: 250),
@@ -35,6 +43,12 @@ class AppRoutes {
     GetPage(
       name: RouteName.programaView,
       page: () => OffersScreen(),
+      transitionDuration: Duration(milliseconds: 250),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.programaDetalle,
+      page: () => ProgramaDetalleView(),
       transitionDuration: Duration(milliseconds: 250),
       transition: Transition.cupertino,
     ),

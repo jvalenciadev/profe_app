@@ -371,8 +371,8 @@ class _EventoAsistenciaScreenState extends State<EventoAsistenciaScreen> {
               Get.toNamed(
                 RouteName.eventoFormularioView,
                 arguments: {
-                  'evento': evento,
-                  'persona': respuesta.persona, // sólo la info de persona
+                  'evento': evento.toJson(),
+                  'persona': respuesta.persona!.toJson(), // sólo la info de persona
                 },
               );
             });

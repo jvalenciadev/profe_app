@@ -35,57 +35,56 @@ class _EventoFormularioScreenState extends State<EventoFormularioScreen> {
   void initState() {
     super.initState();
     final args = Get.arguments as Map<String, dynamic>;
-    evento = args['evento'] as EventoModel;
-    persona = args['persona'] as Persona;
+    evento  = EventoModel.fromJson(args['evento']);
+    persona = Persona.fromJson(args['persona']);
 
-    // Inicializar selección de departamento
-    _selectedDepartment = departmentList.firstWhere(
-      (d) => d.name == persona.depNombre,
-      orElse: () => departmentList.first,
-    );
-    // Modalidades
-    final mods = evento.modalidades ?? [];
-    _selectedModality = mods.isNotEmpty ? mods.first : null;
-    ever(_ctrl.inscripcionResponse, (ApiResponse<PersonaEstadoModel> resp) {
-      switch (resp.status) {
-        case Status.LOADING:
-          // nada
-          break;
+    // Escuchar cambios de status
+    ever(_ctrl.inscripcionResponse, _handleInscripcionResponse);
+  }
+void _handleInscripcionResponse(ApiResponse<PersonaEstadoModel> resp) {
+    switch (resp.status) {
+      case Status.LOADING:
+        // no hace nada, el botón ya muestra indicador
+        break;
 
-        case Status.COMPLETED:
-          final respuesta = resp.data!.respuesta;
-          final error = resp.data?.error;
+      case Status.ERROR:
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showCustomSnackbar(
+            title: 'Error',
+            message: resp.message ?? 'Ocurrió un error',
+            isError: true,
+          );
+        });
+        break;
 
+      case Status.COMPLETED:
+        final respuesta = resp.data?.respuesta;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
           if (respuesta == null) {
             showCustomSnackbar(
               title: 'Error',
-              message: error ?? 'Ocurrió un error desconocido',
+              message: resp.data?.error ?? 'Ocurrió un error desconocido',
               isError: true,
             );
-            return;
           } else {
             showCustomSnackbar(
-              title: 'Success',
-              message: error ?? 'Ocurrió un error desconocido',
+              title: '¡Listo!',
+              message: respuesta.estado!,
               isError: false,
             );
-            Future.microtask(() {
-              Get.toNamed(RouteName.homeView);
+            // después de mostrar el toast, volvemos al Home
+            Future.delayed(const Duration(milliseconds: 500), () {
+              Get.offAllNamed(RouteName.homeView);
             });
           }
-          break;
+        });
+        break;
 
-        case Status.ERROR:
-          break;
-
-        case Status.IDLE:
-        default:
-          // nada
-          break;
-      }
-    });
+      case Status.IDLE:
+      default:
+        break;
+    }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

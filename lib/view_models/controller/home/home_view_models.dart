@@ -38,18 +38,30 @@ class HomeController extends GetxController {
   final videosStatus = Status.LOADING.obs;
 
   // Métodos de carga aislados
-  Future<void> loadEventos()async  {
-    try {
-      eventosStatus.value = Status.LOADING;
-      final res = await _evento.eventoListApi();
-      eventoList.value = res;
-      eventosStatus.value = Status.COMPLETED;
-    } catch (err) {
-      error.value = err.toString();
-      eventosStatus.value = Status.ERROR;
-    }
+  // Future<void> loadEventos()async  {
+  //   try {
+  //     eventosStatus.value = Status.LOADING;
+  //     final res = await _evento.eventoListApi();
+  //     eventoList.value = res;
+  //     eventosStatus.value = Status.COMPLETED;
+  //   } catch (err) {
+  //     error.value = err.toString();
+  //     eventosStatus.value = Status.ERROR;
+  //   }
+  // }
+  void loadEventos() {
+    eventosStatus.value = Status.LOADING;
+    _evento
+        .eventoListApi()
+        .then((res) {
+          eventoList.value = res;
+          eventosStatus.value = Status.COMPLETED;
+        })
+        .catchError((err) {
+          error.value = err.toString();
+          eventosStatus.value = Status.ERROR;
+        });
   }
-
   void loadSedes() {
     sedesStatus.value = Status.LOADING;
     _sede
@@ -134,7 +146,7 @@ class HomeController extends GetxController {
 
   // Método general para recargar todo si es necesario
  Future<void> refreshAll() async {
-    await loadEventos();
+    loadEventos();
     loadSedes();
     loadNovedades();
     loadProgramas();

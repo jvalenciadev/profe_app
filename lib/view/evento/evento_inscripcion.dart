@@ -387,8 +387,8 @@ class _EventoInscripcionScreenState extends State<EventoInscripcionScreen> {
               Get.toNamed(
                 RouteName.eventoFormularioView,
                 arguments: {
-                  'evento': evento,
-                  'persona': respuesta.persona, // sólo la info de persona
+                  'evento': evento.toJson(),
+                  'persona': respuesta.persona!.toJson(),
                 },
               );
             });
@@ -464,7 +464,7 @@ class _EventoInscripcionScreenState extends State<EventoInscripcionScreen> {
       if (success.isSuccess == true) {
         showCustomSnackbar(
           title: '¡Guardado!',
-          message: 'Comprobante guardado en Descargas/Eventos.',
+          message: 'Comprobante guardado en Pictures/Eventos.',
           isError: false,
         );
       } else {

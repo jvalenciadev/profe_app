@@ -12,11 +12,11 @@ import '../../res/colors/app_color.dart';
 import '../../res/routes/routes_name.dart';
 import '../../utils/utilidad.dart';
 import '../../view_models/controller/home/home_view_models.dart';
+import '../../view_models/controller/radio_controller.dart';
 import '../widgets/home_widgets.dart';
 import '../widgets/loading_carusel_widget.dart';
 import '../widgets/novedad_loading_widget.dart';
 import '../widgets/novedades_widget.dart';
-import 'package:just_audio/just_audio.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,68 +25,14 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class RadioPlayerService {
-  static final RadioPlayerService _instance = RadioPlayerService._internal();
-
-  factory RadioPlayerService() => _instance;
-
-  late final AudioPlayer player;
-
-  RadioPlayerService._internal() {
-    player = AudioPlayer();
-  }
-}
-
-final radioService = RadioPlayerService();
-
 class _HomeScreenState extends State<HomeScreen> {
   final homeController = Get.find<HomeController>();
-  late AudioPlayer _player;
-  bool _isPlaying = false;
-  bool _hasError = false;
-  bool _isLoading = true;
-
+  final radioCtrl = Get.find<RadioController>();
   final String streamUrl = 'https://node-17.zeno.fm/7qzeshy6xf8uv.aac';
 
   @override
   void initState() {
     super.initState();
-    _player = radioService.player;
-    if (!_player.playing) {
-      _initializePlayer();
-    } else {
-      setState(() {
-        _isLoading = false;
-        _isPlaying = true;
-      });
-    }
-  }
-
-  Future<void> _initializePlayer() async {
-    try {
-      await _player.setUrl(streamUrl);
-      if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-        _hasError = false;
-      });
-    } catch (e) {
-      if (!mounted) return;
-      setState(() {
-        _isLoading = false;
-        _hasError = true;
-      });
-    }
-  }
-
-  void _togglePlayPause() {
-    if (_player.playing) {
-      _player.pause();
-      setState(() => _isPlaying = false);
-    } else {
-      _player.play();
-      setState(() => _isPlaying = true);
-    }
   }
 
   int _currentIndex = 0;
@@ -96,9 +42,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return RefreshIndicator(
       onRefresh: homeController.refreshAll,
       color: AppColor.primaryColor,
-      child: SafeArea(
-        child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
+      child: SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
           child: _buildCompletedState(),
         ),
       ),
@@ -215,93 +162,100 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 // Texto y estado
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Sintonía Educativo',
-                        style: TextStyle(
-                          fontFamily: AppFonts.montserrat,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: AppColor.radioStream,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Icon(
-                            _hasError
-                                ? FontAwesomeIcons
-                                    .triangleExclamation // Icono de advertencia o error
-                                : _isPlaying
-                                ? FontAwesomeIcons
-                                    .wifi // Icono de wifi, si estás "jugando"
-                                : FontAwesomeIcons.radio,
-                            size: 14,
-                            color:
-                                _hasError
-                                    ? AppColor.redColor
-                                    : AppColor.greyColor,
+                  child: Obx(() {
+                    final radio = radioCtrl;
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Sintonía Educativo',
+                          style: TextStyle(
+                            fontFamily: AppFonts.montserrat,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: AppColor.radioStream,
                           ),
-                          const SizedBox(width: 6),
-                          Text(
-                            _hasError
-                                ? 'Error de conexión'
-                                : _isPlaying
-                                ? 'Reproduciendo...'
-                                : 'Disponible',
-                            style: TextStyle(
-                              fontSize: 13,
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Icon(
+                              radio.hasError
+                                  ? FontAwesomeIcons.triangleExclamation
+                                  : radio.isPlaying
+                                  ? FontAwesomeIcons.wifi
+                                  : FontAwesomeIcons.radio,
+                              size: 14,
                               color:
-                                  _hasError
+                                  radio.hasError
                                       ? AppColor.redColor
                                       : AppColor.greyColor,
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                            const SizedBox(width: 6),
+                            Text(
+                              radio.hasError
+                                  ? 'Error de conexión'
+                                  : radio.isPlaying
+                                  ? 'Reproduciendo...'
+                                  : 'Disponible',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color:
+                                    radio.hasError
+                                        ? AppColor.redColor
+                                        : AppColor.greyColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
+                  }),
                 ),
 
-                // Botón de reproducción
-                // Botón de reproducción
-                _hasError
-                    ? Opacity(
-                      opacity: 0.4, // visualmente desactivado
-                      child: IgnorePointer(
-                        child: IconButton(
-                          iconSize: 25,
-                          splashRadius: 28,
-                          icon: Icon(
-                            FontAwesomeIcons.play,
-                            color:
-                                AppColor
-                                    .greyColor, // color gris para indicar deshabilitado
-                          ),
-                          onPressed: () {}, // no hace nada
+                // Botón play/pause o retry
+                Obx(() {
+                  final radio = radioCtrl;
+
+                  if (radio.hasError) {
+                    // Mostrar botón de retry
+                    return IconButton(
+                      iconSize: 25,
+                      splashRadius: 28,
+                      icon: const Icon(
+                        FontAwesomeIcons.rotateRight,
+                        color: AppColor.redColor,
+                      ),
+                      onPressed: radio.retry,
+                      tooltip: 'Reintentar conexión',
+                    );
+                  }
+
+                  if (radio.isLoading) {
+                    return const SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          color: AppColor.grey2Color,
                         ),
                       ),
-                    )
-                    : _isLoading
-                    ? const CircularProgressIndicator(
-                      color: AppColor.grey2Color,
-                    )
-                    : IconButton(
-                      iconSize: 40,
-                      splashRadius: 28,
-                      icon: Icon(
-                        _isPlaying
-                            ? FontAwesomeIcons.pause
-                            : FontAwesomeIcons.play,
-                        color:
-                            AppColor
-                                .radioStream, // O cualquier color que prefieras
-                        size: 25, // Ajusta el tamaño del icono
-                      ),
-                      onPressed: _togglePlayPause,
+                    );
+                  }
+
+                  return IconButton(
+                    iconSize: 40,
+                    splashRadius: 28,
+                    icon: Icon(
+                      radio.isPlaying
+                          ? FontAwesomeIcons.pause
+                          : FontAwesomeIcons.play,
+                      color: AppColor.radioStream,
+                      size: 25,
                     ),
+                    onPressed: radio.togglePlayPause,
+                  );
+                }),
               ],
             ),
           ),

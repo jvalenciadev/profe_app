@@ -10,12 +10,17 @@ import 'firebase/firebase_messaging_service.dart';
 import 'notifications/local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import 'view_models/controller/programa/programa_view_model.dart';
+import 'view_models/controller/radio_controller.dart';
+
 void main() async {
   await dotenv.load(fileName: "assets/.env");
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase(); // Inicializa Firebase
   await LocalNotifications.initialize(); // Inicializa las notificaciones locales
   Get.put(AppInfoController());
+  Get.put(ProgramaController());
+  Get.put(RadioController(), permanent: true);
   runApp(const MyApp());
   // Esperar a que la UI esté montada
   WidgetsBinding.instance.addPostFrameCallback((_) {

@@ -10,6 +10,7 @@ import '../../data/response/status.dart';
 import '../../res/app_url/app_url.dart';
 import '../../res/components/general_exception.dart';
 import '../../res/components/internet_exceptions_widget.dart';
+import '../../res/routes/routes_name.dart';
 import '../../utils/preloader.dart';
 import '../../view_models/controller/home/home_view_models.dart';
 
@@ -228,7 +229,9 @@ class OffersScreen extends StatelessWidget {
                                                   fontWeight: FontWeight.w500,
                                                 ),
                                               ),
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                  Get.toNamed(RouteName.programaDetalle, arguments: programa);
+                                              },
                                             ),
                                           ],
                                         ),
