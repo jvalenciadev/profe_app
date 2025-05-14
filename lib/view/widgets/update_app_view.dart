@@ -3,11 +3,14 @@ import 'package:get/get.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:programa_profe/res/colors/app_color.dart';
 import 'package:programa_profe/res/routes/routes_name.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import '../../res/fonts/app_fonts.dart'; // Para animaciones
+import '../../res/fonts/app_fonts.dart';
 
 class UpdateAppView extends StatelessWidget {
-  const UpdateAppView({super.key});
+  
+  UpdateAppView({super.key});
+  final String? url = Get.arguments?['url'];
 
   @override
   Widget build(BuildContext context) {
@@ -59,9 +62,13 @@ class UpdateAppView extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               ElevatedButton.icon(
-                onPressed: () {
-                  // Aquí debes colocar la URL de tu app en la tienda
-                  // launch('https://play.google.com/store/apps/details?id=com.miapp');
+                onPressed: () async {
+                   final Uri uri = Uri.parse(url!);
+                  if (await canLaunchUrl(uri)) {
+                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                  } else {
+                    throw 'No se pudo abrir la tienda.';
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColor.primaryColor,

@@ -195,9 +195,10 @@ class _SedeDetallesScreenState extends State<SedeDetallesScreen> {
                 // Título grande cuando está expandido
                 Positioned(
                   left: 16,
+                  right: 16,
                   bottom: 16,
                   child: Text(
-                    sede.sedeNombreAbre ?? '',
+                    sede.sedeNombre ?? '',
                     style: const TextStyle(
                       fontFamily: AppFonts.mina,
                       fontSize: 24,
@@ -241,7 +242,7 @@ class _SedeDetallesScreenState extends State<SedeDetallesScreen> {
           children: [
             // Nombre sede
             Text(
-              sede.sedeNombre ?? '—',
+             "${sede.depNombre} - ${sede.sedeNombre}",
               style: const TextStyle(
                 fontFamily: AppFonts.mina,
                 color: AppColor.primaryColor,
@@ -353,15 +354,11 @@ class _SedeDetallesScreenState extends State<SedeDetallesScreen> {
                     }).toList(),
               ),
 
-            const SizedBox(height: 12),
-
             // Contactos
             if (sede.sedeContacto1 != null)
               contactButton('Contacto 1', sede.sedeContacto1, ""),
             if (sede.sedeContacto2 != null)
               contactButton('Contacto 2', sede.sedeContacto2, ""),
-
-            const SizedBox(height: 12),
 
             // Facebook
             if (sede.sedeFacebook != null)
@@ -379,8 +376,38 @@ class _SedeDetallesScreenState extends State<SedeDetallesScreen> {
                   ),
                 ),
               ),
+            // Facebook
+            if (sede.sedeTiktok != null)
+              TextButton.icon(
+                onPressed: () => launchUrlString(sede.sedeTiktok!),
+                icon: const FaIcon(
+                  FontAwesomeIcons.tiktok,
+                  color: AppColor.tiktokColor,
+                ),
+                label: const Text(
+                  'Tiktok',
+                  style: TextStyle(
+                    fontFamily: AppFonts.mina,
+                    color: AppColor.tiktokColor,
+                  ),
+                ),
+              ),
+            if (sede.sedeGrupoWhatsapp != null)
+              TextButton.icon(
+                onPressed: () => launchUrlString(sede.sedeGrupoWhatsapp!),
+                icon: const FaIcon(
+                  FontAwesomeIcons.whatsapp,
+                  color: AppColor.whatsappColor,
+                ),
+                label: const Text(
+                  'Grupo de Whatssap',
+                  style: TextStyle(
+                    fontFamily: AppFonts.mina,
+                    color: AppColor.whatsappColor,
+                  ),
+                ),
+              ),
 
-            const SizedBox(height: 12),
 
             // Mapa embebido (o botón para abrir en Google Maps)
             if (sede.sedeLatitud != null && sede.sedeLongitud != null)

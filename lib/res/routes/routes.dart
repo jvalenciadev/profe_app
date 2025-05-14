@@ -9,6 +9,7 @@ import '../../view/evento/evento_detalle.dart';
 import '../../view/evento/evento_view.dart';
 import '../../view/home/home_view.dart';
 import '../../view/informacion/informacion_view.dart';
+import '../../view/presentacion_screan.dart';
 import '../../view/programa/programa_detalle_view.dart';
 import '../../view/programa/programa_view.dart';
 import '../../view/sede/sede_view.dart';
@@ -20,6 +21,12 @@ class AppRoutes {
     GetPage(
       name: RouteName.splashScreen,
       page: () => SplashScreen(),
+      transitionDuration: Duration(milliseconds: 250),
+      transition: Transition.fadeIn,
+    ),
+    GetPage(
+      name: RouteName.presentacionView,
+      page: () => PresentacionScreen(),
       transitionDuration: Duration(milliseconds: 250),
       transition: Transition.fadeIn,
     ),

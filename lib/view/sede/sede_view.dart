@@ -453,64 +453,71 @@ class _SedesScreenState extends State<SedesScreen> {
     );
   }
 
+  // 1) Normaliza quitando acentos y poniendo minúsculas
+  String _normalize(String s) {
+    const withAcent = 'áÁéÉíÍóÓúÚüÜñÑ';
+    const without = 'aaeeiioouuuuNN';
+    for (var i = 0; i < withAcent.length; i++) {
+      s = s.replaceAll(withAcent[i], without[i]);
+    }
+    return s.toLowerCase();
+  }
+
+  DateTime? _parseHoy(String hhmm) {
+    final partes = hhmm.split(':').map((e) => e.trim()).toList();
+    if (partes.length != 2) return null;
+    final h = int.tryParse(partes[0]);
+    final m = int.tryParse(partes[1]);
+    if (h == null || m == null) return null;
+    final now = DateTime.now();
+    return DateTime(now.year, now.month, now.day, h, m);
+  }
+
   bool sedeAbiertaAhora(String sedeHorario, String sedeTurno) {
     final now = DateTime.now();
-    final dias = sedeHorario
+
+    // 1) Días normalizados
+    final diasSet = sedeHorario
         .replaceAll('Días:', '')
         .split('|')
-        .map((e) => e.trim().toLowerCase());
+        .map((d) => _normalize(d.trim()))
+        .toSet();
 
-    final diasSemana = [
-      'lunes',
-      'martes',
-      'miércoles',
-      'jueves',
-      'viernes',
-      'sábado',
-      'domingo',
+    const diasSemana = [
+      'lunes','martes','miercoles','jueves','viernes','sabado','domingo'
     ];
-
     final hoy = diasSemana[now.weekday - 1];
 
-    // Si hoy no está en los días de atención
-    if (!dias.contains(hoy)) return false;
+    if (!diasSet.contains(hoy)) return false;
 
-    // Extraer turnos y rangos
-    final turnos = sedeTurno
+    // 2) Turnos
+    final rawTurnos = sedeTurno
         .replaceAll('Turnos:', '')
         .split('|')
-        .map((e) => e.trim().toLowerCase());
+        .map((t) => t.trim());
 
-    for (var turno in turnos) {
-      final partes = turno.split(':');
-      if (partes.length < 2) continue;
+    for (var t in rawTurnos) {
+      // usa indexOf en lugar de lastIndexOf
+      final idx = t.indexOf(':');
+      if (idx < 0) continue;
 
-      final horas = partes[1].split('-').map((h) => h.trim()).toList();
-      if (horas.length != 2) continue;
+      final horasStr = t.substring(idx + 1).trim(); 
+      // horasStr ahora = "8:00 - 12:00" o "13:00 - 17:00"
+      final parts = horasStr.split('-').map((h) => h.trim()).toList();
+      if (parts.length != 2) continue;
 
-      final inicio = parseHora(horas[0]);
-      final fin = parseHora(horas[1]);
+      final inicio = _parseHoy(parts[0]);
+      final fin    = _parseHoy(parts[1]);
+      if (inicio == null || fin == null) continue;
 
-      if (inicio != null &&
-          fin != null &&
-          now.isAfter(inicio) &&
-          now.isBefore(fin)) {
+      if ((now.isAtSameMomentAs(inicio) || now.isAfter(inicio)) &&
+          (now.isAtSameMomentAs(fin)    || now.isBefore(fin))) {
         return true;
       }
     }
-
+  print('>>> CERRADO (no entró en ningún rango)');
     return false;
   }
 
-  DateTime? parseHora(String horaStr) {
-    try {
-      final partes = horaStr.split(':');
-      final hour = int.parse(partes[0]);
-      final minute = int.parse(partes[1]);
-      final now = DateTime.now();
-      return DateTime(now.year, now.month, now.day, hour, minute);
-    } catch (e) {
-      return null;
-    }
-  }
+ 
 }

@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../controller/app_view_models.dart';
 import '../../res/routes/routes_name.dart';
 
@@ -53,16 +55,25 @@ class SplashServices {
     }
   }
 
-  void _checkAppVersion(String appVersion) {
+  Future<void> _checkAppVersion(String appVersion) async {
     final appInfo = appInfoController.appInfo.value;
-    print("------------------------------- ${appInfo.respuesta?.nombre}");
-
     String versionActual = appInfo.respuesta?.versionActual ?? '';
+    String? playStoreUrl = appInfo.respuesta?.playstoreUrl;
 
     if (appVersion != versionActual) {
-      Get.offAllNamed(RouteName.updateAppView);
+      Get.offAllNamed(RouteName.updateAppView, arguments: {'url': playStoreUrl});
     } else {
-      Get.offAllNamed(RouteName.homeView);
+      // Verificamos si es la primera vez
+      final prefs = await SharedPreferences.getInstance();
+      bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
+
+      if (isFirstTime) {
+        // Lo marcamos como ya visto
+        await prefs.setBool('isFirstTime', false);
+        Get.offAllNamed(RouteName.presentacionView, arguments: appInfo);
+      } else {
+        Get.offAllNamed(RouteName.homeView);
+      }
     }
   }
 }
