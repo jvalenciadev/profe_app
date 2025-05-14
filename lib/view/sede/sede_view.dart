@@ -8,11 +8,10 @@ import 'package:programa_profe/res/colors/app_color.dart';
 
 import '../../data/response/status.dart';
 import '../../res/app_url/app_url.dart';
-import '../../res/components/general_exception.dart';
-import '../../res/components/internet_exceptions_widget.dart';
 import '../../res/fonts/app_fonts.dart';
+import '../../res/routes/routes_name.dart';
+import '../../utils/utilidad.dart';
 import '../../view_models/controller/home/home_view_models.dart';
-import 'detalle_view.dart';
 
 class SedesScreen extends StatefulWidget {
   const SedesScreen({super.key});
@@ -90,12 +89,6 @@ class _SedesScreenState extends State<SedesScreen> {
     );
   }
 
-  Widget _buildErrorWidget() {
-    return homeController.error.value == 'No internet'
-        ? InterNetExceptionWidget(onPress: homeController.refreshAll)
-        : GeneralExceptionWidget(onPress: homeController.refreshAll);
-  }
-
   Widget _buildLoadingCarousel() {
     return Align(
       alignment: Alignment.bottomLeft,
@@ -165,7 +158,7 @@ class _SedesScreenState extends State<SedesScreen> {
             case Status.LOADING:
               return _buildLoadingCarousel();
             case Status.ERROR:
-              return _buildErrorWidget();
+              return buildErrorWidget(homeController.refreshAll);
             case Status.COMPLETED:
               final sedes = homeController.sedeList.value.respuesta!;
               return Stack(
@@ -229,6 +222,18 @@ class _SedesScreenState extends State<SedesScreen> {
                         },
                         itemBuilder: (context, index) {
                           final sede = sedes[index];
+                          final turnoList =
+                              sede.sedeTurno
+                                  ?.replaceFirst('Turnos: ', '')
+                                  .split(' | ')
+                                  .map((t) => t.trim())
+                                  .toList();
+
+                          final estaAbierto = sedeAbiertaAhora(
+                            sede.sedeHorario ?? '',
+                            sede.sedeTurno ?? '',
+                          );
+
                           return Card(
                             margin: const EdgeInsets.symmetric(
                               horizontal: 5,
@@ -299,88 +304,131 @@ class _SedesScreenState extends State<SedesScreen> {
                                               ),
                                               tooltip: "Ver detalles",
                                               onPressed: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder:
-                                                        (_) =>
-                                                            SedeDetallesScreen(
-                                                              sede: sede,
-                                                            ),
-                                                  ),
+                                                Get.toNamed(
+                                                  RouteName.sedeDetalle,
+                                                  arguments: sede,
                                                 );
                                               },
                                             ),
                                           ],
                                         ),
-                                        Row(
-                                          children: [
-                                            const Icon(
-                                              FontAwesomeIcons.phone,
-                                              size: 15,
-                                              color: AppColor.greyColor,
+                                        if (turnoList != null)
+                                          Container(
+                                            width: 400,
+                                            child: Wrap(
+                                              spacing: 2,
+                                              runSpacing: 2,
+                                              children:
+                                                  turnoList.map((turno) {
+                                                    return Container(
+                                                      padding:
+                                                          const EdgeInsets.symmetric(
+                                                            horizontal: 10,
+                                                            vertical: 6,
+                                                          ),
+                                                      decoration: BoxDecoration(
+                                                        color: AppColor
+                                                            .primaryColor
+                                                            .withOpacity(0.1),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              16,
+                                                            ),
+                                                      ),
+                                                      child: Row(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          const FaIcon(
+                                                            FontAwesomeIcons
+                                                                .clock,
+                                                            size: 12,
+                                                            color:
+                                                                AppColor
+                                                                    .primaryColor,
+                                                          ),
+                                                          const SizedBox(
+                                                            width: 4,
+                                                          ),
+                                                          Text(
+                                                            turno,
+                                                            style: const TextStyle(
+                                                              fontFamily:
+                                                                  AppFonts.mina,
+                                                              fontSize: 11,
+                                                              color:
+                                                                  AppColor
+                                                                      .primaryColor,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  }).toList(),
                                             ),
-                                            const SizedBox(width: 4),
-                                            Expanded(
-                                              child: Text(
-                                                sede.sedeContacto1.toString(),
-                                                style: const TextStyle(
-                                                  fontSize: 15,
-                                                  color: AppColor.greyColor,
-                                                  fontFamily: AppFonts.mina,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            const Icon(
-                                              FontAwesomeIcons.clock,
-                                              size: 15,
-                                              color: AppColor.greyColor,
-                                            ),
-                                            const SizedBox(width: 4),
-                                            Expanded(
-                                              child: Text(
-                                                sede.sedeHorario!,
-                                                style: const TextStyle(
-                                                  fontSize: 12,
-                                                  color: AppColor.greyColor,
-                                                  fontFamily: AppFonts.mina,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                          ),
+
+                                        // Row(
+                                        //   crossAxisAlignment:
+                                        //       CrossAxisAlignment.start,
+                                        //   children: [
+                                        //     const Icon(
+                                        //       FontAwesomeIcons.clock,
+                                        //       size: 14,
+                                        //       color: AppColor.greyColor,
+                                        //     ),
+                                        //     const SizedBox(width: 6),
+                                        //     Expanded(
+                                        //       child: Text(
+                                        //         sede.sedeHorario!
+                                        //             .replaceAll('Días:', '')
+                                        //             .split('|')
+                                        //             .map((dia) => dia.trim())
+                                        //             .join(
+                                        //               ' · ',
+                                        //             ), // Separador compacto
+                                        //         style: const TextStyle(
+                                        //           fontSize: 12,
+                                        //           color: AppColor.greyColor,
+                                        //           fontFamily: AppFonts.mina,
+                                        //         ),
+                                        //       ),
+                                        //     ),
+                                        //   ],
+                                        // ),
                                         Container(
                                           padding: const EdgeInsets.symmetric(
-                                            horizontal: 8,
+                                            horizontal: 10,
                                             vertical: 4,
                                           ),
                                           decoration: BoxDecoration(
                                             color:
-                                                sede.sedeEstado == "activo"
+                                                estaAbierto
                                                     ? Colors.green[50]
                                                     : Colors.red[50],
                                             borderRadius: BorderRadius.circular(
-                                              6,
+                                              8,
                                             ),
                                           ),
-                                          child: Text(
-                                            sede.sedeEstado == "activo"
-                                                ? "🟢 Abierto"
-                                                : "🔴 Cerrado",
-                                            style: TextStyle(
-                                              fontSize: 12,
-                                              fontFamily: AppFonts.mina,
-                                              color:
-                                                  sede.sedeEstado == "activo"
-                                                      ? Colors.green
-                                                      : Colors.red,
-                                              fontWeight: FontWeight.w600,
-                                            ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                estaAbierto
+                                                    ? "🟢 Abierto ahora"
+                                                    : "🔴 Cerrado",
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontFamily: AppFonts.mina,
+                                                  color:
+                                                      estaAbierto
+                                                          ? Colors.green[700]
+                                                          : Colors.red[700],
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 6),
+                                            ],
                                           ),
                                         ),
                                       ],
@@ -403,5 +451,66 @@ class _SedesScreenState extends State<SedesScreen> {
         }),
       ),
     );
+  }
+
+  bool sedeAbiertaAhora(String sedeHorario, String sedeTurno) {
+    final now = DateTime.now();
+    final dias = sedeHorario
+        .replaceAll('Días:', '')
+        .split('|')
+        .map((e) => e.trim().toLowerCase());
+
+    final diasSemana = [
+      'lunes',
+      'martes',
+      'miércoles',
+      'jueves',
+      'viernes',
+      'sábado',
+      'domingo',
+    ];
+
+    final hoy = diasSemana[now.weekday - 1];
+
+    // Si hoy no está en los días de atención
+    if (!dias.contains(hoy)) return false;
+
+    // Extraer turnos y rangos
+    final turnos = sedeTurno
+        .replaceAll('Turnos:', '')
+        .split('|')
+        .map((e) => e.trim().toLowerCase());
+
+    for (var turno in turnos) {
+      final partes = turno.split(':');
+      if (partes.length < 2) continue;
+
+      final horas = partes[1].split('-').map((h) => h.trim()).toList();
+      if (horas.length != 2) continue;
+
+      final inicio = parseHora(horas[0]);
+      final fin = parseHora(horas[1]);
+
+      if (inicio != null &&
+          fin != null &&
+          now.isAfter(inicio) &&
+          now.isBefore(fin)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  DateTime? parseHora(String horaStr) {
+    try {
+      final partes = horaStr.split(':');
+      final hour = int.parse(partes[0]);
+      final minute = int.parse(partes[1]);
+      final now = DateTime.now();
+      return DateTime(now.year, now.month, now.day, hour, minute);
+    } catch (e) {
+      return null;
+    }
   }
 }

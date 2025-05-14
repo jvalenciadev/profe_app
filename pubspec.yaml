@@ -66,6 +66,8 @@ dependencies:
   barcode: ^2.2.9
   barcode_widget: ^2.0.4
   saver_gallery: ^4.0.1
+  photo_view: ^0.15.0
+  url_launcher: ^6.3.1
 
 dev_dependencies:
   flutter_test:

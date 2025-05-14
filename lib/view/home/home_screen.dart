@@ -15,7 +15,6 @@ import '../../view_models/controller/home/home_view_models.dart';
 import '../../view_models/controller/radio_controller.dart';
 import '../widgets/home_widgets.dart';
 import '../widgets/loading_carusel_widget.dart';
-import '../widgets/novedad_loading_widget.dart';
 import '../widgets/novedades_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -52,6 +51,24 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// Widget reutilizable que muestra loading, error o el contenido.
+  Widget _stateHandler({
+    required Status status,
+    required Widget Function() onSuccess,
+    required VoidCallback onRetry,
+  }) {
+    switch (status) {
+      case Status.LOADING:
+        return LoadingCarouselPlaceholder(); // o tu indicador unificado
+      case Status.ERROR:
+        return buildErrorWidget(onRetry);
+      case Status.COMPLETED:
+        return onSuccess();
+      default:
+        return const SizedBox.shrink();
+    }
+  }
+
   Widget _buildCompletedState() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,21 +80,15 @@ class _HomeScreenState extends State<HomeScreen> {
           FontAwesomeIcons.calendarDays,
         ),
         Obx(() {
-          switch (homeController.eventosStatus.value) {
-            case Status.LOADING:
-              return LoadingCarouselPlaceholder();
-            case Status.ERROR:
-              return TextButton(
-                onPressed: homeController.refreshAll,
-                child: Text("Reintentar cargar eventos"),
-              );
-            case Status.COMPLETED:
+          return _stateHandler(
+            status: homeController.eventosStatus.value,
+            onRetry: homeController.refreshAll,
+            onSuccess: () {
               final eventos =
                   homeController.eventoList.value.respuesta!.take(5).toList();
               return _buildEventCarousel(eventos);
-            case Status.IDLE:
-              throw UnimplementedError();
-          }
+            },
+          );
         }),
         SizedBox(height: 5),
         buildEventSection(
@@ -267,31 +278,25 @@ class _HomeScreenState extends State<HomeScreen> {
           FontAwesomeIcons.newspaper,
         ),
         Obx(() {
-          switch (homeController.novedadesStatus.value) {
-            case Status.LOADING:
-              return NewsCardLoading();
-            case Status.ERROR:
-              return TextButton(
-                onPressed: homeController.refreshAll,
-                child: Text("Reintentar cargar novedades"),
-              );
-            case Status.COMPLETED:
+          return _stateHandler(
+            status: homeController.novedadesStatus.value,
+            onRetry: homeController.refreshAll,
+            onSuccess: () {
               final novedades = homeController.novedadList.value.respuesta!;
               return Column(
                 children:
-                    novedades.map((novedad) {
+                    novedades.map((n) {
                       return NewsCard(
                         imageUrl:
-                            "${AppUrl.baseImage}/storage/blog/${novedad.blogImagen}",
-                        title: novedad.blogTitulo!,
-                        description: mostrarHtml(novedad.blogDescripcion!),
-                        date: novedad.createdAt!,
+                            "${AppUrl.baseImage}/storage/blog/${n.blogImagen}",
+                        title: n.blogTitulo!,
+                        description: mostrarHtml(n.blogDescripcion!),
+                        date: n.createdAt!,
                       );
                     }).toList(),
               );
-            case Status.IDLE:
-              throw UnimplementedError();
-          }
+            },
+          );
         }),
       ],
     );

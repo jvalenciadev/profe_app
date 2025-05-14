@@ -5,25 +5,18 @@ import 'package:get/get.dart';
 import 'package:programa_profe/res/colors/app_color.dart';
 import 'package:programa_profe/res/fonts/app_fonts.dart';
 import 'package:tab_container/tab_container.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/response/status.dart';
+import '../../models/programa_model.dart';
 import '../../res/app_url/app_url.dart';
-import '../../res/components/general_exception.dart';
-import '../../res/components/internet_exceptions_widget.dart';
 import '../../res/routes/routes_name.dart';
-import '../../utils/preloader.dart';
+import '../../utils/utilidad.dart';
 import '../../view_models/controller/home/home_view_models.dart';
 
 class OffersScreen extends StatelessWidget {
   final homeController = Get.find<HomeController>();
   OffersScreen({super.key});
-  Widget _buildErrorWidget() {
-    if (homeController.error.value == 'No internet') {
-      return InterNetExceptionWidget(onPress: homeController.refreshAll);
-    } else {
-      return GeneralExceptionWidget(onPress: homeController.refreshAll);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,9 +29,9 @@ class OffersScreen extends StatelessWidget {
           child: Obx(() {
             switch (homeController.programasStatus.value) {
               case Status.LOADING:
-                return LoadingContainer();
+                return loading();
               case Status.ERROR:
-                return _buildErrorWidget();
+                return buildErrorWidget(homeController.refreshAll);
               case Status.COMPLETED:
                 final fullList = homeController.programaList.value.respuesta!;
                 List filterBy(String category) {
@@ -162,45 +155,7 @@ class OffersScreen extends StatelessWidget {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            ElevatedButton.icon(
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor:
-                                                    AppColor.primaryColor,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                ),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 15,
-                                                      vertical: 10,
-                                                    ),
-                                              ),
-                                              icon: const Icon(
-                                                Icons.edit_calendar_outlined,
-                                                size: 18,
-                                                color: AppColor.whiteColor,
-                                              ),
-                                              label: const Text(
-                                                "Inscríbete",
-                                                style: TextStyle(
-                                                  fontFamily: AppFonts.mina,
-                                                  color: AppColor.whiteColor,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                              onPressed: () {
-                                                // Acción para inscribirse
-                                                // Get.snackbar(
-                                                //   "Inscripción",
-                                                //   "Aquí puedes realizar la inscripción.",
-                                                //   backgroundColor: AppColor
-                                                //       .primaryColor,
-                                                //   snackPosition:
-                                                //       SnackPosition.BOTTOM,
-                                                // );
-                                              },
-                                            ),
+                                            _buildInscripcionButton(programa),
                                             TextButton.icon(
                                               style: TextButton.styleFrom(
                                                 backgroundColor: AppColor
@@ -230,7 +185,10 @@ class OffersScreen extends StatelessWidget {
                                                 ),
                                               ),
                                               onPressed: () {
-                                                  Get.toNamed(RouteName.programaDetalle, arguments: programa);
+                                                Get.toNamed(
+                                                  RouteName.programaDetalle,
+                                                  arguments: programa,
+                                                );
                                               },
                                             ),
                                           ],
@@ -254,4 +212,54 @@ class OffersScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _buildInscripcionButton(ProgramaModel prog) {
+  // Parsear fechas
+  final inicio = DateTime.parse(prog.proFechaInicioInscripcion!);
+  final fin = DateTime.parse(prog.proFechaFinInscripcion!);
+  final now = DateTime.now();
+
+  // Solo mostrar si estamos en el rango de inscripción
+  if (now.isAfter(inicio) && now.isBefore(fin)) {
+    final uri = Uri.parse(
+      'https://profe.minedu.gob.bo/ofertas-academicas/inscripcion/${prog.proId}',
+    );
+
+    return ElevatedButton.icon(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColor.primaryColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      ),
+      icon: const Icon(
+        Icons.edit_calendar_outlined,
+        size: 18,
+        color: AppColor.whiteColor,
+      ),
+      label: const Text(
+        "Inscríbete",
+        style: TextStyle(
+          fontFamily: AppFonts.mina,
+          color: AppColor.whiteColor,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      onPressed: () async {
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        } else {
+          Get.snackbar(
+            "Error",
+            "No se pudo abrir el formulario de inscripción.",
+            backgroundColor: AppColor.primaryColor,
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+      },
+    );
+  }
+
+  // Fuera de fechas de inscripción, no mostrar nada
+  return const SizedBox.shrink();
 }

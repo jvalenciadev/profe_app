@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:programa_profe/view_models/controller/sede/sede_view_model.dart';
 import 'res/getx_loclization/languages.dart';
 import 'res/routes/routes.dart';
 import 'res/themes/app_theme.dart';
@@ -20,6 +21,7 @@ void main() async {
   await LocalNotifications.initialize(); // Inicializa las notificaciones locales
   Get.put(AppInfoController());
   Get.put(ProgramaController());
+  Get.put(SedeController());
   Get.put(RadioController(), permanent: true);
   runApp(const MyApp());
   // Esperar a que la UI esté montada

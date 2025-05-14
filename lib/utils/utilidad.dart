@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:programa_profe/res/colors/app_color.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../res/fonts/app_fonts.dart';
+import 'utils.dart';
 
 String formatearFecha(DateTime fecha) {
   final DateFormat formatter = DateFormat('dd MMM yyyy');
@@ -45,6 +48,151 @@ String? formatFechaLarga(String? fecha) {
       "Dic",
     ];
     return "${dateTime.day} de ${meses[dateTime.month - 1]} de ${dateTime.year}";
+  } catch (e) {
+    return null;
+  }
+}
+
+Widget contactButton(String label, int? telefono, String programaNombre) {
+  if (telefono == null) return const SizedBox.shrink();
+  final mensaje = Uri.encodeComponent(
+    '¡Hola! 🙋‍♂️\n\nEstoy interesado en la oferta formativa de "$programaNombre".\n¿Podrías enviarme más detalles sobre fechas, costos y contenido?\n\n¡Muchas gracias! 😊',
+  );
+  final uri = Uri.parse('https://wa.me/591$telefono?text=$mensaje');
+  return TextButton.icon(
+    onPressed: () async {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        showCustomSnackbar(
+          title: 'Error',
+          message: 'No se pudo abrir WhatsApp',
+          isError: true,
+        );
+      }
+    },
+    icon: const FaIcon(
+      FontAwesomeIcons.whatsapp,
+      color: AppColor.primaryColor,
+      size: 18,
+    ),
+    label: Text(
+      '$label: $telefono',
+      style: const TextStyle(
+        fontFamily: AppFonts.mina,
+        color: AppColor.primaryColor,
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+      ),
+    ),
+  );
+}
+
+Widget loading() {
+  return Center(
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Logo o imagen de tu app
+        Image.asset('assets/logos/logoprofe.png', width: 150, height: 80),
+        const SizedBox(height: 16),
+        // Texto amigable
+        const Text(
+          'Cargando información...',
+          style: TextStyle(
+            fontFamily: AppFonts.mina,
+            fontSize: 16,
+            color: AppColor.primaryColor,
+          ),
+        ),
+        const SizedBox(height: 16),
+        // Indicador personalizado
+        SizedBox(
+          width: 60,
+          height: 60,
+          child: CircularProgressIndicator(
+            strokeWidth: 6,
+            color: AppColor.primaryColor,
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+/// Widget de error unificado
+Widget buildErrorWidget(VoidCallback onRetry) {
+  return Center(
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FaIcon(
+            FontAwesomeIcons.exclamationTriangle,
+            size: 40,
+            color: Colors.redAccent,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            '¡Vaya! Algo salió mal.',
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              fontFamily: AppFonts.mina,
+              fontSize: 18,
+              color: AppColor.primaryColor,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          ElevatedButton.icon(
+            onPressed: onRetry,
+            icon: const FaIcon(
+              FontAwesomeIcons.undo,
+              size: 16,
+              color: AppColor.whiteColor,
+            ),
+            label: const Text(
+              'Reintentar',
+              style: TextStyle(
+                fontFamily: AppFonts.mina,
+                color: AppColor.whiteColor,
+              ),
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColor.primaryColor,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+String? formatFechaSinAnioLarga(String? fecha) {
+  if (fecha == null || fecha.isEmpty) return null;
+  try {
+    final DateTime dateTime = DateTime.parse(fecha);
+    const List<String> meses = [
+      "Ene",
+      "Feb",
+      "Mar",
+      "Abr",
+      "May",
+      "Jun",
+      "Jul",
+      "Ago",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dic",
+    ];
+    return "${dateTime.day} de ${meses[dateTime.month - 1]}";
   } catch (e) {
     return null;
   }

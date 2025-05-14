@@ -3,6 +3,7 @@ import 'package:programa_profe/view/evento/evento_asistencia.dart';
 import 'package:programa_profe/view/evento/evento_formulario.dart';
 import 'package:programa_profe/view/evento/evento_inscripcion.dart';
 import 'package:programa_profe/view/home/home_screen.dart';
+import 'package:programa_profe/view/sede/detalle_view.dart';
 import '../../res/routes/routes_name.dart';
 import '../../view/evento/evento_detalle.dart';
 import '../../view/evento/evento_view.dart';
@@ -55,6 +56,12 @@ class AppRoutes {
     GetPage(
       name: RouteName.sedeView,
       page: () => SedesScreen(),
+      transitionDuration: Duration(milliseconds: 250),
+      transition: Transition.cupertino,
+    ),
+    GetPage(
+      name: RouteName.sedeDetalle,
+      page: () => SedeDetallesScreen(),
       transitionDuration: Duration(milliseconds: 250),
       transition: Transition.cupertino,
     ),

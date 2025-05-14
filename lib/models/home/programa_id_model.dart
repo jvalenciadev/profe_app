@@ -12,7 +12,10 @@ class ProgramaIdModel {
   ProgramaIdModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     codigoHttp = json['codigo_http'];
-    respuesta = json['respuesta'] != null ? Respuesta.fromJson(json['respuesta']) : null;
+    respuesta =
+        json['respuesta'] != null
+            ? Respuesta.fromJson(json['respuesta'])
+            : null;
     error = json['error'];
   }
 
@@ -34,23 +37,36 @@ class Respuesta {
   Restriccion? restriccion;
   List<GaleriaModel>? galeriasPorPrograma;
 
-  Respuesta({this.programa, this.programaSedeTurno, this.restriccion, this.galeriasPorPrograma});
+  Respuesta({
+    this.programa,
+    this.programaSedeTurno,
+    this.restriccion,
+    this.galeriasPorPrograma,
+  });
 
   Respuesta.fromJson(Map<String, dynamic> json) {
-    programa = json['programa'] != null ? ProgramaModel.fromJson(json['programa']) : null;
-    
+    programa =
+        json['programa'] != null
+            ? ProgramaModel.fromJson(json['programa'])
+            : null;
+
     if (json['programa_sede_turno'] != null) {
-      programaSedeTurno = (json['programa_sede_turno'] as List)
-          .map((i) => ProgramaSedeTurno.fromJson(i))
-          .toList();
+      programaSedeTurno =
+          (json['programa_sede_turno'] as List)
+              .map((i) => ProgramaSedeTurno.fromJson(i))
+              .toList();
     }
-    
-    restriccion = json['restriccion'] != null ? Restriccion.fromJson(json['restriccion']) : null;
-    
+
+    restriccion =
+        json['restriccion'] != null
+            ? Restriccion.fromJson(json['restriccion'])
+            : null;
+
     if (json['galeriasPorPrograma'] != null) {
-      galeriasPorPrograma = (json['galeriasPorPrograma'] as List)
-          .map((i) => GaleriaModel.fromJson(i))
-          .toList();
+      galeriasPorPrograma =
+          (json['galeriasPorPrograma'] as List)
+              .map((i) => GaleriaModel.fromJson(i))
+              .toList();
     }
   }
 
@@ -60,13 +76,15 @@ class Respuesta {
       data['programa'] = programa!.toJson();
     }
     if (programaSedeTurno != null) {
-      data['programa_sede_turno'] = programaSedeTurno!.map((v) => v.toJson()).toList();
+      data['programa_sede_turno'] =
+          programaSedeTurno!.map((v) => v.toJson()).toList();
     }
     if (restriccion != null) {
       data['restriccion'] = restriccion!.toJson();
     }
     if (galeriasPorPrograma != null) {
-      data['galeriasPorPrograma'] = galeriasPorPrograma!.map((v) => v.toJson()).toList();
+      data['galeriasPorPrograma'] =
+          galeriasPorPrograma!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -77,7 +95,7 @@ class ProgramaSedeTurno {
   String? depNombre;
   int? sedeContacto1;
   String? proTurIds;
-  dynamic sedeContacto2;
+  int? sedeContacto2;
   int? sedeId;
   String? programaturno;
 
@@ -94,9 +112,9 @@ class ProgramaSedeTurno {
   ProgramaSedeTurno.fromJson(Map<String, dynamic> json) {
     sedeNombre = json['sede_nombre'];
     depNombre = json['dep_nombre'];
-    sedeContacto1 = json['sede_contacto1'];
+    sedeContacto1 = json['sede_contacto_1'];
     proTurIds = json['pro_tur_ids'];
-    sedeContacto2 = json['sede_contacto2'];
+    sedeContacto2 = json['sede_contacto_2'];
     sedeId = json['sede_id'];
     programaturno = json['programaturno'];
   }
@@ -105,9 +123,9 @@ class ProgramaSedeTurno {
     final Map<String, dynamic> data = {};
     data['sede_nombre'] = sedeNombre;
     data['dep_nombre'] = depNombre;
-    data['sede_contacto1'] = sedeContacto1;
+    data['sede_contacto_1'] = sedeContacto1;
     data['pro_tur_ids'] = proTurIds;
-    data['sede_contacto2'] = sedeContacto2;
+    data['sede_contacto_2'] = sedeContacto2;
     data['sede_id'] = sedeId;
     data['programaturno'] = programaturno;
     return data;
