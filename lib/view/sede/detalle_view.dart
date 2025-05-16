@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -118,7 +119,7 @@ class _SedeDetallesScreenState extends State<SedeDetallesScreen> {
                       delegate: SliverChildListDelegate([
                         _buildInfoSection(data.sede!),
                         const SizedBox(height: 10),
-                        _buildGaleriaSection(data.galerias!),
+                        buildGaleriaSection(data.galerias!),
                       ]),
                     ),
                   ),
@@ -362,7 +363,11 @@ class _SedeDetallesScreenState extends State<SedeDetallesScreen> {
 
             // Facebook
             if (sede.sedeFacebook != null)
-              TextButton.icon(
+              Pulse(
+                                              from: 1,
+                                              to: 1.05,
+                                              infinite: true,
+                                              child: TextButton.icon(
                 onPressed: () => launchUrlString(sede.sedeFacebook!),
                 icon: const FaIcon(
                   FontAwesomeIcons.facebook,
@@ -375,10 +380,14 @@ class _SedeDetallesScreenState extends State<SedeDetallesScreen> {
                     color: AppColor.primaryColor,
                   ),
                 ),
-              ),
+              ),),
             // Facebook
             if (sede.sedeTiktok != null)
-              TextButton.icon(
+              Pulse(
+                                              from: 1,
+                                              to: 1.05,
+                                              infinite: true,
+                                              child: TextButton.icon(
                 onPressed: () => launchUrlString(sede.sedeTiktok!),
                 icon: const FaIcon(
                   FontAwesomeIcons.tiktok,
@@ -391,9 +400,13 @@ class _SedeDetallesScreenState extends State<SedeDetallesScreen> {
                     color: AppColor.tiktokColor,
                   ),
                 ),
-              ),
+              ),),
             if (sede.sedeGrupoWhatsapp != null)
-              TextButton.icon(
+              Pulse(
+                                              from: 1,
+                                              to: 1.05,
+                                              infinite: true,
+                                              child: TextButton.icon(
                 onPressed: () => launchUrlString(sede.sedeGrupoWhatsapp!),
                 icon: const FaIcon(
                   FontAwesomeIcons.whatsapp,
@@ -406,7 +419,7 @@ class _SedeDetallesScreenState extends State<SedeDetallesScreen> {
                     color: AppColor.whatsappColor,
                   ),
                 ),
-              ),
+              ),),
 
 
             // Mapa embebido (o botón para abrir en Google Maps)
@@ -447,7 +460,7 @@ class _SedeDetallesScreenState extends State<SedeDetallesScreen> {
     );
   }
 
-  Widget _buildGaleriaSection(List<GaleriaModel> galeria) {
+  Widget buildGaleriaSection(List<GaleriaModel> galeria) {
     if (galeria.isEmpty) {
       return const Center(
         child: Text(
@@ -488,7 +501,7 @@ class _SedeDetallesScreenState extends State<SedeDetallesScreen> {
           itemBuilder: (_, i) {
             final g = galeria[i];
             return GestureDetector(
-              onTap: () => _openGallery(context, galeria, i),
+              onTap: () => openGallery(context, galeria, i),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
                 child: Stack(
@@ -528,7 +541,7 @@ class _SedeDetallesScreenState extends State<SedeDetallesScreen> {
     );
   }
 
-  void _openGallery(
+  void openGallery(
     BuildContext context,
     List<GaleriaModel> galeria,
     int initialIndex,
@@ -556,7 +569,7 @@ class _SedeDetallesScreenState extends State<SedeDetallesScreen> {
                 },
                 loadingBuilder:
                     (ctx, event) =>
-                        const Center(child: CircularProgressIndicator()),
+                        const Center(child: CircularProgressIndicator(color: AppColor.primaryColor,)),
               ),
             ),
       ),

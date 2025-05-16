@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -311,7 +312,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ElevatedButton(
+        Pulse(
+                                              from: 1,
+                                              to: 1.02,
+                                              infinite: true,
+                                              child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             foregroundColor: AppColor.whiteColor,
             backgroundColor:
@@ -347,7 +352,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ],
           ),
-        ),
+        ),),
       ],
     );
   }
@@ -523,55 +528,69 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildInscriptionButton(dynamic evento) {
-    return ElevatedButton(
-      onPressed: () {
-        setState(() {
-          Get.toNamed(RouteName.eventoInscripcionView, arguments: evento);
-        });
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppColor.secondaryColor,
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        foregroundColor: Colors.white, // Esto mejora el efecto en presión
-        shadowColor: Colors.black.withOpacity(0.4),
-      ),
-      child: Text(
-        "Inscríbete",
-        style: TextStyle(
-          fontFamily: AppFonts.mina,
-          fontSize: 15,
-          color: AppColor.whiteColor,
-          fontWeight: FontWeight.w500,
-          letterSpacing: 0.5,
+    return Pulse(
+      from: 1,
+      to: 1.02,
+      infinite: true,
+      child: ElevatedButton(
+        onPressed: () {
+          setState(() {
+            Get.toNamed(RouteName.eventoInscripcionView, arguments: evento);
+          });
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColor.secondaryColor,
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          foregroundColor: Colors.white, // Esto mejora el efecto en presión
+          shadowColor: Colors.black.withOpacity(0.4),
+        ),
+        child: Text(
+          "Inscríbete",
+          style: TextStyle(
+            fontFamily: AppFonts.mina,
+            fontSize: 15,
+            color: AppColor.whiteColor,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.5,
+          ),
         ),
       ),
     );
   }
 
   Widget _buildAttendanceButton(dynamic evento) {
-    return ElevatedButton(
-      onPressed: () {
-        setState(() {
-          Get.toNamed(RouteName.eventoAsistenciaView, arguments: evento);
-        });
-      },
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppColor.secondaryColor,
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        foregroundColor: Colors.white, // Esto mejora el efecto en presión
-        shadowColor: Colors.black.withOpacity(0.4),
-      ),
+    return Pulse(
+      from: 1,
+      to: 1.02,
+      infinite: true,
+      child: ElevatedButton(
+        onPressed: () {
+          setState(() {
+            Get.toNamed(RouteName.eventoAsistenciaView, arguments: evento);
+          });
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColor.secondaryColor,
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          foregroundColor: Colors.white, // Esto mejora el efecto en presión
+          shadowColor: Colors.black.withOpacity(0.4),
+        ),
 
-      child: Text(
-        "Asistencia",
-        style: TextStyle(
-          fontFamily: AppFonts.mina,
-          fontSize: 15,
-          color: AppColor.whiteColor,
-          fontWeight: FontWeight.w500,
-          letterSpacing: 0.5,
+        child: Text(
+          "Asistencia",
+          style: TextStyle(
+            fontFamily: AppFonts.mina,
+            fontSize: 15,
+            color: AppColor.whiteColor,
+            fontWeight: FontWeight.w500,
+            letterSpacing: 0.5,
+          ),
         ),
       ),
     );

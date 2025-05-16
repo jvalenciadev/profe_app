@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
@@ -59,7 +60,11 @@ Widget contactButton(String label, int? telefono, String programaNombre) {
     '¡Hola! 🙋‍♂️\n\nEstoy interesado en la oferta formativa de "$programaNombre".\n¿Podrías enviarme más detalles sobre fechas, costos y contenido?\n\n¡Muchas gracias! 😊',
   );
   final uri = Uri.parse('https://wa.me/591$telefono?text=$mensaje');
-  return TextButton.icon(
+  return Pulse(
+                                              from: 1,
+                                              to: 1.05,
+                                              infinite: true,
+                                              child:  TextButton.icon(
     onPressed: () async {
       if (await canLaunchUrl(uri)) {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
@@ -85,7 +90,7 @@ Widget contactButton(String label, int? telefono, String programaNombre) {
         fontWeight: FontWeight.w600,
       ),
     ),
-  );
+  ),);
 }
 
 Widget loading() {

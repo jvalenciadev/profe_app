@@ -20,7 +20,7 @@ class AppColor {
   static const Color primaryButtonColor =  Color.fromARGB(255, 1, 177, 201);
   static const Color secondaryButtonColor =  Color(0xffFC3F5B);
 
-  static const Color redColor =  Color(0xffFC3F5B);
+  static const Color redColor =  Color.fromARGB(255, 218, 6, 38);
 
   static const Color primaryTextColor =  Color(0xff000000);
   static const Color secondaryTextColor =  Color(0xff444648);
@@ -30,6 +30,28 @@ class AppColor {
   static const Color youtubeColor = Color(0xFFFF0000); 
 
   static const Color radioStream = Color.fromARGB(255, 41, 35, 92); 
-
-
 }
+
+final Map<String, Color> colorMap = {
+  'blackColor': AppColor.blackColor,
+  'whiteColor': AppColor.whiteColor,
+  'transparentColor': AppColor.transparentColor,
+  'primaryColor': AppColor.primaryColor,
+  'secondaryColor': AppColor.secondaryColor,
+  'backgroundColor': AppColor.backgroundColor,
+  'accentColor': AppColor.accentColor,
+  'greyColor': AppColor.greyColor,
+  'grey2Color': AppColor.grey2Color,
+  'grey3Color': AppColor.grey3Color,
+  'grey4Color': AppColor.grey4Color,
+  'primaryButtonColor': AppColor.primaryButtonColor,
+  'secondaryButtonColor': AppColor.secondaryButtonColor,
+  'redColor': AppColor.redColor,
+  'primaryTextColor': AppColor.primaryTextColor,
+  'secondaryTextColor': AppColor.secondaryTextColor,
+  'facebookColor': AppColor.facebookColor,
+  'tiktokColor': AppColor.tiktokColor,
+  'whatsappColor': AppColor.whatsappColor,
+  'youtubeColor': AppColor.youtubeColor,
+  'radioStream': AppColor.radioStream,
+};

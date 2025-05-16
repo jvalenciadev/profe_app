@@ -545,7 +545,7 @@ class _ProgramaDetalleViewState extends State<ProgramaDetalleView> {
                 },
                 loadingBuilder:
                     (ctx, event) =>
-                        const Center(child: CircularProgressIndicator()),
+                        const Center(child: CircularProgressIndicator(color: AppColor.primaryColor,)),
               ),
             ),
       ),

@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -156,40 +157,49 @@ class OffersScreen extends StatelessWidget {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             _buildInscripcionButton(programa),
-                                            TextButton.icon(
-                                              style: TextButton.styleFrom(
-                                                backgroundColor: AppColor
-                                                    .primaryColor
-                                                    .withValues(alpha: 0.1),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
+                                            Pulse(
+                                              from: 1,
+                                              to: 1.02,
+                                              infinite: true,
+                                              child: TextButton.icon(
+                                                style: TextButton.styleFrom(
+                                                  backgroundColor: AppColor
+                                                      .primaryColor
+                                                      .withValues(alpha: 0.1),
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          20,
+                                                        ),
+                                                  ),
+                                                  padding:
+                                                      const EdgeInsets.symmetric(
+                                                        horizontal: 15,
+                                                        vertical: 10,
+                                                      ),
                                                 ),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 15,
-                                                      vertical: 10,
-                                                    ),
-                                              ),
-                                              icon: const Icon(
-                                                Icons.arrow_forward_ios_rounded,
-                                                size: 16,
-                                                color: AppColor.primaryColor,
-                                              ),
-                                              label: const Text(
-                                                "Ver más",
-                                                style: TextStyle(
+                                                icon: const Icon(
+                                                  Icons
+                                                      .arrow_forward_ios_rounded,
+                                                  size: 16,
                                                   color: AppColor.primaryColor,
-                                                  fontFamily: AppFonts.mina,
-                                                  fontWeight: FontWeight.w500,
                                                 ),
+                                                label: const Text(
+                                                  "Ver más",
+                                                  style: TextStyle(
+                                                    color:
+                                                        AppColor.primaryColor,
+                                                    fontFamily: AppFonts.mina,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                onPressed: () {
+                                                  Get.toNamed(
+                                                    RouteName.programaDetalle,
+                                                    arguments: programa,
+                                                  );
+                                                },
                                               ),
-                                              onPressed: () {
-                                                Get.toNamed(
-                                                  RouteName.programaDetalle,
-                                                  arguments: programa,
-                                                );
-                                              },
                                             ),
                                           ],
                                         ),
@@ -226,37 +236,44 @@ Widget _buildInscripcionButton(ProgramaModel prog) {
       'https://profe.minedu.gob.bo/ofertas-academicas/inscripcion/${prog.proId}',
     );
 
-    return ElevatedButton.icon(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: AppColor.primaryColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-      ),
-      icon: const Icon(
-        Icons.edit_calendar_outlined,
-        size: 18,
-        color: AppColor.whiteColor,
-      ),
-      label: const Text(
-        "Inscríbete",
-        style: TextStyle(
-          fontFamily: AppFonts.mina,
-          color: AppColor.whiteColor,
-          fontWeight: FontWeight.w500,
+    return Pulse(
+      from: 1,
+      to: 1.02,
+      infinite: true,
+      child: ElevatedButton.icon(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColor.primaryColor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         ),
+        icon: const Icon(
+          Icons.edit_calendar_outlined,
+          size: 18,
+          color: AppColor.whiteColor,
+        ),
+        label: const Text(
+          "Inscríbete",
+          style: TextStyle(
+            fontFamily: AppFonts.mina,
+            color: AppColor.whiteColor,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        onPressed: () async {
+          if (await canLaunchUrl(uri)) {
+            await launchUrl(uri, mode: LaunchMode.externalApplication);
+          } else {
+            Get.snackbar(
+              "Error",
+              "No se pudo abrir el formulario de inscripción.",
+              backgroundColor: AppColor.primaryColor,
+              snackPosition: SnackPosition.BOTTOM,
+            );
+          }
+        },
       ),
-      onPressed: () async {
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri, mode: LaunchMode.externalApplication);
-        } else {
-          Get.snackbar(
-            "Error",
-            "No se pudo abrir el formulario de inscripción.",
-            backgroundColor: AppColor.primaryColor,
-            snackPosition: SnackPosition.BOTTOM,
-          );
-        }
-      },
     );
   }
 

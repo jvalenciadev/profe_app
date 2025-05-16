@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -207,46 +208,57 @@ class InformationScreen extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            TextButton.icon(
-                              onPressed:
-                                  () =>
-                                      _launchUrl('mailto:${profe.profeCorreo}'),
-                              icon: const FaIcon(
-                                FontAwesomeIcons.envelope,
-                                color: Colors.blueAccent,
-                                size: 20,
-                              ),
-                              label: const Text(
-                                'Correo',
-                                style: TextStyle(
-                                  color: Colors.blueAccent,
-                                  fontSize: 16,
+                            Pulse(
+                              from: 1,
+                              to: 1.05,
+                              infinite: true,
+                              child: TextButton.icon(
+                                onPressed:
+                                    () => _launchUrl(
+                                      'mailto:${profe.profeCorreo}',
+                                    ),
+                                icon: const FaIcon(
+                                  FontAwesomeIcons.envelope,
+                                  color: AppColor.primaryColor,
+                                  size: 24,
                                 ),
-                              ),
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.blueAccent,
+                                label: const Text(
+                                  'Correo',
+                                  style: TextStyle(
+                                    color: AppColor.primaryColor,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                style: TextButton.styleFrom(
+                                  foregroundColor: AppColor.secondaryColor,
+                                ),
                               ),
                             ),
-                            TextButton.icon(
-                              onPressed: () {
-                                _launchUrl(
-                                  '${AppUrl.baseImage}/storage/profe/${profe.profeConvocatoria}',
-                                );
-                              },
-                              icon: const FaIcon(
-                                FontAwesomeIcons.filePdf,
-                                color: Colors.red,
-                                size: 20,
-                              ),
-                              label: const Text(
-                                'Convocatoria',
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 16,
+                            Pulse(
+                              from: 1,
+                              to: 1.05,
+                              infinite: true,
+                              child: TextButton.icon(
+                                onPressed: () {
+                                  _launchUrl(
+                                    '${AppUrl.baseImage}/storage/profe/${profe.profeConvocatoria}',
+                                  );
+                                },
+                                icon: const FaIcon(
+                                  FontAwesomeIcons.solidFilePdf,
+                                  color: AppColor.redColor,
+                                  size: 24,
                                 ),
-                              ),
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.red,
+                                label: const Text(
+                                  'Convocatoria',
+                                  style: TextStyle(
+                                    color: AppColor.redColor,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                style: TextButton.styleFrom(
+                                  foregroundColor: AppColor.redColor,
+                                ),
                               ),
                             ),
                           ],
@@ -383,12 +395,18 @@ class InformationScreen extends StatelessWidget {
   }
 
   Widget _socialIcon(IconData icon, String url) {
-    return GestureDetector(
-      onTap: () => _launchUrl(url),
-      child: CircleAvatar(
-        radius: 24,
-        backgroundColor: AppColor.primaryColor.withOpacity(0.1),
-        child: FaIcon(icon, size: 22, color: AppColor.primaryColor),
+    return Pulse(
+      from: 1,
+      to: 1.1,
+      duration: const Duration(seconds: 1),
+      infinite: true,
+      child: GestureDetector(
+        onTap: () => _launchUrl(url),
+        child: CircleAvatar(
+          radius: 24,
+          backgroundColor: AppColor.primaryColor.withOpacity(0.1),
+          child: FaIcon(icon, size: 22, color: AppColor.primaryColor),
+        ),
       ),
     );
   }
