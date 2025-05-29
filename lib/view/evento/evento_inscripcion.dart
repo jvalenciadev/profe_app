@@ -224,12 +224,21 @@ class _EventoInscripcionScreenState extends State<EventoInscripcionScreen> {
                                   const SizedBox(height: 5),
                                   // Estado con chip
                                   Chip(
-                                    label: Text(
-                                      respuesta.estado ?? '',
-                                      style: TextStyle(
-                                        color: estadoColor,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: AppFonts.mina,
+                                    label: ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                        maxWidth:
+                                            300, // Ajusta este valor al ancho que necesites
+                                      ),
+                                      child: Text(
+                                        respuesta.estado ?? '',
+                                        style: TextStyle(
+                                          color: estadoColor,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: AppFonts.mina,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: true,
                                       ),
                                     ),
                                     backgroundColor: estadoColor.withOpacity(

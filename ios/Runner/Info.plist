@@ -28,7 +28,12 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 
+	
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Necesitamos permiso para guardar tu comprobante en la galería.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

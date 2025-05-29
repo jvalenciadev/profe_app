@@ -25,6 +25,7 @@ class LocalNotifications {
           importance: Importance.high,
           priority: Priority.high,
           styleInformation: BigTextStyleInformation(''),
+          
         );
 
     const NotificationDetails notificationDetails = NotificationDetails(

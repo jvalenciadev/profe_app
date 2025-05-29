@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:programa_profe/view/evento/evento_asistencia.dart';
 import 'package:programa_profe/view/evento/evento_formulario.dart';
 import 'package:programa_profe/view/evento/evento_inscripcion.dart';
-import 'package:programa_profe/view/home/home_screen.dart';
 import 'package:programa_profe/view/sede/detalle_view.dart';
 import '../../res/routes/routes_name.dart';
 import '../../view/evento/evento_detalle.dart';
@@ -36,12 +35,7 @@ class AppRoutes {
       transitionDuration: Duration(milliseconds: 250),
       transition: Transition.noTransition,
     ),
-    GetPage(
-      name: RouteName.homeScreen,
-      page: () => HomeScreen(),
-      transitionDuration: Duration(milliseconds: 250),
-      transition: Transition.noTransition,
-    ),
+    
     GetPage(
       name: RouteName.updateAppView,
       page: () => UpdateAppView(),

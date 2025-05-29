@@ -19,7 +19,9 @@ import '../widgets/loading_carusel_widget.dart';
 import '../widgets/novedades_widget.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final Function(int index) onNavigateToTab;
+
+  const HomeScreen({super.key, required this.onNavigateToTab});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -28,7 +30,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final homeController = Get.find<HomeController>();
   final radioCtrl = Get.find<RadioController>();
-  final String streamUrl = 'https://node-17.zeno.fm/7qzeshy6xf8uv.aac';
 
   @override
   void initState() {
@@ -105,20 +106,14 @@ class _HomeScreenState extends State<HomeScreen> {
               FontAwesomeIcons.calendarDays,
               AppColor.secondaryColor,
               "Eventos",
-              () {
-                setState(() {
-                  Get.toNamed(RouteName.eventoView);
-                });
-              },
+              () => widget.onNavigateToTab(0),
             ),
             _buildIcons(
               FontAwesomeIcons.graduationCap,
               AppColor.secondaryColor,
               "Ofertas\nAcadémicas",
               () {
-                setState(() {
-                  Get.toNamed(RouteName.programaView);
-                });
+                widget.onNavigateToTab(1); // Cambiar al tab de Ofertas
               },
             ),
             _buildIcons(
@@ -126,9 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
               AppColor.secondaryColor,
               "Sedes",
               () {
-                setState(() {
-                  Get.toNamed(RouteName.sedeView);
-                });
+                widget.onNavigateToTab(3); // Cambiar al tab de Sedes
               },
             ),
             _buildIcons(
@@ -225,12 +218,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   }),
                 ),
 
-                // Botón play/pause o retry
                 Obx(() {
-                  final radio = radioCtrl;
+                  final status = radioCtrl.status;
 
-                  if (radio.hasError) {
-                    // Mostrar botón de retry
+                  if (status == RadioStatus.error) {
                     return IconButton(
                       iconSize: 25,
                       splashRadius: 28,
@@ -238,12 +229,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         FontAwesomeIcons.rotateRight,
                         color: AppColor.redColor,
                       ),
-                      onPressed: radio.retry,
+                      onPressed: radioCtrl.retry,
                       tooltip: 'Reintentar conexión',
                     );
                   }
 
-                  if (radio.isLoading) {
+                  if (status == RadioStatus.loading) {
                     return const SizedBox(
                       width: 40,
                       height: 40,
@@ -259,13 +250,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     iconSize: 40,
                     splashRadius: 28,
                     icon: Icon(
-                      radio.isPlaying
+                      status == RadioStatus.playing
                           ? FontAwesomeIcons.pause
                           : FontAwesomeIcons.play,
                       color: AppColor.radioStream,
                       size: 25,
                     ),
-                    onPressed: radio.togglePlayPause,
+                    onPressed: radioCtrl.togglePlayPause,
                   );
                 }),
               ],
@@ -313,46 +304,47 @@ class _HomeScreenState extends State<HomeScreen> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Pulse(
-                                              from: 1,
-                                              to: 1.02,
-                                              infinite: true,
-                                              child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            foregroundColor: AppColor.whiteColor,
-            backgroundColor:
-                color, // Color del texto y los íconos cuando el botón está presionado
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+          from: 1,
+          to: 1.02,
+          infinite: true,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: AppColor.whiteColor,
+              backgroundColor:
+                  color, // Color del texto y los íconos cuando el botón está presionado
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              padding: EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 8,
+              ), // Ajustar el tamaño del botón
             ),
-            padding: EdgeInsets.symmetric(
-              vertical: 8,
-              horizontal: 8,
-            ), // Ajustar el tamaño del botón
-          ),
-          onPressed: onPressed,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              FaIcon(
-                icon,
-                size: 30, // Tamaño del ícono
-                color: AppColor.whiteColor, // Color del ícono
-              ),
-              SizedBox(height: 4),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: AppFonts.mina,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: AppColor.whiteColor, // Color del texto
-                  height: 1.2,
+            onPressed: onPressed,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FaIcon(
+                  icon,
+                  size: 30, // Tamaño del ícono
+                  color: AppColor.whiteColor, // Color del ícono
                 ),
-              ),
-            ],
+                SizedBox(height: 4),
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: AppFonts.mina,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: AppColor.whiteColor, // Color del texto
+                    height: 1.2,
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),),
+        ),
       ],
     );
   }

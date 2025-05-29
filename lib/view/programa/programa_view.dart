@@ -15,6 +15,7 @@ import '../../res/routes/routes_name.dart';
 import '../../utils/utilidad.dart';
 import '../../view_models/controller/home/home_view_models.dart';
 
+
 class OffersScreen extends StatelessWidget {
   final homeController = Get.find<HomeController>();
   OffersScreen({super.key});
@@ -23,9 +24,7 @@ class OffersScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final tabTitles = ['CICLOS FORMATIVOS', 'DIPLOMADOS', 'ESPECIALIDADES'];
 
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
+    return Padding(
           padding: const EdgeInsets.fromLTRB(12, 2, 12, 0),
           child: Obx(() {
             switch (homeController.programasStatus.value) {
@@ -86,11 +85,11 @@ class OffersScreen extends StatelessWidget {
                           );
                         }
 
-                        return ListView.builder(
+                        return SingleChildScrollView(
                           physics: BouncingScrollPhysics(),
-                          itemCount: filteredList.length,
-                          itemBuilder: (context, index) {
-                            final programa = filteredList[index];
+                          child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: filteredList.map((programa) {
                             return Card(
                               margin: const EdgeInsets.symmetric(
                                 vertical: 3,
@@ -209,8 +208,9 @@ class OffersScreen extends StatelessWidget {
                                 ],
                               ),
                             );
-                          },
-                        );
+                          }).toList(),
+                        ),);
+                        
                       }).toList(),
                 );
               case Status.IDLE:
@@ -218,8 +218,6 @@ class OffersScreen extends StatelessWidget {
                 throw UnimplementedError();
             }
           }),
-        ),
-      ),
     );
   }
 }

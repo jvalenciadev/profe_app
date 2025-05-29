@@ -1,10 +1,16 @@
+import 'dart:io';
+import 'dart:ui' as ui;
+
+import 'package:barcode_widget/barcode_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:programa_profe/res/app_url/app_url.dart';
 import 'package:programa_profe/res/fonts/app_fonts.dart';
 import 'package:programa_profe/utils/utils.dart';
+import 'package:saver_gallery/saver_gallery.dart';
 
 import '../../data/response/api_response.dart';
 import '../../data/response/status.dart';
@@ -14,6 +20,7 @@ import '../../res/colors/app_color.dart';
 import '../../res/routes/routes_name.dart';
 import '../../view_models/controller/home/evento_view_models.dart';
 import 'widget/widget.dart'; // donde hayas puesto buildField
+import 'package:permission_handler/permission_handler.dart';
 
 class EventoFormularioScreen extends StatefulWidget {
   const EventoFormularioScreen({Key? key}) : super(key: key);
@@ -27,7 +34,8 @@ class _EventoFormularioScreenState extends State<EventoFormularioScreen> {
   late Persona persona;
   final _formKey = GlobalKey<FormState>();
   final EventoController _ctrl = Get.put(EventoController());
-
+  final GlobalKey _certKey = GlobalKey();
+  bool _isSaving = false;
   Department? _selectedDepartment;
   String? _selectedModality;
 
@@ -35,13 +43,93 @@ class _EventoFormularioScreenState extends State<EventoFormularioScreen> {
   void initState() {
     super.initState();
     final args = Get.arguments as Map<String, dynamic>;
-    evento  = EventoModel.fromJson(args['evento']);
+    evento = EventoModel.fromJson(args['evento']);
     persona = Persona.fromJson(args['persona']);
 
     // Escuchar cambios de status
     ever(_ctrl.inscripcionResponse, _handleInscripcionResponse);
   }
-void _handleInscripcionResponse(ApiResponse<PersonaEstadoModel> resp) {
+
+  Future<void> _saveCertificateImage(setStateDialog) async {
+    setStateDialog(() => _isSaving = true);
+    try {
+      // Verificar y solicitar permisos según la plataforma y versión
+      if (Platform.isAndroid) {
+        if (!await Permission.manageExternalStorage.isGranted &&
+            !await Permission.photos.isGranted) {
+          await [
+            Permission.storage,
+            Permission.mediaLibrary,
+            Permission.photos,
+            Permission.manageExternalStorage,
+          ].request();
+        }
+      } else if (Platform.isIOS) {
+        await Permission.photosAddOnly.request();
+      }
+
+      // Verificar si finalmente se otorgaron los permisos necesarios
+      bool isPermissionGranted =
+          Platform.isAndroid
+              ? await Permission.storage.isGranted ||
+                  await Permission.manageExternalStorage.isGranted
+              : await Permission.photosAddOnly.isGranted;
+
+      if (!isPermissionGranted) {
+        showCustomSnackbar(
+          title: 'Permiso denegado',
+          message:
+              'Debes otorgar permiso para guardar la imagen en la galería.',
+          isError: true,
+        );
+        return;
+      }
+
+      final ctx = _certKey.currentContext;
+      if (ctx == null) throw 'Certificado no disponible';
+      final boundary = ctx.findRenderObject() as RenderRepaintBoundary?;
+      if (boundary == null) throw 'No se pudo capturar el certificado';
+
+      final ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      final pngBytes = byteData!.buffer.asUint8List();
+
+      final String imageName =
+          'comprobante_${DateTime.now().millisecondsSinceEpoch}';
+
+      final success = await SaverGallery.saveImage(
+        pngBytes,
+        quality: 80,
+        fileName: imageName,
+        androidRelativePath: "Pictures/Eventos", // ✅ Carpeta deseada
+        skipIfExists: false,
+      );
+      // Mostrar nuevamente los botones
+      if (success.isSuccess == true) {
+        showCustomSnackbar(
+          title: '¡Guardado!',
+          message: 'Comprobante guardado en Pictures/Eventos.',
+          isError: false,
+        );
+      } else {
+        showCustomSnackbar(
+          title: 'Error',
+          message: 'No se pudo guardar la imagen.',
+          isError: true,
+        );
+      }
+    } catch (e) {
+      showCustomSnackbar(
+        title: 'Error',
+        message: 'Ocurrió un problema.',
+        isError: true,
+      );
+    } finally {
+      setStateDialog(() => _isSaving = false);
+    }
+  }
+
+  void _handleInscripcionResponse(ApiResponse<PersonaEstadoModel> resp) {
     switch (resp.status) {
       case Status.LOADING:
         // no hace nada, el botón ya muestra indicador
@@ -67,15 +155,336 @@ void _handleInscripcionResponse(ApiResponse<PersonaEstadoModel> resp) {
               isError: true,
             );
           } else {
+            Future.microtask(() {
+              final persona = respuesta.persona!;
+              final nombreCompleto =
+                  '${persona.nombre1} ${persona.apellido1} ${persona.apellido2}';
+              final estadoColor =
+                  respuesta.inscrito == true ? Colors.green : Colors.green;
+              Get.dialog(
+                StatefulBuilder(
+                  builder: (context, setStateDialog) {
+                    return Dialog(
+                      backgroundColor: Colors.transparent,
+                      insetPadding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 24,
+                      ),
+                      child: Stack(
+                        clipBehavior: Clip.none,
+                        children: [
+                          // RepaintBoundary para captura
+                          RepaintBoundary(
+                            key: _certKey,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 12,
+                                    offset: Offset(0, 6),
+                                  ),
+                                ],
+                                border: Border.all(
+                                  color: AppColor.secondaryColor,
+                                  width: 2,
+                                ),
+                                image: DecorationImage(
+                                  image: AssetImage(
+                                    'assets/logos/logoprofeinvertido.png',
+                                  ),
+                                  fit: BoxFit.fitWidth,
+                                  colorFilter: ColorFilter.mode(
+                                    Colors.white.withOpacity(0.2),
+                                    BlendMode.dstATop,
+                                  ),
+                                ),
+                              ),
+                              padding: const EdgeInsets.fromLTRB(
+                                16,
+                                20,
+                                16,
+                                20,
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  // Título con estilo destacado
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 8,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: AppColor.secondaryColor
+                                          .withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(
+                                      persona.eveNombre ?? 'Nombre del Evento',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: AppFonts.mina,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w700,
+                                        color: AppColor.primaryColor,
+                                        letterSpacing: 1.0,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  const Divider(
+                                    height: 1,
+                                    thickness: 1,
+                                    color: AppColor.greyColor,
+                                  ),
+                                  const SizedBox(height: 10),
+                                  buildCertRow('C.I.:', persona.ci.toString()),
+                                  const SizedBox(height: 6),
+                                  buildCertRow('Participante:', nombreCompleto),
+                                  const SizedBox(height: 6),
+                                  buildCertRow(
+                                    'Fecha Nac.:',
+                                    persona.fechaNacimiento ?? '',
+                                  ),
+                                  const SizedBox(height: 6),
+                                  buildCertRow(
+                                    'Modalidad:',
+                                    persona.pmNombre?.toUpperCase() ?? '',
+                                  ),
+                                  const SizedBox(height: 6),
+                                  buildCertRow(
+                                    'Celular:',
+                                    persona.celular?.toUpperCase() ?? '',
+                                  ),
+                                  const SizedBox(height: 6),
+                                  buildCertRow('Correo:', persona.correo ?? ''),
+                                  const SizedBox(height: 6),
+                                  buildCertRow(
+                                    'Tipo de Evento:',
+                                    persona.etNombre?.toUpperCase() ?? '',
+                                  ),
+                                  const SizedBox(height: 6),
+                                  buildCertRow(
+                                    'Departamento:',
+                                    persona.depNombre ?? '',
+                                  ),
+                                  const SizedBox(height: 10),
+                                  // Código de barras + texto
+                                  Center(
+                                    child: Column(
+                                      children: [
+                                        Card(
+                                          elevation: 4,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: BarcodeWidget(
+                                              barcode: Barcode.code128(),
+                                              data: persona.ci.toString(),
+                                              width: 200,
+                                              height: 50,
+                                              drawText: false,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          persona.ci.toString(),
+                                          style: TextStyle(
+                                            fontFamily: 'Courier New',
+                                            fontSize: 14,
+                                            color: AppColor.greyColor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  // Estado con chip
+                                  Chip(
+                                    label: ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                        maxWidth:
+                                            300, // Ajusta este valor al ancho que necesites
+                                      ),
+                                      child: Text(
+                                        respuesta.estado ?? '',
+                                        style: TextStyle(
+                                          color: estadoColor,
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: AppFonts.mina,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: true,
+                                      ),
+                                    ),
+                                    backgroundColor: estadoColor.withOpacity(
+                                      0.1,
+                                    ),
+                                    side: BorderSide(color: estadoColor),
+                                  ),
+
+                                  const SizedBox(height: 16),
+                                  // Botón cerrar
+                                ],
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: -25,
+                            left: 10,
+                            right: 10,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Get.back();
+                                      // después de mostrar el toast, volvemos al Home
+                                      Future.delayed(
+                                        const Duration(milliseconds: 500),
+                                        () {
+                                          Get.offAllNamed(RouteName.homeView);
+                                        },
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColor.primaryColor,
+                                      foregroundColor:
+                                          Colors
+                                              .white, // Esto mejora el efecto en presión
+                                      shadowColor: Colors.black.withOpacity(
+                                        0.4,
+                                      ), // sombra al presionar
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 14,
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      'Aceptar',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColor.whiteColor,
+                                        fontFamily: AppFonts.mina,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: () async {
+                                      _isSaving
+                                          ? null
+                                          : _saveCertificateImage(
+                                            setStateDialog,
+                                          );
+                                    },
+                                    icon:
+                                        _isSaving
+                                            ? const SizedBox(
+                                              width: 20,
+                                              height: 20,
+                                              child: CircularProgressIndicator(
+                                                strokeWidth: 2,
+                                                color: AppColor.whiteColor,
+                                              ),
+                                            )
+                                            : const Icon(
+                                              Icons.save_alt,
+                                              color: AppColor.whiteColor,
+                                            ),
+                                    label: Text(
+                                      _isSaving ? 'Guardando...' : 'Guardar',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: AppColor.whiteColor,
+                                        fontFamily: AppFonts.mina,
+                                      ),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColor.secondaryColor,
+                                      foregroundColor:
+                                          Colors
+                                              .white, // Esto mejora el efecto en presión
+                                      shadowColor: Colors.black.withOpacity(
+                                        0.4,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 14,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Encabezado flotante con título "COMPROBANTE"
+                          Positioned(
+                            top: -20, // ajusta según nuevo alto
+                            left: 0,
+                            right: 0,
+                            child: Center(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 12,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: AppColor.secondaryColor,
+                                  borderRadius: BorderRadius.circular(
+                                    24,
+                                  ), // píldora
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black26,
+                                      blurRadius: 6,
+                                      offset: Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Text(
+                                  'COMPROBANTE',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                barrierDismissible: false,
+              );
+            });
+
             showCustomSnackbar(
               title: '¡Listo!',
               message: respuesta.estado!,
               isError: false,
             );
-            // después de mostrar el toast, volvemos al Home
-            Future.delayed(const Duration(milliseconds: 500), () {
-              Get.offAllNamed(RouteName.homeView);
-            });
           }
         });
         break;
@@ -85,6 +494,7 @@ void _handleInscripcionResponse(ApiResponse<PersonaEstadoModel> resp) {
         break;
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

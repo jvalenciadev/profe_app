@@ -195,7 +195,7 @@ class _EventoAsistenciaScreenState extends State<EventoAsistenciaScreen> {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Text(
-                                      'Tu certificado de asistencia estará disponible dentro de 10 días hábiles.',
+                                      'Tu certificado estará disponible en https://certificados.minedu.gob.bo, 10 días hábiles tras el evento.',
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontFamily: AppFonts.mina,

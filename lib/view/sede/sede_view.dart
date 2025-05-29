@@ -117,8 +117,7 @@ class _SedesScreenState extends State<SedesScreen> {
     // Loader hasta obtener ubicación
     if (_initialPosition == null) {
       return Scaffold(
-        body: SafeArea(
-          child: Center(
+        body: Center(
             child: Container(
               color: AppColor.grey3Color,
               child: Center(
@@ -148,12 +147,9 @@ class _SedesScreenState extends State<SedesScreen> {
               ),
             ),
           ),
-        ),
       );
     }
-    return Scaffold(
-      body: SafeArea(
-        child: Obx(() {
+    return  Obx(() {
           switch (homeController.eventosStatus.value) {
             case Status.LOADING:
               return _buildLoadingCarousel();
@@ -448,9 +444,7 @@ class _SedesScreenState extends State<SedesScreen> {
               // TODO: Handle this case.
               throw UnimplementedError();
           }
-        }),
-      ),
-    );
+        });
   }
 
   // 1) Normaliza quitando acentos y poniendo minúsculas

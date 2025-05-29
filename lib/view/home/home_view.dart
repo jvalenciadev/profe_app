@@ -27,7 +27,7 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
-     WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadHomeData();
     });
   }
@@ -37,32 +37,49 @@ class _HomeViewState extends State<HomeView> {
       homeController.onInit();
     } catch (e) {
       showCustomSnackbar(
-              title: 'Error',
-              message: 'Failed to load home data ${e.toString()}',
-              isError: true,
-            );
-      
+        title: 'Error',
+        message: 'Failed to load home data ${e.toString()}',
+        isError: true,
+      );
     }
   }
-    Future<bool> _onWillPop() async {
+
+  Future<bool> _onWillPop() async {
     final exit = await showDialog<bool>(
       context: context,
-      builder: (c) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        title: Text('¿Salir?', style: TextStyle(fontFamily: AppFonts.mina)),
-        content: Text('¿Deseas cerrar la aplicación?', style: TextStyle(fontFamily: AppFonts.mina)),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(c).pop(false),
-            child: Text('Cancelar', style: TextStyle(color: AppColor.primaryColor)),
+      builder:
+          (c) => AlertDialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            title: Text('¿Salir?', style: TextStyle(fontFamily: AppFonts.mina)),
+            content: Text(
+              '¿Deseas cerrar la aplicación?',
+              style: TextStyle(fontFamily: AppFonts.mina),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(c).pop(false),
+                child: Text(
+                  'Cancelar',
+                  style: TextStyle(color: AppColor.primaryColor),
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColor.primaryColor,
+                ),
+                onPressed: () => Navigator.of(c).pop(true),
+                child: Text(
+                  'Salir',
+                  style: TextStyle(
+                    fontFamily: AppFonts.mina,
+                    color: AppColor.whiteColor,
+                  ),
+                ),
+              ),
+            ],
           ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: AppColor.primaryColor),
-            onPressed: () => Navigator.of(c).pop(true),
-            child: Text('Salir', style: TextStyle(fontFamily: AppFonts.mina, color: AppColor.whiteColor)),
-          ),
-        ],
-      ),
     );
     if (exit == true) {
       SystemNavigator.pop();
@@ -70,8 +87,13 @@ class _HomeViewState extends State<HomeView> {
     }
     return false;
   }
-  
+
   int _currentIndex = 2;
+   void changeTab(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
   final List<String> _titles = [
     "Eventos",
     "Ofertas académicas",
@@ -79,69 +101,73 @@ class _HomeViewState extends State<HomeView> {
     "Sedes",
     "Información",
   ];
-  final List<Widget> _screens = [
-    EventScreen(),
-    OffersScreen(),
-    HomeScreen(),
-    SedesScreen(),
-    InformationScreen(),
-  ];
-
+  
   @override
   Widget build(BuildContext context) {
+    final List<Widget> screens = [
+      EventScreen(),
+      OffersScreen(),
+      HomeScreen(onNavigateToTab: changeTab), // pasa la función
+      SedesScreen(),
+      InformationScreen(),
+    ];
     final screenHeight = MediaQuery.of(context).size.height;
-    final isSmallScreen = screenHeight < 850;
+    final isSmallScreen = screenHeight < 660;
     return PopScope(
-    canPop: false, // Para evitar que se cierre automáticamente
-    onPopInvokedWithResult: (didPop, result) async {
+      canPop: false, // Para evitar que se cierre automáticamente
+      onPopInvokedWithResult: (didPop, result) async {
         if (!didPop) {
           await _onWillPop();
         }
       },
-    child: Scaffold(
-      appBar:
-          isSmallScreen
-              ? null // ❌ Oculta AppBar completamente si la pantalla es muy pequeña
-              : AppBar(
-                automaticallyImplyLeading:
-                    false, // No muestra el ícono de "atrás"
-                elevation: 0,
-                flexibleSpace: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [AppColor.primaryColor, AppColor.secondaryColor],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                  ),
-                ),
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    // Título de la sección
-                    Text(
-                      _titles[_currentIndex],
-                      style: TextStyle(
-                        fontFamily: 'Mina',
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: AppColor.whiteColor,
-                        height: 1.2,
+      child: Scaffold(
+        appBar:
+            isSmallScreen
+                ? null // ❌ Oculta AppBar completamente si la pantalla es muy pequeña
+                : AppBar(
+                  automaticallyImplyLeading:
+                      false, // No muestra el ícono de "atrás"
+                  elevation: 0,
+                  flexibleSpace: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColor.primaryColor,
+                          AppColor.secondaryColor,
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
                     ),
-                    const SizedBox(height: 5),
-                    // Logo de la empresa
-                    Image.asset(
-                      ImageAssets.logoProfe,
-                      width: 120,
-                      fit: BoxFit.contain,
-                    ),
-                  ],
+                  ),
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Título de la sección
+                      Text(
+                        _titles[_currentIndex],
+                        style: TextStyle(
+                          fontFamily: 'Mina',
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: AppColor.whiteColor,
+                          height: 1.2,
+                        ),
+                      ),
+                      const SizedBox(height: 5),
+                      // Logo de la empresa
+                      Image.asset(
+                        ImageAssets.logoProfe,
+                        width: 120,
+                        fit: BoxFit.contain,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-      bottomNavigationBar: _buildBottomNavBar(),
-      body: _screens[_currentIndex],
-    ),);
+        bottomNavigationBar: SafeArea(child: _buildBottomNavBar()),
+        body: screens[_currentIndex],
+      ),
+    );
   }
 
   Widget _buildBottomNavBar() {
