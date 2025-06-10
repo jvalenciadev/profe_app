@@ -87,6 +87,28 @@ class RadioController extends GetxController with WidgetsBindingObserver {
     WidgetsBinding.instance.removeObserver(this);
     super.onClose();
   }
+  // Esta función es clave: se llama cuando la app se cierra completamente
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.detached) {
+      // Cuando la app se cierra (deslizada del multitasking o terminada)
+      if (isPlaying) {
+        _audioHandler.stop();
+      }
+    }
+    if (state == AppLifecycleState.paused) {
+      // App se va a segundo plano, puedes permitir que siga sonando
+      // No hacemos nada aquí
+    }
+
+    if (state == AppLifecycleState.inactive) {
+      // Transición, por ejemplo al cambiar de app
+    }
+
+    if (state == AppLifecycleState.resumed) {
+      // La app vuelve a primer plano
+    }
+  }
 }
 
 class RadioAudioHandler extends BaseAudioHandler {
@@ -97,10 +119,10 @@ class RadioAudioHandler extends BaseAudioHandler {
     _player.playbackEventStream.listen((event) {
       playbackState.add(
         PlaybackState(
-          controls: [
-            _player.playing ? MediaControl.pause : MediaControl.play,
-            MediaControl.stop,
-          ],
+          // controls: [
+          //   _player.playing ? MediaControl.pause : MediaControl.play,
+          //   MediaControl.stop,
+          // ],
           processingState: const {
             ProcessingState.idle: AudioProcessingState.idle,
             ProcessingState.loading: AudioProcessingState.loading,
@@ -126,7 +148,6 @@ class RadioAudioHandler extends BaseAudioHandler {
       );
     });
 
-    _init();
   }
 
   Future<void> _init() async {

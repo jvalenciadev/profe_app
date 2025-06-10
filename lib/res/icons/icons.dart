@@ -114,7 +114,7 @@ final Map<String, IconData> iconMap = {
   'triangle-exclamation': FontAwesomeIcons.triangleExclamation,
   'bug': FontAwesomeIcons.bug,
   'skull': FontAwesomeIcons.skull,
-
+  
   // Estadísticas y puntuaciones
   'chart-bar': FontAwesomeIcons.chartBar,
   'chart-line': FontAwesomeIcons.chartLine,
