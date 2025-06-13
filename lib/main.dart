@@ -13,8 +13,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'view_models/controller/programa/programa_view_model.dart';
 import 'view_models/controller/radio_controller.dart';
+// import 'package:flutter/rendering.dart';
 
 void main() async {
+  // debugPaintSizeEnabled = false; // Apaga las guías de depuración visual
   await dotenv.load(fileName: "assets/.env");
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase(); // Inicializa Firebase

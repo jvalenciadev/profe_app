@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:barcode/barcode.dart';
 import 'package:barcode_widget/barcode_widget.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
@@ -432,24 +433,34 @@ class _EventoInscripcionScreenState extends State<EventoInscripcionScreen> {
       } else if (Platform.isIOS) {
         await Permission.photosAddOnly.request();
       }
-
+      bool isPermissionGranted;
+      final deviceInfo = await DeviceInfoPlugin().androidInfo;
+      final sdkInt = deviceInfo.version.sdkInt;
       // Verificar si finalmente se otorgaron los permisos necesarios
-      bool isPermissionGranted =
-          Platform.isAndroid
-              ? await Permission.storage.isGranted ||
-                  await Permission.manageExternalStorage.isGranted
-              : await Permission.photosAddOnly.isGranted;
+      if (Platform.isAndroid) {
+        if (sdkInt >= 33) {
+          // Android 13 o superior
+          isPermissionGranted = await Permission.photos.isGranted;
+        } else if (sdkInt >= 30) {
+          // Android 11 o superior
+          isPermissionGranted = await Permission.manageExternalStorage.isGranted;
+        } else {
+          // Android 10 o inferior
+          isPermissionGranted = await Permission.storage.isGranted;
+        }
+      } else {
+        // iOS
+        isPermissionGranted = await Permission.photosAddOnly.isGranted;
+      }
 
       if (!isPermissionGranted) {
         showCustomSnackbar(
           title: 'Permiso denegado',
-          message:
-              'Debes otorgar permiso para guardar la imagen en la galería.',
+          message: 'Debes otorgar permiso para guardar la imagen en la galería.',
           isError: true,
         );
         return;
       }
-
       final ctx = _certKey.currentContext;
       if (ctx == null) throw 'Certificado no disponible';
       final boundary = ctx.findRenderObject() as RenderRepaintBoundary?;

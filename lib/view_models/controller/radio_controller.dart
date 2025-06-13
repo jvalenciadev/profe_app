@@ -16,7 +16,7 @@ class RadioController extends GetxController with WidgetsBindingObserver {
   bool get hasError => _status.value == RadioStatus.error;
   //https://node-17.zeno.fm/7qzeshy6xf8uv.aac
   //https://emiteradio.com/proxy/minedu?mp=/stream
-  final String streamUrl = 'https://node-17.zeno.fm/7qzeshy6xf8uv.aac';
+  final String streamUrl = 'https://emiteradio.com/proxy/minedu?mp=/stream';
 
   @override
   void onInit() {
@@ -35,7 +35,7 @@ class RadioController extends GetxController with WidgetsBindingObserver {
       _audioHandler = await AudioService.init(
         builder: () => RadioAudioHandler(streamUrl),
         config: AudioServiceConfig(
-          androidNotificationChannelId: 'com.minedu.profe.radio',
+          androidNotificationChannelId: 'com.profe.jpvc',
           androidNotificationChannelName: 'Sintonía Educativo',
           androidNotificationOngoing: true,
           androidStopForegroundOnPause: true,
@@ -119,10 +119,10 @@ class RadioAudioHandler extends BaseAudioHandler {
     _player.playbackEventStream.listen((event) {
       playbackState.add(
         PlaybackState(
-          // controls: [
-          //   _player.playing ? MediaControl.pause : MediaControl.play,
-          //   MediaControl.stop,
-          // ],
+          controls: [
+            _player.playing ? MediaControl.pause : MediaControl.play,
+            // MediaControl.stop,
+          ],
           processingState: const {
             ProcessingState.idle: AudioProcessingState.idle,
             ProcessingState.loading: AudioProcessingState.loading,
