@@ -31,7 +31,11 @@ class EventScreen extends StatelessWidget {
               itemBuilder: (_, i) {
                 final n = events[i];
                 return GestureDetector(
-                  onTap: () => Get.toNamed(RouteName.eventoDetalleView, arguments: n),
+                  onTap:
+                      () => Get.toNamed(
+                        RouteName.eventoDetalleView,
+                        arguments: n,
+                      ),
                   child: Container(
                     margin: EdgeInsets.only(bottom: 20),
                     height: 350,
@@ -42,12 +46,17 @@ class EventScreen extends StatelessWidget {
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(10),
                             child: CachedNetworkImage(
-                              imageUrl: "${AppUrl.baseImage}/storage/evento_afiches/${n.eveAfiche}",
+                              imageUrl:
+                                  "${AppUrl.baseImage}/storage/evento_afiches/${n.eveAfiche}",
                               fit: BoxFit.fill,
                               colorBlendMode: BlendMode.darken,
                               color: Colors.black12,
-                              placeholder: (_, __) => Container(color: AppColor.grey3Color),
-                              errorWidget: (_, __, ___) => Container(color: AppColor.grey3Color),
+                              placeholder:
+                                  (_, __) =>
+                                      Container(color: AppColor.grey3Color),
+                              errorWidget:
+                                  (_, __, ___) =>
+                                      Container(color: AppColor.grey3Color),
                             ),
                           ),
                         ),
@@ -57,7 +66,7 @@ class EventScreen extends StatelessWidget {
                           child: Container(
                             height: 210,
                             margin: EdgeInsets.symmetric(horizontal: 20),
-                            padding: EdgeInsets.fromLTRB(15,15,15,5),
+                            padding: EdgeInsets.fromLTRB(15, 15, 15, 5),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
@@ -90,9 +99,13 @@ class EventScreen extends StatelessWidget {
                                     ),
                                     SizedBox(width: 8),
                                     Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
                                       decoration: BoxDecoration(
-                                        color: AppColor.secondaryColor.withOpacity(0.2),
+                                        color: AppColor.secondaryColor
+                                            .withOpacity(0.2),
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Text(
@@ -110,19 +123,27 @@ class EventScreen extends StatelessWidget {
                                 // Iconos informativos
                                 Row(
                                   children: [
-                                    Icon(FontAwesomeIcons.mapMarkerAlt, size: 14, color: AppColor.primaryColor),
+                                    Icon(
+                                      FontAwesomeIcons.mapMarkerAlt,
+                                      size: 14,
+                                      color: AppColor.primaryColor,
+                                    ),
                                     SizedBox(width: 4),
                                     Expanded(
                                       child: Text(
                                         n.eveLugar ?? 'Sin especificar',
-                                        style: TextStyle(fontSize: 13, color: AppColor.blackColor,fontFamily: AppFonts.mina),
+                                        style: TextStyle(
+                                          fontSize: 13,
+                                          color: AppColor.blackColor,
+                                          fontFamily: AppFonts.mina,
+                                        ),
                                         overflow: TextOverflow.ellipsis,
                                       ),
                                     ),
                                   ],
                                 ),
                                 SizedBox(height: 6),
-                                
+
                                 // MODALIDADES
                                 if (n.modalidades != null &&
                                     n.modalidades!.isNotEmpty)
@@ -130,25 +151,24 @@ class EventScreen extends StatelessWidget {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      if (n.eveInsHoraAsisHabilitado !=
-                                          null)
-                                         Row(
-                                            children: [
-                                              const Icon(
-                                                FontAwesomeIcons.clock,
-                                                size: 14,
-                                                color: AppColor.primaryColor,
+                                      if (n.eveInsHoraAsisHabilitado != null)
+                                        Row(
+                                          children: [
+                                            const Icon(
+                                              FontAwesomeIcons.clock,
+                                              size: 14,
+                                              color: AppColor.primaryColor,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Text(
+                                              'Hora: ${formatoHoraAmPm(n.eveInsHoraAsisHabilitado!)} - ${formatoHoraAmPm(n.eveInsHoraAsisDeshabilitado!)}',
+                                              style: const TextStyle(
+                                                fontFamily: AppFonts.mina,
+                                                color: AppColor.blackColor,
+                                                fontSize: 12,
                                               ),
-                                              const SizedBox(width: 8),
-                                              Text(
-                                                'Hora: ${formatoHoraAmPm(n.eveInsHoraAsisHabilitado!)} - ${formatoHoraAmPm(n.eveInsHoraAsisDeshabilitado!)}',
-                                                style: const TextStyle(
-                                                  fontFamily: AppFonts.mina,
-                                                  color: AppColor.blackColor,
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ],
+                                            ),
+                                          ],
                                         ),
                                       Wrap(
                                         spacing: 8,
@@ -165,7 +185,7 @@ class EventScreen extends StatelessWidget {
                                                     fontFamily: AppFonts.mina,
                                                     fontWeight: FontWeight.w500,
                                                     letterSpacing: 0.5,
-                                                    fontSize: 14
+                                                    fontSize: 14,
                                                   ),
                                                 ),
                                                 backgroundColor:
@@ -200,37 +220,38 @@ class EventScreen extends StatelessWidget {
                                   ),
                                 Align(
                                   alignment: Alignment.centerRight,
-                                  child:TextButton.icon(
-                                              style: TextButton.styleFrom(
-                                                backgroundColor: AppColor
-                                                    .primaryColor
-                                                    .withValues(alpha: 0.1),
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(20),
-                                                ),
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                      horizontal: 15,
-                                                      vertical: 10,
-                                                    ),
-                                              ),
-                                              icon: const Icon(
-                                                Icons.arrow_forward_ios_rounded,
-                                                size: 16,
-                                                color: AppColor.primaryColor,
-                                              ),
-                                              label: const Text(
-                                                "Ver más",
-                                                style: TextStyle(
-                                                  color: AppColor.primaryColor,
-                                                  fontFamily: AppFonts.mina,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontSize: 14
-                                                ),
-                                              ),
-                                              onPressed: () => Get.toNamed(RouteName.eventoDetalleView, arguments: n),
-                                            ),
+                                  child: TextButton.icon(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: AppColor.primaryColor
+                                          .withValues(alpha: 0.1),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 15,
+                                        vertical: 10,
+                                      ),
+                                    ),
+                                    icon: const Icon(
+                                      Icons.arrow_forward_ios_rounded,
+                                      size: 16,
+                                      color: AppColor.primaryColor,
+                                    ),
+                                    label: const Text(
+                                      "Ver más",
+                                      style: TextStyle(
+                                        color: AppColor.primaryColor,
+                                        fontFamily: AppFonts.mina,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                    onPressed:
+                                        () => Get.toNamed(
+                                          RouteName.eventoDetalleView,
+                                          arguments: n,
+                                        ),
+                                  ),
                                 ),
                               ],
                             ),

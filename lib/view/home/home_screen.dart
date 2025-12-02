@@ -514,7 +514,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: [
         if (evento.eveInscripcion == 1) _buildInscriptionButton(evento),
         const SizedBox(width: 10),
-        if (evento.eveAsistencia == true) _buildAttendanceButton(evento),
+        if (true) _buildAttendanceButton(evento),
       ],
     );
   }

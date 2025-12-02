@@ -18,7 +18,7 @@ import '../../res/colors/app_color.dart';
 import '../../res/fonts/app_fonts.dart';
 import '../../res/routes/routes_name.dart';
 import '../../utils/utils.dart';
-import '../../view_models/controller/home/evento_view_models.dart';
+import '../../view_models/controller/evento/evento_view_models.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:saver_gallery/saver_gallery.dart';
 

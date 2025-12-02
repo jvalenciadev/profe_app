@@ -15,7 +15,7 @@ import '../../res/colors/app_color.dart';
 import '../../res/fonts/app_fonts.dart';
 import '../../res/routes/routes_name.dart';
 import '../../utils/utils.dart';
-import '../../view_models/controller/home/evento_view_models.dart';
+import '../../view_models/controller/evento/evento_view_models.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:saver_gallery/saver_gallery.dart';
 
@@ -67,7 +67,7 @@ class _EventoAsistenciaScreenState extends State<EventoAsistenciaScreen> {
           _dialogShown = true;
 
           // si ya estaba inscrito
-          if (respuesta.inscrito == true) {
+          if (respuesta.inscrito == true && respuesta.cuestionario == false) {
             Future.microtask(() {
               final persona = respuesta.persona!;
               final nombreCompleto =
@@ -363,7 +363,25 @@ class _EventoAsistenciaScreenState extends State<EventoAsistenciaScreen> {
                 barrierDismissible: false,
               );
             });
-          } else {
+          } else if (respuesta.inscrito == true && respuesta.cuestionario == true){
+            showCustomSnackbar(
+              title: 'Cuestionario',
+              message: error ?? 'Realiza el cuestionario!',
+              isError: false,
+            );
+            _dialogShown = false;
+            // persona encontrada pero NO inscrita
+            final evento = Get.arguments;
+             Get.toNamed(
+                RouteName.eventoCuestionarioView,
+                arguments: {
+                  'evento': evento.toJson(),
+                  'persona': respuesta.persona!.toJson(), // sólo la info de persona
+                },
+              );
+          }
+          
+          else {
             _dialogShown = false;
             // persona encontrada pero NO inscrita
             final evento = Get.arguments;
@@ -462,7 +480,7 @@ class _EventoAsistenciaScreenState extends State<EventoAsistenciaScreen> {
       showCustomSnackbar(
         title: 'Error',
         message: 'Ocurrió un problema.',
-        isError: true,
+        isError: false,
       );
     } finally {
       setStateDialog(() => _isSaving = false);

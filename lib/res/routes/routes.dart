@@ -4,6 +4,8 @@ import 'package:programa_profe/view/evento/evento_formulario.dart';
 import 'package:programa_profe/view/evento/evento_inscripcion.dart';
 import 'package:programa_profe/view/sede/detalle_view.dart';
 import '../../res/routes/routes_name.dart';
+import '../../view/evento/evento_cuestionario.dart';
+import '../../view/evento/evento_cuestionario_run.dart';
 import '../../view/evento/evento_detalle.dart';
 import '../../view/evento/evento_view.dart';
 import '../../view/home/home_view.dart';
@@ -100,6 +102,18 @@ class AppRoutes {
     GetPage(
       name: RouteName.eventoFormularioView,
       page: () => EventoFormularioScreen(),
+      transitionDuration: Duration(milliseconds: 250),
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: RouteName.eventoCuestionarioView,
+      page: () => EventoCuestionarioScreen(),
+      transitionDuration: Duration(milliseconds: 250),
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: RouteName.eventoCuestionarioRunView,
+      page: () => EventoCuestionarioRunScreen(),
       transitionDuration: Duration(milliseconds: 250),
       transition: Transition.rightToLeftWithFade,
     ),

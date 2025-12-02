@@ -28,4 +28,8 @@ class AppUrl {
       '$baseUrl/evento-asistencia-participante';
   static String get eventoInscripcion =>
       '$baseUrl/evento-inscripcion-participante';
+  static String get eventoCuestionario =>
+      '$baseUrl/evento-cuestionario';
+  static String get eventoOpciones =>
+      '$baseUrl/evento-opciones';
 }

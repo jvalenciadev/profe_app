@@ -31,6 +31,7 @@ class PersonaEstadoModel {
 
 class PersonaModel {
   bool? inscrito; // <— Cambiado a bool
+  bool? cuestionario; // <— Cambiado a bool
   String? estado;
   Persona? persona;
 
@@ -38,6 +39,7 @@ class PersonaModel {
 
   PersonaModel.fromJson(Map<String, dynamic> json) {
     inscrito = json['inscrito'] as bool?; // viene true/false
+    cuestionario = json['cuestionario'] as bool?; // viene true/false
     estado = json['estado'] as String?;
     persona =
         json['persona'] != null
@@ -47,6 +49,7 @@ class PersonaModel {
 
   Map<String, dynamic> toJson() => {
     'inscrito': inscrito,
+    'cuestionario': cuestionario,
     'estado': estado,
     'persona': persona?.toJson(),
   };

@@ -18,7 +18,7 @@ import '../../models/evento_model.dart';
 import '../../models/persona_model.dart';
 import '../../res/colors/app_color.dart';
 import '../../res/routes/routes_name.dart';
-import '../../view_models/controller/home/evento_view_models.dart';
+import '../../view_models/controller/evento/evento_view_models.dart';
 import 'widget/widget.dart'; // donde hayas puesto buildField
 import 'package:permission_handler/permission_handler.dart';
 
