@@ -48,7 +48,9 @@ dependencies:
   timelines_plus: ^1.0.6
   introduction_screen: ^3.1.17
   carousel_slider: ^5.0.0
-  flutter_widget_from_html: ^0.16.0
+  flutter_html: ^3.0.0
+  flutter_html_iframe: ^3.0.0
+  flutter_html_table: ^3.0.0
   font_awesome_flutter: ^10.8.0
   google_nav_bar: ^5.0.7
   tab_container: ^3.5.3

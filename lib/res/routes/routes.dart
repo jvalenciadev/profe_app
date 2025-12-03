@@ -113,7 +113,7 @@ class AppRoutes {
     ),
     GetPage(
       name: RouteName.eventoCuestionarioRunView,
-      page: () => EventoCuestionarioRunScreen(),
+      page: () => QuizScreen(),
       transitionDuration: Duration(milliseconds: 250),
       transition: Transition.rightToLeftWithFade,
     ),

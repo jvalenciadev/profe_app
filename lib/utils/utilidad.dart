@@ -1,14 +1,39 @@
 import 'dart:convert';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:programa_profe/res/colors/app_color.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../res/fonts/app_fonts.dart';
 import 'utils.dart';
+
+String formatDateTime(DateTime date) {
+    // Formato: 15/01/2025 14:30
+    return "${_two(date.day)}/${_two(date.month)}/${date.year} "
+           "${_two(date.hour)}:${_two(date.minute)}";
+  }
+
+String _two(int n) => n.toString().padLeft(2, '0');
+
+
+Duration parseDuration(String time) {
+  final parts = time.split(':');
+  return Duration(
+    hours: int.parse(parts[0]),
+    minutes: int.parse(parts[1]),
+    seconds: int.parse(parts[2]),
+  );
+}
+String durationToString(Duration? d) {
+  if (d == null) return "";
+  String twoDigits(int n) => n.toString().padLeft(2, '0');
+  return "${twoDigits(d.inHours)}:"
+         "${twoDigits(d.inMinutes % 60)}:"
+         "${twoDigits(d.inSeconds % 60)}";
+}
 
 String formatearFecha(DateTime fecha) {
   final DateFormat formatter = DateFormat('dd MMM yyyy');
@@ -19,7 +44,38 @@ String formatearFechaConHora(DateTime fecha) {
   final DateFormat formatter = DateFormat('dd MMM yyyy HH:mm');
   return formatter.format(fecha); // Por ejemplo: '12 Mar 1998 15:30'
 }
+String formatDuration(Duration? d) {
+  if (d == null) return "-";
 
+  String two(int n) => n.toString().padLeft(2, '0');
+
+  return "${two(d.inHours)}:${two(d.inMinutes % 60)}:${two(d.inSeconds % 60)}";
+}
+String formatDurationReadable(Duration? d) {
+  if (d == null) return "-";
+
+  final hours = d.inHours;
+  final minutes = d.inMinutes % 60;
+  final seconds = d.inSeconds % 60;
+
+  List<String> parts = [];
+
+  if (hours > 0) {
+    parts.add("$hours ${hours == 1 ? "hora" : "horas"}");
+  }
+  if (minutes > 0) {
+    parts.add("$minutes min");
+  }
+  if (seconds > 0 && hours == 0) {
+    // Solo mostramos segundos si no hay horas
+    parts.add("$seconds seg");
+  }
+
+  // Si todo es cero
+  if (parts.isEmpty) return "0 min";
+
+  return parts.join(" ");
+}
 // Verificar si una fecha es válida (si es después de la fecha actual)
 bool esFechaValida(DateTime fecha) {
   return fecha.isAfter(DateTime.now());
@@ -61,36 +117,37 @@ Widget contactButton(String label, int? telefono, String programaNombre) {
   );
   final uri = Uri.parse('https://wa.me/591$telefono?text=$mensaje');
   return Pulse(
-                                              from: 1,
-                                              to: 1.05,
-                                              infinite: true,
-                                              child:  TextButton.icon(
-    onPressed: () async {
-      if (await canLaunchUrl(uri)) {
-        await launchUrl(uri, mode: LaunchMode.externalApplication);
-      } else {
-        showCustomSnackbar(
-          title: 'Error',
-          message: 'No se pudo abrir WhatsApp',
-          isError: true,
-        );
-      }
-    },
-    icon: const FaIcon(
-      FontAwesomeIcons.whatsapp,
-      color: AppColor.primaryColor,
-      size: 18,
-    ),
-    label: Text(
-      '$label: $telefono',
-      style: const TextStyle(
-        fontFamily: AppFonts.mina,
+    from: 1,
+    to: 1.05,
+    infinite: true,
+    child: TextButton.icon(
+      onPressed: () async {
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri, mode: LaunchMode.externalApplication);
+        } else {
+          showCustomSnackbar(
+            title: 'Error',
+            message: 'No se pudo abrir WhatsApp',
+            isError: true,
+          );
+        }
+      },
+      icon: const FaIcon(
+        FontAwesomeIcons.whatsapp,
         color: AppColor.primaryColor,
-        fontSize: 14,
-        fontWeight: FontWeight.w600,
+        size: 18,
+      ),
+      label: Text(
+        '$label: $telefono',
+        style: const TextStyle(
+          fontFamily: AppFonts.mina,
+          color: AppColor.primaryColor,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     ),
-  ),);
+  );
 }
 
 Widget loading() {
@@ -260,14 +317,27 @@ List<String>? parseLista(String? jsonLista) {
 }
 
 // 2. Gestión de Inscripciones y Validaciones
-Widget mostrarHtml(String html) {
-  return HtmlWidget(
-    html,
-    textStyle: TextStyle(
-      fontSize: 16,
-      fontFamily: AppFonts.mina,
-      color: AppColor.greyColor,
-    ), // Puedes ajustar el estilo aquí
+Widget mostrarHtml(String? html) {
+  if (html == null || html.trim().isEmpty) {
+    return const Text(
+      'Sin descripción disponible',
+      style: TextStyle(fontSize: 14, color: Colors.grey),
+    );
+  }
+
+  return Html(
+    data: html,
+    style: {
+      "body": Style(
+        fontSize: FontSize(16),
+        fontFamily: AppFonts.mina,
+        color: AppColor.greyColor,
+        lineHeight: LineHeight(1.5),
+        margin: Margins.only(top: 0, bottom: 0),
+        padding: HtmlPaddings.zero,
+      ),
+      "p": Style(margin: Margins.only(bottom: 12)),
+    },
   );
 }
 
