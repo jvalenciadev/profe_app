@@ -625,7 +625,7 @@ class _EventoAsistenciaScreenState extends State<EventoAsistenciaScreen> {
                           children: [
                             Center(
                               child: Text(
-                                'Inscríbete al Evento',
+                                'Asistencia del evento',
                                 style: TextStyle(
                                   fontFamily: AppFonts.mina,
                                   fontSize: 20,

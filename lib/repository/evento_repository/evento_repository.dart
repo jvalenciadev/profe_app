@@ -1,6 +1,7 @@
 import 'package:programa_profe/models/home/evento_list_model.dart';
 import '../../data/network/network_api_services.dart';
 import '../../models/evento_cuestionario_model.dart';
+import '../../models/evento_opciones_model.dart';
 import '../../models/home/evento_id_model.dart';
 import '../../models/persona_model.dart';
 import '../../res/app_url/app_url.dart';
@@ -53,6 +54,15 @@ class EventoRepository {
       AppUrl.eventoCuestionario,
     );
     return CuestionarioModel.fromJson(response);
+  }
+  Future<OpcionesModel> eventoPreguntasApi(
+    Map<String, dynamic> data,
+  ) async {
+    dynamic response = await _apiService.postApi(
+      data,
+      AppUrl.eventoOpciones,
+    );
+    return OpcionesModel.fromJson(response);
   }
 
 

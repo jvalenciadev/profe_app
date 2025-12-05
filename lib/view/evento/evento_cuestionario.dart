@@ -12,9 +12,9 @@ import '../../models/persona_model.dart';
 import '../../res/colors/app_color.dart';
 import '../../res/fonts/app_fonts.dart';
 import '../../res/icons/icons.dart';
+import '../../res/routes/routes_name.dart';
 import '../../utils/utilidad.dart';
 import '../../view_models/controller/evento/evento_cuestionario_models.dart';
-import 'evento_cuestionario_run.dart';
 
 class EventoCuestionarioScreen extends StatefulWidget {
   const EventoCuestionarioScreen({super.key});
@@ -248,7 +248,14 @@ class _EventoCuestionarioScreenState extends State<EventoCuestionarioScreen> {
                 ),
               ),
               onPressed: () {
-                Get.to(() => const QuizScreen());
+                Get.toNamed(
+                RouteName.eventoCuestionarioRunView,
+                  arguments: {
+                    'evento': evento.toJson(),
+                    'persona': persona.toJson(),
+                    'cuestionario': cuestionario.toJson(), // sólo la info de persona
+                  },
+                );
               },
             ),
           ),

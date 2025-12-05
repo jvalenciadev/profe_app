@@ -512,9 +512,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildEventActions(evento) {
     return Row(
       children: [
-        if (evento.eveInscripcion == 1) _buildInscriptionButton(evento),
+        if (evento.eveInscripcion != 1) _buildInscriptionButton(evento),
         const SizedBox(width: 10),
-        if (true) _buildAttendanceButton(evento),
+        if (evento.eveAsistencia != true) _buildAttendanceButton(evento),
       ],
     );
   }
